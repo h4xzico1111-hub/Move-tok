@@ -1,7 +1,7 @@
 <?php
 // ---- CONFIG ----
-$GH_OWNER  = getenv('GH_OWNER') ?: 'YOUR_GITHUB_USERNAME';
-$GH_REPO   = getenv('GH_REPO') ?: 'YOUR_REPO_NAME';
+$GH_OWNER  = getenv('GH_OWNER') ?: 'h4xzico1111-hub';
+$GH_REPO   = getenv('GH_REPO') ?: 'Move-tok';
 $GH_BRANCH = getenv('GH_BRANCH') ?: 'main';
 $GH_PATH   = 'data/anime.json';
 $GH_TOKEN  = getenv('GH_TOKEN') ?: '';   // only for a private repo (read-only token)
