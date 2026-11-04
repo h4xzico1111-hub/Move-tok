@@ -8,7 +8,9 @@ $GH_TOKEN  = getenv('GH_TOKEN') ?: '';   // only for a private repo (read-only t
 $CACHE_FILE = sys_get_temp_dir() . '/catalog.cache.json'; // Vercel: only /tmp is writable
 $CACHE_TTL  = 300;        // seconds
 
+$GH_DEBUG = '';
 function fetch_catalog($url, $token) {
+    global $GH_DEBUG;
     $headers = ['User-Agent: AniVerse-PHP'];
     if ($token) $headers[] = 'Authorization: Bearer ' . $token;
     if (function_exists('curl_init')) {
@@ -17,11 +19,13 @@ function fetch_catalog($url, $token) {
             CURLOPT_FOLLOWLOCATION => true, CURLOPT_HTTPHEADER => $headers]);
         $out = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $GH_DEBUG = 'curl http=' . $code . ' err=' . curl_error($ch);
         curl_close($ch);
         return ($out !== false && $code === 200) ? $out : null;
     }
     $ctx = stream_context_create(['http' => ['timeout' => 10, 'header' => implode("\r\n", $headers)]]);
     $out = @file_get_contents($url, false, $ctx);
+    $GH_DEBUG = 'fopen ' . ($out === false ? 'failed ' . ($http_response_header[0] ?? '') : 'ok');
     return $out === false ? null : $out;
 }
 
@@ -37,6 +41,14 @@ if (!$raw) {
     elseif (is_file($CACHE_FILE)) { $raw = file_get_contents($CACHE_FILE); } // stale fallback
 }
 $catalog = $raw ? json_decode($raw, true) : null;
+if (isset($_GET['debug'])) {
+    header('Content-Type: text/plain; charset=utf-8');
+    echo "owner  : $GH_OWNER\nrepo   : $GH_REPO\nbranch : $GH_BRANCH\npath   : $GH_PATH\n";
+    echo "token  : " . ($GH_TOKEN ? 'set' : 'NOT set') . "\n";
+    echo "fetch  : " . ($GH_DEBUG ?: 'cache used / not attempted') . "\n";
+    echo "catalog: " . ($catalog ? count($catalog['anime'] ?? []) . ' titles' : 'EMPTY') . "\n";
+    exit;
+}
 ?>
 <!doctype html>
 <html lang="hi">
@@ -296,4 +308,3 @@ load();
 </script>
 </body>
 </html>
-
