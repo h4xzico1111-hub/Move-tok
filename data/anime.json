@@ -1,38 +1,5 @@
 {
   "version": 1,
-  "updated_at": "2026-11-04T03:49:24.226Z",
-  "anime": [
-    {
-      "id": "vb",
-      "slug": "vb",
-      "title": "Vb",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp4GmDYBFXOX_FEwd1EDFhk4LnhzQmDy6Z57KTTlUloQ&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-04T03:49:24.217Z",
-      "seasons": [
-        {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Vb",
-              "thumbnail": "",
-              "url": "https://hugh.cdn.rumble.cloud/video/s8/2/u/f/g/1/ufg1k.baa.mp4",
-              "quality": "1080p",
-              "duration": "",
-              "added_at": "2026-11-04T03:49:24.225Z"
-            }
-          ]
-        }
-      ]
-    }
-  ]
+  "updated_at": "2026-11-04T07:53:11.567Z",
+  "anime": []
 }
