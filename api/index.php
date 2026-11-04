@@ -56,7 +56,7 @@ if (isset($_GET['debug'])) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#050505">
-<title>Zentai - Anime Streaming</title>
+<title>Move Tok - Anime Streaming</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -215,17 +215,6 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
 .info-mode #vbox{display:none}
 #infoPlay{display:none;flex:none;margin-top:6px;padding:10px 20px}
 .info-mode #infoPlay{display:flex}
-.pop{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.pop.show{display:flex}
-.pop-card{position:relative;width:100%;max-width:340px;padding:30px 22px 26px;border-radius:30px;text-align:center;background:linear-gradient(160deg,#f9e1e3,#f6d4d8);color:#8a5a63;box-shadow:0 20px 60px rgba(0,0,0,.6);animation:popin .3s ease}
-@keyframes popin{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
-.pop-card h3{margin:0 0 8px;font-size:22px;font-weight:900;color:#6d3a44}
-.pop-card p{margin:0 0 22px;font-size:16px;line-height:1.5}
-.pop-x{position:absolute;top:10px;right:10px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(0,0,0,.08);color:#6d3a44;font-size:20px;line-height:1}
-.tg{display:inline-flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;color:#8a5a63;font-weight:800;font-size:16px}
-.tg-c{width:84px;height:84px;border-radius:50%;background:linear-gradient(160deg,#5fc0ee,#2a9bd6);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 22px rgba(0,0,0,.25);transition:transform .15s}
-.tg:active .tg-c{transform:scale(.94)}
-.tg-c svg{width:40px;height:40px;fill:#fff}
 .hero-media .fg,.hero-media .bg{filter:none}
 .hero-media .fg{opacity:1;image-rendering:auto}
 .hero-media .bg{opacity:1;filter:blur(24px) brightness(.55) saturate(1.2)}
@@ -261,16 +250,6 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   header.s-open .sbox{flex:1;margin-left:0;background:rgba(20,20,20,.88)}
   header.s-open .search{display:block;width:100%}
 }
-.pop{background:rgba(0,0,0,.72)}
-.pop-card{max-width:330px;padding:34px 24px 26px;border-radius:24px;background:linear-gradient(160deg,#1a1a1d,#0e0e10);border:1px solid rgba(255,255,255,.08);color:#b5b5b5;box-shadow:0 24px 60px rgba(0,0,0,.7),0 0 0 1px rgba(214,51,74,.12),0 0 40px rgba(214,51,74,.12)}
-.pop-card::before{content:"";position:absolute;left:50%;top:0;width:90px;height:3px;transform:translateX(-50%);border-radius:0 0 4px 4px;background:linear-gradient(90deg,transparent,#d6334a,transparent)}
-.pop-card h3{color:#fff;font-size:24px;margin-bottom:8px}
-.pop-card p{color:#a0a0a0;font-size:15px;margin-bottom:22px}
-.pop-x{background:rgba(255,255,255,.08);color:#ddd}
-.tg{display:flex;flex-direction:row;justify-content:center;gap:12px;width:100%;padding:13px 18px;border-radius:14px;color:#fff;font-weight:800;font-size:17px;background:linear-gradient(135deg,#2aabee,#1e88c9);box-shadow:0 8px 22px rgba(42,171,238,.3)}
-.tg-c{width:auto;height:auto;background:none;box-shadow:none;border-radius:0}
-.tg-c svg{width:26px;height:26px}
-.tg:active{transform:scale(.97)}
 </style>
 </head>
 <body>
@@ -297,8 +276,8 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
 </svg>
 
 <header>
-  <img class="logo" src="https://i.ibb.co/vCvN8400/IMG-20261102-WA0084.jpg" alt="Zentai">
-  <div class="brand">Zentai<span>.</span></div>
+  <img class="logo" src="https://i.ibb.co/QvS9K1F2/file-0000000088fc81f4b523066b82b7881f.png" alt="Move Tok">
+  <div class="brand">Move Tok</div>
   <div class="sbox">
     <button id="sBtn" class="sbtn" type="button" aria-label="Search"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 14 15.5l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg></button>
     <input id="search" class="search" type="search" placeholder="Anime search...">
@@ -381,18 +360,6 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
     </div>
   </div>
 </section>
-
-<div id="pop" class="pop" role="dialog" aria-modal="true">
-  <div class="pop-card">
-    <button id="popX" class="pop-x" aria-label="Close">&times;</button>
-    <h3>Join Zentai</h3>
-    <p>New episodes and updates, straight to your phone.</p>
-    <a class="tg" href="https://t.me/+ga6_CsSCpBxkOTZl" target="_blank" rel="noopener noreferrer">
-      <span class="tg-c"><svg viewBox="0 0 24 24"><path d="M21.5 3.5 2.4 10.9l5.8 2.1L19.2 5.6 10.4 14l.2 5.6 3-3 4.6 3.4z"/></svg></span>
-      Telegram
-    </a>
-  </div>
-</div>
 
 <script>
 const CATALOG = <?= json_encode($catalog, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;
@@ -822,14 +789,6 @@ document.addEventListener("keydown",e=>{
 document.addEventListener("click",e=>{
   if(!$("menu").contains(e.target)&&!$("setBtn").contains(e.target))closeMenu();
 });
-
-/* ---------- telegram popup ---------- */
-(function(){
-  const p=$("pop");p.classList.add("show");
-  const close=()=>p.classList.remove("show");
-  $("popX").onclick=close;
-  p.addEventListener("click",e=>{if(e.target===p)close()});
-})();
 
 /* ---------- title bar search toggle ---------- */
 (function(){
