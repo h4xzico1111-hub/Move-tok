@@ -67,7 +67,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Nunito,Arial,sa
 button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}[hidden]{display:none!important}
 .ic{width:1em;height:1em;fill:currentColor;display:block;pointer-events:none}
 header{position:relative;z-index:5;display:flex;align-items:center;gap:10px;padding:12px;background:rgba(5,5,5,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-.logo{width:48px;height:48px;object-fit:contain;border-radius:10px;flex:0 0 auto}
+.logo{width:auto;height:60px;max-width:110px;object-fit:contain;border-radius:12px;flex:0 0 auto}
 .brand{font-size:28px;font-weight:900;white-space:nowrap;color:#fff;letter-spacing:-.4px}.brand span{color:var(--pink)}
 .search{margin-left:auto;flex:1;width:100%;max-width:330px;min-width:0;font-size:14px;padding:11px 14px;border:1px solid #262626;border-radius:12px;background:#151515;color:#eee;outline:none;transition:border-color .2s}
 .search:focus{border-color:var(--pink)}
@@ -190,7 +190,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   .video-box{max-width:1000px;margin-top:14px;border-radius:14px;max-height:calc(100vh - 120px)}
   .video-box:fullscreen{margin:0;border-radius:0}
 }
-@media(max-width:360px){.brand{font-size:22px}.logo{width:40px;height:40px}header{gap:7px;padding:9px}.search{padding:9px 11px;font-size:13px}.episodes{gap:7px}.episode-btn{min-height:50px;font-size:16px}.ctrl-btn{min-width:34px}.detail-poster{width:96px;max-width:96px}}
+@media(max-width:360px){.brand{font-size:22px}.logo{height:50px}header{gap:7px;padding:9px}.search{padding:9px 11px;font-size:13px}.episodes{gap:7px}.episode-btn{min-height:50px;font-size:16px}.ctrl-btn{min-width:34px}.detail-poster{width:96px;max-width:96px}}
 :root{--red:#ff3b4a;--pink:#ff3b4a;--pink-soft:rgba(255,59,74,.14)}
 .brand{color:#fff}
 .hbtn.play{background:var(--red);color:#fff}
@@ -242,9 +242,9 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   main{padding-top:0}
   body:has(#featuredSection[hidden]) main{padding-top:84px}
   .brand{text-shadow:0 2px 10px rgba(0,0,0,.7)}
-  .sbox{display:flex;align-items:center;margin-left:auto;gap:6px;padding:4px;border-radius:50px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-  .sbtn{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:#fff}
-  .sbtn svg{width:22px;height:22px;fill:currentColor}
+  .sbox{display:flex;align-items:center;margin-left:auto;gap:6px;padding:2px;border-radius:50px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .sbtn{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border:0;border-radius:50%;background:transparent;color:#fff}
+  .sbtn svg{width:22px;height:22px;fill:none}
   .search{display:none;margin:0;width:0;flex:1;max-width:none;border:0;background:transparent;padding:8px 6px;font-size:15px}
   header.s-open .brand,header.s-open .logo{display:none}
   header.s-open .sbox{flex:1;margin-left:0;background:rgba(20,20,20,.88)}
@@ -279,7 +279,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   <img class="logo" src="https://i.ibb.co/QvS9K1F2/file-0000000088fc81f4b523066b82b7881f.png" alt="Move Tok">
   <div class="brand">Move Tok</div>
   <div class="sbox">
-    <button id="sBtn" class="sbtn" type="button" aria-label="Search"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 14 15.5l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg></button>
+    <button id="sBtn" class="sbtn" type="button" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     <input id="search" class="search" type="search" placeholder="Anime search...">
   </div>
 </header>
