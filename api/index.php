@@ -1,4 +1,6 @@
 <?php
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
 // ---- CONFIG ----
 $GH_OWNER  = getenv('GH_OWNER') ?: 'h4xzico1111-hub';
 $GH_REPO   = getenv('GH_REPO') ?: 'Move-tok';
@@ -6,7 +8,7 @@ $GH_BRANCH = getenv('GH_BRANCH') ?: 'main';
 $GH_PATH   = 'data/anime.json';
 $GH_TOKEN  = getenv('GH_TOKEN') ?: '';
 $CACHE_FILE = sys_get_temp_dir() . '/catalog.cache.json';
-$CACHE_TTL  = 300;
+$CACHE_TTL  = 15;
 
 $GH_DEBUG = '';
 function fetch_catalog($url, $token) {
@@ -35,7 +37,7 @@ if (is_file($CACHE_FILE) && (time() - filemtime($CACHE_FILE)) < $CACHE_TTL) {
 }
 if (!$raw) {
     $url = 'https://raw.githubusercontent.com/' . rawurlencode($GH_OWNER) . '/' . rawurlencode($GH_REPO)
-         . '/' . rawurlencode($GH_BRANCH) . '/' . implode('/', array_map('rawurlencode', explode('/', $GH_PATH)));
+         . '/' . rawurlencode($GH_BRANCH) . '/' . implode('/', array_map('rawurlencode', explode('/', $GH_PATH))) . '?nocache=' . time();
     $fresh = fetch_catalog($url, $GH_TOKEN);
     if ($fresh && json_decode($fresh) !== null) { $raw = $fresh; @file_put_contents($CACHE_FILE, $raw, LOCK_EX); }
     elseif (is_file($CACHE_FILE)) { $raw = file_get_contents($CACHE_FILE); }
