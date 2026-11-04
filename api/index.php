@@ -43,6 +43,7 @@ if (!$raw) {
     elseif (is_file($CACHE_FILE)) { $raw = file_get_contents($CACHE_FILE); }
 }
 $catalog = $raw ? json_decode($raw, true) : null;
+$visitCountry = strtoupper(trim($_SERVER['HTTP_X_VERCEL_IP_COUNTRY'] ?? ($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '')));
 if (isset($_GET['debug'])) {
     header('Content-Type: text/plain; charset=utf-8');
     echo "owner  : $GH_OWNER\nrepo   : $GH_REPO\nbranch : $GH_BRANCH\npath   : $GH_PATH\n";
@@ -809,6 +810,22 @@ document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x===b));
   render();
 });
+
+/* ---------- visitor tracking (Move Tok analytics) ---------- */
+(function(){
+  var DB="https://zentai-907d6-default-rtdb.firebaseio.com",C=<?= json_encode(preg_match('/^[A-Z]{2}$/', $visitCountry) ? $visitCountry : '??') ?>,id="";
+  try{id=localStorage.getItem("mt:uid")||"";if(!id){id="MT-"+Math.random().toString(36).slice(2,8).toUpperCase();localStorage.setItem("mt:uid",id)}}catch(e){}
+  if(!id)id="MT-"+Math.random().toString(36).slice(2,8).toUpperCase();
+  var iso=new Date().toISOString(),ym=iso.slice(0,7),y=iso.slice(0,4),sent=false;
+  function put(path,val){try{fetch(DB+"/"+path+".json",{method:"PUT",body:JSON.stringify(val),keepalive:true}).catch(function(){})}catch(e){}}
+  function ping(){
+    if(document.hidden)return;
+    put("live/"+id,{t:Date.now(),c:C});
+    if(!sent){sent=true;put("months/"+ym+"/"+id,C);put("years/"+y+"/"+id,C)}
+  }
+  ping();setInterval(ping,60000);
+  document.addEventListener("visibilitychange",ping);
+})();
 
 /* ---------- start ---------- */
 allItems=buildItems();
