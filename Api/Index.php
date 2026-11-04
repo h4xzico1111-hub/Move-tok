@@ -1,11 +1,11 @@
 <?php
 // ---- CONFIG ----
-$GH_OWNER  = 'YOUR_GITHUB_USERNAME';
-$GH_REPO   = 'YOUR_REPO_NAME';
-$GH_BRANCH = 'main';
+$GH_OWNER  = getenv('GH_OWNER') ?: 'YOUR_GITHUB_USERNAME';
+$GH_REPO   = getenv('GH_REPO') ?: 'YOUR_REPO_NAME';
+$GH_BRANCH = getenv('GH_BRANCH') ?: 'main';
 $GH_PATH   = 'data/anime.json';
-$GH_TOKEN  = '';          // only needed if the repo is private (read-only token)
-$CACHE_FILE = __DIR__ . '/catalog.cache.json';
+$GH_TOKEN  = getenv('GH_TOKEN') ?: '';   // only for a private repo (read-only token)
+$CACHE_FILE = sys_get_temp_dir() . '/catalog.cache.json'; // Vercel: only /tmp is writable
 $CACHE_TTL  = 300;        // seconds
 
 function fetch_catalog($url, $token) {
@@ -296,4 +296,3 @@ load();
 </script>
 </body>
 </html>
-
