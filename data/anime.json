@@ -1,38 +1,5 @@
 {
   "version": 1,
-  "updated_at": "2026-11-04T14:23:47.994Z",
-  "anime": [
-    {
-      "id": "g",
-      "slug": "g",
-      "title": "G",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlp5Xpf93KF0tzeHvJvDABZ63HNaU6pHQmA0ke25KRqJBxtRxiWycDUWc&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-04T14:23:47.988Z",
-      "seasons": [
-        {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "G",
-              "thumbnail": "",
-              "url": "https://hugh.cdn.rumble.cloud/video/s8/2/u/f/g/1/ufg1k.baa.mp4",
-              "quality": "Original",
-              "duration": "",
-              "added_at": "2026-11-04T14:23:47.993Z"
-            }
-          ]
-        }
-      ]
-    }
-  ]
+  "updated_at": "2026-11-05T04:44:46.350Z",
+  "anime": []
 }
