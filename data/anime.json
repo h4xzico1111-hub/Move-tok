@@ -1,38 +1,5 @@
 {
   "version": 1,
-  "updated_at": "2026-11-05T04:47:32.811Z",
-  "anime": [
-    {
-      "id": "ss",
-      "slug": "ss",
-      "title": "Ss",
-      "poster": "https://filmir.pro/uploads/posts/covers/photo_akka-s01-2026-hindi-completed-web-series-hevc-esub.png",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-05T04:47:32.806Z",
-      "seasons": [
-        {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Ss",
-              "thumbnail": "",
-              "url": "https://hugh.cdn.rumble.cloud/video/s8/2/u/f/g/1/ufg1k.baa.mp4",
-              "quality": "Original",
-              "duration": "",
-              "added_at": "2026-11-05T04:47:32.810Z"
-            }
-          ]
-        }
-      ]
-    }
-  ]
+  "updated_at": "2026-11-05T04:51:40.420Z",
+  "anime": []
 }
