@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T16:21:54.715Z",
+  "updated_at": "2026-11-06T18:20:29.362Z",
   "anime": [
     {
       "id": "overflow-hindi",
@@ -47,6 +47,33 @@
                 }
               ],
               "added_at": "2026-11-06T16:21:50.952Z"
+            },
+            {
+              "number": 2,
+              "title": "Episode 2",
+              "thumbnail": "",
+              "url": "https://seed167b.bitchute.com/rdKTQ7qzoTrh/FI6GC3oDi18g.mp4",
+              "quality": "1080p",
+              "duration": "",
+              "sources": [
+                {
+                  "quality": "1080p",
+                  "url": "https://seed167b.bitchute.com/rdKTQ7qzoTrh/FI6GC3oDi18g.mp4"
+                },
+                {
+                  "quality": "720p",
+                  "url": "https://seed167b.bitchute.com/rdKTQ7qzoTrh/FI6GC3oDi18g.mp4"
+                },
+                {
+                  "quality": "480p",
+                  "url": "https://seed167b.bitchute.com/rdKTQ7qzoTrh/FI6GC3oDi18g.mp4"
+                },
+                {
+                  "quality": "360p",
+                  "url": "https://seed167b.bitchute.com/rdKTQ7qzoTrh/FI6GC3oDi18g.mp4"
+                }
+              ],
+              "added_at": "2026-11-06T18:20:29.342Z"
             }
           ]
         }
