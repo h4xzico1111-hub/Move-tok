@@ -10,6 +10,157 @@ $GH_TOKEN  = getenv('GH_TOKEN') ?: '';
 $CACHE_FILE = sys_get_temp_dir() . '/catalog.cache.json';
 $CACHE_TTL  = 15;
 
+// ---- Video protection ----
+// Real video links never reach the browser. The page only gets encrypted tokens (AES-256-GCM),
+// and the video is streamed by this server in small 1 MB chunks (HTTP Range) through ?v=TOKEN.
+$VIDEO_SECRET = getenv('VIDEO_SECRET') ?: ($GH_TOKEN ?: 'movetok-change-this-secret');
+$VKEY   = hash('sha256', $VIDEO_SECRET, true);
+$V_TTL  = 21600;     // token life: 6 hours (reloading the page gives fresh tokens)
+$V_CHUNK = 1048576;  // 1 MB per response
+
+function mt_b64e($s) { return rtrim(strtr(base64_encode($s), '+/', '-_'), '='); }
+function mt_b64d($s) { return base64_decode(strtr($s, '-_', '+/')); }
+function mt_enc($url, $ttl) {
+    global $VKEY;
+    $iv = random_bytes(12); $tag = '';
+    $c = openssl_encrypt(json_encode(['u' => $url, 'x' => time() + $ttl]), 'aes-256-gcm', $VKEY, OPENSSL_RAW_DATA, $iv, $tag);
+    return mt_b64e($iv . $tag . $c);
+}
+function mt_dec($t) {
+    global $VKEY;
+    $b = mt_b64d($t);
+    if (strlen($b) < 30) return null;
+    $p = openssl_decrypt(substr($b, 28), 'aes-256-gcm', $VKEY, OPENSSL_RAW_DATA, substr($b, 0, 12), substr($b, 12, 16));
+    if ($p === false) return null;
+    $d = json_decode($p, true);
+    if (!is_array($d) || empty($d['u']) || (int)($d['x'] ?? 0) < time()) return null;
+    return $d['u'];
+}
+function mt_is_hls($u) { return (bool)preg_match('/\.m3u8(\?|$)/i', $u); }
+function mt_base() {
+    $proto = !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) ? trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0])
+        : ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http');
+    return $proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
+}
+function mt_link($url, $ttl) {
+    return mt_base() . '?v=' . mt_enc($url, $ttl) . (mt_is_hls($url) ? '&hls=1' : '');
+}
+function mt_deny($code = 403) { http_response_code($code); header('Content-Type: text/plain'); echo 'Forbidden'; exit; }
+function mt_guard() {
+    $sf = $_SERVER['HTTP_SEC_FETCH_SITE'] ?? '';
+    if ($sf !== '' && $sf !== 'same-origin') mt_deny();
+    $rf = $_SERVER['HTTP_REFERER'] ?? '';
+    if ($rf !== '') {
+        $rh = strtolower((string)parse_url($rf, PHP_URL_HOST));
+        $hh = strtolower((string)parse_url('//' . ($_SERVER['HTTP_HOST'] ?? ''), PHP_URL_HOST));
+        if ($rh !== $hh) mt_deny();
+    }
+}
+function mt_abs($u, $base) {
+    if (preg_match('#^https?://#i', $u)) return $u;
+    $p = parse_url($base);
+    $root = $p['scheme'] . '://' . $p['host'] . (isset($p['port']) ? ':' . $p['port'] : '');
+    if (substr($u, 0, 2) === '//') return $p['scheme'] . ':' . $u;
+    if ($u !== '' && $u[0] === '/') return $root . $u;
+    $dir = preg_replace('#/[^/]*$#', '/', $p['path'] ?? '/');
+    return $root . $dir . $u;
+}
+function mt_get($url) {
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => true, CURLOPT_MAXREDIRS => 5,
+        CURLOPT_TIMEOUT => 20, CURLOPT_HTTPHEADER => ['User-Agent: Mozilla/5.0']]);
+    $out = curl_exec($ch); $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE); curl_close($ch);
+    return ($out !== false && $code === 200) ? $out : null;
+}
+// HLS playlist: every segment / key / sub-playlist is replaced by another protected token
+function mt_playlist($url, $ttl) {
+    $raw = mt_get($url);
+    if ($raw === null) mt_deny(502);
+    $lines = preg_split('/\r?\n/', $raw);
+    foreach ($lines as $i => $ln) {
+        $t = trim($ln);
+        if ($t === '') continue;
+        if ($t[0] === '#') {
+            $lines[$i] = preg_replace_callback('/URI="([^"]+)"/', function ($m) use ($url, $ttl) {
+                return 'URI="' . mt_link(mt_abs($m[1], $url), $ttl) . '"';
+            }, $ln);
+        } else {
+            $lines[$i] = mt_link(mt_abs($t, $url), $ttl);
+        }
+    }
+    header('Content-Type: application/vnd.apple.mpegurl');
+    header('Cache-Control: no-store');
+    echo implode("\n", $lines);
+}
+// Video file: never sent whole, only as small Range chunks
+function mt_stream($url, $CH) {
+    @set_time_limit(0);
+    while (ob_get_level()) ob_end_clean();
+    $a = 0; $e = $CH - 1; $suf = 0;
+    if (preg_match('/^bytes=(\d*)-(\d*)$/', trim($_SERVER['HTTP_RANGE'] ?? ''), $m)) {
+        if ($m[1] !== '') {
+            $a = (int)$m[1]; $e = $a + $CH - 1;
+            if ($m[2] !== '' && (int)$m[2] >= $a) $e = min((int)$m[2], $e);
+        } elseif ($m[2] !== '') {
+            $suf = min((int)$m[2], $CH);
+        }
+    }
+    $upRange = $suf ? 'bytes=-' . $suf : 'bytes=' . $a . '-' . $e;
+    $st = 0; $hd = []; $sent = false; $mode = 0; $skip = 0; $left = $CH;
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_FOLLOWLOCATION => true, CURLOPT_MAXREDIRS => 5, CURLOPT_TIMEOUT => 120, CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_HTTPHEADER => ['Range: ' . $upRange, 'User-Agent: Mozilla/5.0'],
+        CURLOPT_HEADERFUNCTION => function ($c, $h) use (&$st, &$hd) {
+            if (preg_match('#^HTTP/\S+\s+(\d+)#', $h, $mm)) { $st = (int)$mm[1]; $hd = []; }
+            elseif (strpos($h, ':') !== false) { [$k, $v] = explode(':', $h, 2); $hd[strtolower(trim($k))] = trim($v); }
+            return strlen($h);
+        },
+        CURLOPT_WRITEFUNCTION => function ($c, $d) use (&$st, &$hd, &$sent, &$mode, &$skip, &$left, $a, $suf, $CH) {
+            if (!$sent) {
+                if ($st === 206) {
+                    $mode = 1; http_response_code(206);
+                    if (isset($hd['content-range'])) header('Content-Range: ' . $hd['content-range']);
+                    if (isset($hd['content-length'])) header('Content-Length: ' . $hd['content-length']);
+                } elseif ($st === 200) {
+                    $mode = 2; $tot = (int)($hd['content-length'] ?? 0);
+                    $skip = $suf ? max(0, $tot - $suf) : $a;
+                    $len = $tot ? max(0, min($CH, $tot - $skip)) : $CH;
+                    $left = $len; http_response_code(206);
+                    header('Content-Range: bytes ' . $skip . '-' . ($skip + $len - 1) . '/' . ($tot ?: '*'));
+                    header('Content-Length: ' . $len);
+                } else {
+                    return 0;
+                }
+                $ct = $hd['content-type'] ?? '';
+                header('Content-Type: ' . (stripos($ct, 'video/') === 0 ? $ct : 'video/mp4'));
+                header('Accept-Ranges: bytes');
+                header('Cache-Control: private, no-store');
+                header('X-Content-Type-Options: nosniff');
+                $sent = true;
+            }
+            $n = strlen($d);
+            if ($mode === 1) { echo $d; flush(); return $n; }
+            if ($skip >= $n) { $skip -= $n; return $n; }
+            if ($skip > 0) { $d = substr($d, $skip); $skip = 0; }
+            if (strlen($d) > $left) $d = substr($d, 0, $left);
+            echo $d; $left -= strlen($d); flush();
+            return $left > 0 ? $n : 0;
+        },
+    ]);
+    curl_exec($ch);
+    curl_close($ch);
+    if (!$sent) mt_deny(502);
+    exit;
+}
+if (isset($_GET['v'])) {
+    mt_guard();
+    $real = mt_dec((string)$_GET['v']);
+    if (!$real || !preg_match('#^https?://#i', $real)) mt_deny();
+    if (mt_is_hls($real)) { mt_playlist($real, $V_TTL); exit; }
+    mt_stream($real, $V_CHUNK);
+}
+
 $GH_DEBUG = '';
 function fetch_catalog($url, $token) {
     global $GH_DEBUG;
@@ -43,14 +194,30 @@ if (!$raw) {
     elseif (is_file($CACHE_FILE)) { $raw = file_get_contents($CACHE_FILE); }
 }
 $catalog = $raw ? json_decode($raw, true) : null;
-$visitCountry = strtoupper(trim($_SERVER['HTTP_X_VERCEL_IP_COUNTRY'] ?? ($_SERVER['HTTP_CF_IPCOUNTRY'] ?? '')));
 if (isset($_GET['debug'])) {
     header('Content-Type: text/plain; charset=utf-8');
     echo "owner  : $GH_OWNER\nrepo   : $GH_REPO\nbranch : $GH_BRANCH\npath   : $GH_PATH\n";
     echo "token  : " . ($GH_TOKEN ? 'set' : 'NOT set') . "\n";
+    echo "secret : " . (getenv('VIDEO_SECRET') ? 'VIDEO_SECRET set' : 'default (set VIDEO_SECRET)') . "\n";
     echo "fetch  : " . ($GH_DEBUG ?: 'cache used / not attempted') . "\n";
     echo "catalog: " . ($catalog ? count($catalog['anime'] ?? []) . ' titles' : 'EMPTY') . "\n";
     exit;
+}
+
+// Replace every real video link in the catalog with a protected token link
+if (is_array($catalog) && isset($catalog['anime']) && is_array($catalog['anime'])) {
+    foreach ($catalog['anime'] as $i => $an) {
+        foreach (($an['seasons'] ?? []) as $j => $se) {
+            foreach (($se['episodes'] ?? []) as $k => $ep) {
+                $r =& $catalog['anime'][$i]['seasons'][$j]['episodes'][$k];
+                if (!empty($r['url']) && is_string($r['url'])) $r['url'] = mt_link($r['url'], $V_TTL);
+                foreach (($r['sources'] ?? []) as $q => $x) {
+                    if (!empty($x['url']) && is_string($x['url'])) $r['sources'][$q]['url'] = mt_link($x['url'], $V_TTL);
+                }
+                unset($r);
+            }
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -59,7 +226,7 @@ if (isset($_GET['debug'])) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#050505">
-<title>Move Tok - Anime Streaming</title>
+<title>Move Tok - Hindi Movies &amp; K-Dramas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -283,7 +450,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   <div class="brand">Move Tok</div>
   <div class="sbox">
     <button id="sBtn" class="sbtn" type="button" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
-    <input id="search" class="search" type="search" placeholder="Anime search...">
+    <input id="search" class="search" type="search" placeholder="Search movies, K-Dramas...">
   </div>
 </header>
 
@@ -310,10 +477,10 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   <div class="row-head"><h2><svg><use href="#i-star"/></svg> Newest Drops</h2><span id="count" class="card-sub">0 titles</span></div>
   <div class="filters">
     <button class="filter active" data-filter="all">All</button>
-    <button class="filter" data-filter="Anime">Anime Series</button>
-    <button class="filter" data-filter="Movie">Anime Movies</button>
+    <button class="filter" data-filter="Anime">K-Dramas</button>
+    <button class="filter" data-filter="Movie">Hindi Movies</button>
   </div>
-  <div id="catalog" class="grid"><div class="empty">Loading anime...</div></div>
+  <div id="catalog" class="grid"><div class="empty">Loading...</div></div>
 </main>
 
 <section id="watch" class="watch">
@@ -351,7 +518,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   <div class="details" id="details">
     <div class="details-content">
       <div class="anime-info">
-        <img id="detailPoster" class="detail-poster" alt="Anime poster">
+        <img id="detailPoster" class="detail-poster" alt="Poster">
         <div class="detail-text">
           <h1 id="detailTitle" class="detail-title"></h1>
           <div><span id="detailType" class="tag"></span><span id="episodeLabel" class="tag"></span><span id="infoLabel" class="tag"></span></div>
@@ -453,7 +620,7 @@ function buildGroups(){
 
 /* ---------- home ---------- */
 function metaText(g){
-  if(g.type==="Movie")return "Anime Movie";
+  if(g.type==="Movie")return "Hindi Movie";
   const n=new Set(g.items.map(x=>x.season)).size;
   return n+(n===1?" Season":" Seasons")+" • "+g.items.length+" Episodes";
 }
@@ -512,7 +679,7 @@ function render(){
   $("count").textContent=list.length+(list.length===1?" title":" titles");
   if(!list.length){
     const e=document.createElement("div");e.className="empty";
-    e.textContent=allItems.length?"No anime found.":"No anime published yet.";cat.appendChild(e);
+    e.textContent=allItems.length?"Nothing found.":"Nothing published yet.";cat.appendChild(e);
   }else list.forEach(g=>cat.appendChild(makeCard(g)));
   renderRows();
 }
@@ -540,7 +707,7 @@ function renderSlider(){
     addPoster(media,g.poster,g.title);
     const body=document.createElement("div");body.className="hero-body";
     const kind=document.createElement("div");kind.className="hero-kind";
-    const k1=document.createElement("span");k1.textContent=g.type==="Movie"?"Anime Movie":"Anime Series";
+    const k1=document.createElement("span");k1.textContent=g.type==="Movie"?"Hindi Movie":"K-Drama";
     const dot=document.createElement("i");
     const k2=document.createElement("span");k2.textContent=g.type==="Movie"?"Full Movie":g.items.length+(g.items.length===1?" Episode":" Episodes");
     kind.append(k1,dot,k2);
@@ -576,7 +743,7 @@ function openGroup(g,startItem,noPlay){
   document.body.style.overflow="hidden";
   if(!watchOpen){watchOpen=true;try{history.pushState({zentaiWatch:true},"",location.href)}catch{}}
   $("detailTitle").textContent=g.title;$("vTitle").textContent=g.title;
-  $("detailType").textContent=g.type==="Movie"?"Anime Movie":"Anime Series";
+  $("detailType").textContent=g.type==="Movie"?"Hindi Movie":"K-Drama";
   $("infoLabel").textContent=g.type==="Movie"?"Full Movie":metaText(g);
   const p=$("detailPoster");
   if(g.poster){
@@ -675,7 +842,7 @@ function playVideo(url,at){
   const s=safeUrl(url);if(!s||curUrl===s)return;
   curUrl=s;pendingSeek=at||0;$("verr").hidden=true;box.classList.add("loading");
   if(hls){hls.destroy();hls=null}
-  if(/\.m3u8(\?|$)/i.test(s)&&!V.canPlayType("application/vnd.apple.mpegurl")){
+  if((/\.m3u8(\?|$)/i.test(s)||/[?&]hls=1/.test(s))&&!V.canPlayType("application/vnd.apple.mpegurl")){
     loadHls().then(()=>{
       if(curUrl!==s)return;
       if(!Hls.isSupported())return showErr("HLS supported nahi hai.");
@@ -810,22 +977,6 @@ document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x===b));
   render();
 });
-
-/* ---------- visitor tracking (Move Tok analytics) ---------- */
-(function(){
-  var DB="https://zentai-907d6-default-rtdb.firebaseio.com",C=<?= json_encode(preg_match('/^[A-Z]{2}$/', $visitCountry) ? $visitCountry : '??') ?>,id="";
-  try{id=localStorage.getItem("mt:uid")||"";if(!id){id="MT-"+Math.random().toString(36).slice(2,8).toUpperCase();localStorage.setItem("mt:uid",id)}}catch(e){}
-  if(!id)id="MT-"+Math.random().toString(36).slice(2,8).toUpperCase();
-  var iso=new Date().toISOString(),ym=iso.slice(0,7),y=iso.slice(0,4),sent=false;
-  function put(path,val){try{fetch(DB+"/"+path+".json",{method:"PUT",body:JSON.stringify(val),keepalive:true}).catch(function(){})}catch(e){}}
-  function ping(){
-    if(document.hidden)return;
-    put("live/"+id,{t:Date.now(),c:C});
-    if(!sent){sent=true;put("months/"+ym+"/"+id,C);put("years/"+y+"/"+id,C)}
-  }
-  ping();setInterval(ping,60000);
-  document.addEventListener("visibilitychange",ping);
-})();
 
 /* ---------- start ---------- */
 allItems=buildItems();
