@@ -479,6 +479,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
     <button class="filter active" data-filter="all">All</button>
     <button class="filter" data-filter="Anime">K-Dramas</button>
     <button class="filter" data-filter="Movie">Hindi Movies</button>
+    <button class="filter" data-filter="Hentai">Hindi Hentai</button>
   </div>
   <div id="catalog" class="grid"><div class="empty">Loading...</div></div>
 </main>
@@ -571,6 +572,7 @@ const store={
   del(k){try{localStorage.removeItem(k)}catch{}}
 };
 const gkey=g=>g.type+"|"+g.title.toLowerCase();
+const kindLabel=g=>g.type==="Movie"?"Hindi Movie":g.type==="Hentai"?"Hindi Hentai":"K-Drama";
 
 /* ---------- recent watch storage ---------- */
 function getRecent(){try{return JSON.parse(localStorage.getItem("zt:recent"))||[]}catch{return []}}
@@ -587,7 +589,7 @@ function buildItems(){
   const list=CATALOG&&Array.isArray(CATALOG.anime)?CATALOG.anime:[];
   list.forEach(a=>{
     if(!a||!a.slug||!a.title)return;
-    const type=a.category==="movie"?"Movie":"Anime";
+    const type=a.category==="movie"?"Movie":a.category==="hentai"?"Hentai":"Anime";
     const poster=safeUrl(a.poster)||safeUrl(a.banner);
     (Array.isArray(a.seasons)?a.seasons:[]).forEach(s=>{
       (Array.isArray(s.episodes)?s.episodes:[]).forEach(e=>{
@@ -707,7 +709,7 @@ function renderSlider(){
     addPoster(media,g.poster,g.title);
     const body=document.createElement("div");body.className="hero-body";
     const kind=document.createElement("div");kind.className="hero-kind";
-    const k1=document.createElement("span");k1.textContent=g.type==="Movie"?"Hindi Movie":"K-Drama";
+    const k1=document.createElement("span");k1.textContent=kindLabel(g);
     const dot=document.createElement("i");
     const k2=document.createElement("span");k2.textContent=g.type==="Movie"?"Full Movie":g.items.length+(g.items.length===1?" Episode":" Episodes");
     kind.append(k1,dot,k2);
@@ -743,7 +745,7 @@ function openGroup(g,startItem,noPlay){
   document.body.style.overflow="hidden";
   if(!watchOpen){watchOpen=true;try{history.pushState({zentaiWatch:true},"",location.href)}catch{}}
   $("detailTitle").textContent=g.title;$("vTitle").textContent=g.title;
-  $("detailType").textContent=g.type==="Movie"?"Hindi Movie":"K-Drama";
+  $("detailType").textContent=kindLabel(g);
   $("infoLabel").textContent=g.type==="Movie"?"Full Movie":metaText(g);
   const p=$("detailPoster");
   if(g.poster){
