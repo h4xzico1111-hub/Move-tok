@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T14:18:54.339Z",
+  "updated_at": "2026-11-06T14:19:41.315Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -282,6 +282,33 @@
                 }
               ],
               "added_at": "2026-11-06T14:18:54.337Z"
+            },
+            {
+              "number": 7,
+              "title": "Episode 7",
+              "thumbnail": "",
+              "url": "https://seed126b.bitchute.com/vN1ZdtiarJGS/7KJKEPnHKSXT.mp4",
+              "quality": "1080p",
+              "duration": "",
+              "sources": [
+                {
+                  "quality": "1080p",
+                  "url": "https://seed126b.bitchute.com/vN1ZdtiarJGS/7KJKEPnHKSXT.mp4"
+                },
+                {
+                  "quality": "720p",
+                  "url": "https://seed126b.bitchute.com/vN1ZdtiarJGS/7KJKEPnHKSXT.mp4"
+                },
+                {
+                  "quality": "480p",
+                  "url": "https://seed126b.bitchute.com/vN1ZdtiarJGS/7KJKEPnHKSXT.mp4"
+                },
+                {
+                  "quality": "360p",
+                  "url": "https://seed126b.bitchute.com/vN1ZdtiarJGS/7KJKEPnHKSXT.mp4"
+                }
+              ],
+              "added_at": "2026-11-06T14:19:41.308Z"
             }
           ]
         }
