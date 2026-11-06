@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T13:56:10.133Z",
+  "updated_at": "2026-11-06T14:09:21.792Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -97,6 +97,56 @@
                 }
               ],
               "added_at": "2026-11-06T13:56:10.129Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "our-sticky-love-episode-1-hindi-dubbed-full-latest-k-drama",
+      "slug": "our-sticky-love-episode-1-hindi-dubbed-full-latest-k-drama",
+      "title": "Our sticky Love episode 1 Hindi dubbed full latest K-drama",
+      "poster": "https://i.ytimg.com/vi/U15I3epzZyk/oardefault.jpg?sqp=-oaymwEYCJUDENAFSFqQAgHyq4qpAwcIARUAAIhC&rs=AOn4CLDlIyaXK850VVr7Vb3CTSvoRCDitw&usqp=CBQ",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "anime",
+      "popularity": 0,
+      "added_at": "2026-11-06T14:09:21.785Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://seed132.bitchute.com/vN1ZdtiarJGS/p9aE4XLSPgCq.mp4",
+              "quality": "1080p",
+              "duration": "",
+              "sources": [
+                {
+                  "quality": "1080p",
+                  "url": "https://seed132.bitchute.com/vN1ZdtiarJGS/p9aE4XLSPgCq.mp4"
+                },
+                {
+                  "quality": "720p",
+                  "url": "https://seed132.bitchute.com/vN1ZdtiarJGS/p9aE4XLSPgCq.mp4"
+                },
+                {
+                  "quality": "480p",
+                  "url": "https://seed132.bitchute.com/vN1ZdtiarJGS/p9aE4XLSPgCq.mp4"
+                },
+                {
+                  "quality": "360p",
+                  "url": "https://seed132.bitchute.com/vN1ZdtiarJGS/p9aE4XLSPgCq.mp4"
+                }
+              ],
+              "added_at": "2026-11-06T14:09:21.790Z"
             }
           ]
         }
