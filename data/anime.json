@@ -1,38 +1,5 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T08:39:39.356Z",
-  "anime": [
-    {
-      "id": "b",
-      "slug": "b",
-      "title": "B",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNeEXgqxbmtWfxu1U-LfH_tL_5LhN3RcvKPgBjDJM3uECHsYnKBBn9zj73&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-06T08:39:39.350Z",
-      "seasons": [
-        {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "B",
-              "thumbnail": "",
-              "url": "https://rumble.com/hls-vod/h-iZhCSOJUk/playlist.m3u8?esp=hd",
-              "quality": "Original",
-              "duration": "",
-              "added_at": "2026-11-06T08:39:39.355Z"
-            }
-          ]
-        }
-      ]
-    }
-  ]
+  "updated_at": "2026-11-06T13:49:59.865Z",
+  "anime": []
 }
