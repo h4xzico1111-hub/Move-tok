@@ -5,7 +5,7 @@ header('Pragma: no-cache');
 $GH_OWNER  = getenv('GH_OWNER') ?: 'h4xzico1111-hub';
 $GH_REPO   = getenv('GH_REPO') ?: 'Move-tok';
 $GH_BRANCH = getenv('GH_BRANCH') ?: 'main';
-$GH_PATH   = 'data/anime.json';
+$GH_PATHS  = ['data/anime.json', 'data/movie.json', 'data/hentai.json'];
 $GH_TOKEN  = getenv('GH_TOKEN') ?: '';
 $CACHE_FILE = sys_get_temp_dir() . '/catalog.cache.json';
 $CACHE_TTL  = 15;
@@ -172,13 +172,13 @@ function fetch_catalog($url, $token) {
             CURLOPT_FOLLOWLOCATION => true, CURLOPT_HTTPHEADER => $headers]);
         $out = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $GH_DEBUG = 'curl http=' . $code . ' err=' . curl_error($ch);
+        $GH_DEBUG .= 'curl[' . basename($url) . '] http=' . $code . ' err=' . curl_error($ch) . '; ';
         curl_close($ch);
         return ($out !== false && $code === 200) ? $out : null;
     }
     $ctx = stream_context_create(['http' => ['timeout' => 10, 'header' => implode("\r\n", $headers)]]);
     $out = @file_get_contents($url, false, $ctx);
-    $GH_DEBUG = 'fopen ' . ($out === false ? 'failed ' . ($http_response_header[0] ?? '') : 'ok');
+    $GH_DEBUG .= 'fopen[' . basename($url) . '] ' . ($out === false ? 'failed ' . ($http_response_header[0] ?? '') : 'ok') . '; ';
     return $out === false ? null : $out;
 }
 
@@ -187,16 +187,25 @@ if (is_file($CACHE_FILE) && (time() - filemtime($CACHE_FILE)) < $CACHE_TTL) {
     $raw = file_get_contents($CACHE_FILE);
 }
 if (!$raw) {
-    $url = 'https://raw.githubusercontent.com/' . rawurlencode($GH_OWNER) . '/' . rawurlencode($GH_REPO)
-         . '/' . rawurlencode($GH_BRANCH) . '/' . implode('/', array_map('rawurlencode', explode('/', $GH_PATH))) . '?nocache=' . time();
-    $fresh = fetch_catalog($url, $GH_TOKEN);
-    if ($fresh && json_decode($fresh) !== null) { $raw = $fresh; @file_put_contents($CACHE_FILE, $raw, LOCK_EX); }
+    $merged = ['version' => 1, 'updated_at' => date('c'), 'anime' => []];
+    $any = false;
+    foreach ($GH_PATHS as $p) {
+        $url = 'https://raw.githubusercontent.com/' . rawurlencode($GH_OWNER) . '/' . rawurlencode($GH_REPO)
+             . '/' . rawurlencode($GH_BRANCH) . '/' . implode('/', array_map('rawurlencode', explode('/', $p))) . '?nocache=' . time();
+        $fresh = fetch_catalog($url, $GH_TOKEN);
+        if ($fresh !== null && ($parsed = json_decode($fresh, true)) !== null) {
+            $any = true;
+            $list = isset($parsed['anime']) && is_array($parsed['anime']) ? $parsed['anime'] : (is_array($parsed) ? $parsed : []);
+            $merged['anime'] = array_merge($merged['anime'], $list);
+        }
+    }
+    if ($any) { $raw = json_encode($merged); @file_put_contents($CACHE_FILE, $raw, LOCK_EX); }
     elseif (is_file($CACHE_FILE)) { $raw = file_get_contents($CACHE_FILE); }
 }
 $catalog = $raw ? json_decode($raw, true) : null;
 if (isset($_GET['debug'])) {
     header('Content-Type: text/plain; charset=utf-8');
-    echo "owner  : $GH_OWNER\nrepo   : $GH_REPO\nbranch : $GH_BRANCH\npath   : $GH_PATH\n";
+    echo "owner  : $GH_OWNER\nrepo   : $GH_REPO\nbranch : $GH_BRANCH\npaths  : " . implode(', ', $GH_PATHS) . "\n";
     echo "token  : " . ($GH_TOKEN ? 'set' : 'NOT set') . "\n";
     echo "secret : " . (getenv('VIDEO_SECRET') ? 'VIDEO_SECRET set' : 'default (set VIDEO_SECRET)') . "\n";
     echo "fetch  : " . ($GH_DEBUG ?: 'cache used / not attempted') . "\n";
