@@ -1,5 +1,38 @@
 {
   "version": 1,
-  "updated_at": "2026-11-05T04:51:40.420Z",
-  "anime": []
+  "updated_at": "2026-11-06T05:12:04.270Z",
+  "anime": [
+    {
+      "id": "k-drama",
+      "slug": "k-drama",
+      "title": "K drama",
+      "poster": "https://mydverse.com/wp-content/uploads/2026/11/Alchemy-of-Souls-1536x864.webp",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "anime",
+      "popularity": 0,
+      "added_at": "2026-11-06T05:12:04.261Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://hugh.cdn.rumble.cloud/video/s8/2/u/f/g/1/ufg1k.baa.mp4",
+              "quality": "1080p",
+              "duration": "",
+              "added_at": "2026-11-06T05:12:04.269Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
