@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T16:21:52.796Z",
+  "updated_at": "2026-11-06T22:01:02.418Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -197,6 +197,56 @@
                 }
               ],
               "added_at": "2026-11-06T14:34:21.418Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ramayana-rise-of-a-legend-2026-bollywood-hindi-movie-hqcam",
+      "slug": "ramayana-rise-of-a-legend-2026-bollywood-hindi-movie-hqcam",
+      "title": "Ramayana - Rise of a Legend (2026) Bollywood Hindi Movie HQCam",
+      "poster": "https://www.ottrelease.com/wp-content/uploads/2026/02/Ramayana.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-06T22:01:02.376Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Ramayana - Rise of a Legend (2026) Bollywood Hindi Movie HQCam",
+              "thumbnail": "",
+              "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4",
+              "quality": "1080p",
+              "duration": "",
+              "sources": [
+                {
+                  "quality": "1080p",
+                  "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
+                },
+                {
+                  "quality": "720p",
+                  "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
+                },
+                {
+                  "quality": "480p",
+                  "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
+                },
+                {
+                  "quality": "360p",
+                  "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
+                }
+              ],
+              "added_at": "2026-11-06T22:01:02.402Z"
             }
           ]
         }
