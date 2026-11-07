@@ -12,11 +12,11 @@ $CACHE_TTL  = 15;
 
 // ---- Video protection ----
 // Real video links never reach the browser. The page only gets encrypted tokens (AES-256-GCM),
-// and the video is streamed by this server in small 1 MB chunks (HTTP Range) through ?v=TOKEN.
+// and the video is streamed by this server in Range chunks through ?v=TOKEN.
 $VIDEO_SECRET = getenv('VIDEO_SECRET') ?: ($GH_TOKEN ?: 'movetok-change-this-secret');
 $VKEY   = hash('sha256', $VIDEO_SECRET, true);
 $V_TTL  = 21600;     // token life: 6 hours (reloading the page gives fresh tokens)
-$V_CHUNK = 1048576;  // 1 MB per response
+$V_CHUNK = 4194304;  // 4 MB per response
 
 function mt_b64e($s) { return rtrim(strtr(base64_encode($s), '+/', '-_'), '='); }
 function mt_b64d($s) { return base64_decode(strtr($s, '-_', '+/')); }
@@ -36,15 +36,13 @@ function mt_dec($t) {
     if (!is_array($d) || empty($d['u']) || (int)($d['x'] ?? 0) < time()) return null;
     return $d['u'];
 }
-function mt_is_hls($u) { return (bool)preg_match('/\.m3u8(\?|$)/i', $u); }
+function mt_is_m3u8($u) { return (bool)preg_match('/\.m3u8(\?|$)/i', $u); }
 function mt_base() {
     $proto = !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) ? trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0])
         : ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http');
     return $proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
 }
-function mt_link($url, $ttl) {
-    return mt_base() . '?v=' . mt_enc($url, $ttl) . (mt_is_hls($url) ? '&hls=1' : '');
-}
+function mt_link($url, $ttl) { return mt_base() . '?v=' . mt_enc($url, $ttl); }
 function mt_deny($code = 403) { http_response_code($code); header('Content-Type: text/plain'); echo 'Forbidden'; exit; }
 function mt_guard() {
     $sf = $_SERVER['HTTP_SEC_FETCH_SITE'] ?? '';
@@ -56,46 +54,12 @@ function mt_guard() {
         if ($rh !== $hh) mt_deny();
     }
 }
-function mt_abs($u, $base) {
-    if (preg_match('#^https?://#i', $u)) return $u;
-    $p = parse_url($base);
-    $root = $p['scheme'] . '://' . $p['host'] . (isset($p['port']) ? ':' . $p['port'] : '');
-    if (substr($u, 0, 2) === '//') return $p['scheme'] . ':' . $u;
-    if ($u !== '' && $u[0] === '/') return $root . $u;
-    $dir = preg_replace('#/[^/]*$#', '/', $p['path'] ?? '/');
-    return $root . $dir . $u;
-}
-function mt_get($url) {
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => true, CURLOPT_MAXREDIRS => 5,
-        CURLOPT_TIMEOUT => 20, CURLOPT_HTTPHEADER => ['User-Agent: Mozilla/5.0']]);
-    $out = curl_exec($ch); $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE); curl_close($ch);
-    return ($out !== false && $code === 200) ? $out : null;
-}
-// HLS playlist: every segment / key / sub-playlist is replaced by another protected token
-function mt_playlist($url, $ttl) {
-    $raw = mt_get($url);
-    if ($raw === null) mt_deny(502);
-    $lines = preg_split('/\r?\n/', $raw);
-    foreach ($lines as $i => $ln) {
-        $t = trim($ln);
-        if ($t === '') continue;
-        if ($t[0] === '#') {
-            $lines[$i] = preg_replace_callback('/URI="([^"]+)"/', function ($m) use ($url, $ttl) {
-                return 'URI="' . mt_link(mt_abs($m[1], $url), $ttl) . '"';
-            }, $ln);
-        } else {
-            $lines[$i] = mt_link(mt_abs($t, $url), $ttl);
-        }
-    }
-    header('Content-Type: application/vnd.apple.mpegurl');
-    header('Cache-Control: no-store');
-    echo implode("\n", $lines);
-}
-// Video file: never sent whole, only as small Range chunks
+// Video file: never sent whole, only as Range chunks
 function mt_stream($url, $CH) {
     @set_time_limit(0);
+    @ini_set('zlib.output_compression', '0');
     while (ob_get_level()) ob_end_clean();
+    header('X-Accel-Buffering: no');
     $a = 0; $e = $CH - 1; $suf = 0;
     if (preg_match('/^bytes=(\d*)-(\d*)$/', trim($_SERVER['HTTP_RANGE'] ?? ''), $m)) {
         if ($m[1] !== '') {
@@ -108,8 +72,9 @@ function mt_stream($url, $CH) {
     $upRange = $suf ? 'bytes=-' . $suf : 'bytes=' . $a . '-' . $e;
     $st = 0; $hd = []; $sent = false; $mode = 0; $skip = 0; $left = $CH;
     $ch = curl_init($url);
-    curl_setopt_array($ch, [
+    $opts = [
         CURLOPT_FOLLOWLOCATION => true, CURLOPT_MAXREDIRS => 5, CURLOPT_TIMEOUT => 120, CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_BUFFERSIZE => 131072, CURLOPT_TCP_NODELAY => true,
         CURLOPT_HTTPHEADER => ['Range: ' . $upRange, 'User-Agent: Mozilla/5.0'],
         CURLOPT_HEADERFUNCTION => function ($c, $h) use (&$st, &$hd) {
             if (preg_match('#^HTTP/\S+\s+(\d+)#', $h, $mm)) { $st = (int)$mm[1]; $hd = []; }
@@ -147,7 +112,9 @@ function mt_stream($url, $CH) {
             echo $d; $left -= strlen($d); flush();
             return $left > 0 ? $n : 0;
         },
-    ]);
+    ];
+    if (defined('CURL_HTTP_VERSION_2TLS')) $opts[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_2TLS;
+    curl_setopt_array($ch, $opts);
     curl_exec($ch);
     curl_close($ch);
     if (!$sent) mt_deny(502);
@@ -156,8 +123,7 @@ function mt_stream($url, $CH) {
 if (isset($_GET['v'])) {
     mt_guard();
     $real = mt_dec((string)$_GET['v']);
-    if (!$real || !preg_match('#^https?://#i', $real)) mt_deny();
-    if (mt_is_hls($real)) { mt_playlist($real, $V_TTL); exit; }
+    if (!$real || !preg_match('#^https?://#i', $real) || mt_is_m3u8($real)) mt_deny();
     mt_stream($real, $V_CHUNK);
 }
 
@@ -213,15 +179,20 @@ if (isset($_GET['debug'])) {
     exit;
 }
 
-// Replace every real video link in the catalog with a protected token link
+// Replace every real video link in the catalog with a protected token link (m3u8 links are dropped)
 if (is_array($catalog) && isset($catalog['anime']) && is_array($catalog['anime'])) {
     foreach ($catalog['anime'] as $i => $an) {
         foreach (($an['seasons'] ?? []) as $j => $se) {
             foreach (($se['episodes'] ?? []) as $k => $ep) {
                 $r =& $catalog['anime'][$i]['seasons'][$j]['episodes'][$k];
-                if (!empty($r['url']) && is_string($r['url'])) $r['url'] = mt_link($r['url'], $V_TTL);
+                if (!empty($r['url']) && is_string($r['url'])) {
+                    $r['url'] = mt_is_m3u8($r['url']) ? '' : mt_link($r['url'], $V_TTL);
+                }
                 foreach (($r['sources'] ?? []) as $q => $x) {
-                    if (!empty($x['url']) && is_string($x['url'])) $r['sources'][$q]['url'] = mt_link($x['url'], $V_TTL);
+                    if (!empty($x['url']) && is_string($x['url'])) {
+                        if (mt_is_m3u8($x['url'])) unset($r['sources'][$q]);
+                        else $r['sources'][$q]['url'] = mt_link($x['url'], $V_TTL);
+                    }
                 }
                 unset($r);
             }
@@ -499,7 +470,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
     <span id="vTitle"></span>
   </div>
   <div class="video-box" id="vbox">
-    <video id="video" playsinline webkit-playsinline preload="metadata"></video>
+    <video id="video" playsinline webkit-playsinline preload="auto"></video>
     <div class="spinner"></div>
     <div class="center">
       <button id="rew" aria-label="Back 10 seconds"><svg class="ic"><use href="#i-rew"/></svg></button>
@@ -543,10 +514,11 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
 
 <script>
 const CATALOG = <?= json_encode($catalog, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;
-const HLS_SRC='https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js';
 
 const $=id=>document.getElementById(id);
-const LATEST_MS=3*24*60*60*1000;
+const LATEST_MS=2*24*60*60*1000;   // Latest Update: sirf 2 din
+const RECENT_MAX=5;                // Recent Watch: sirf 5
+const HERO_MAX=5;                  // Slider: sirf 5
 let infoMode=false,holdPlay=false,allItems=[],groups=[],currentFilter="all",currentGroup=null,currentEpisode=null,currentSeason=1,currentQuality="",watchOpen=false,pendingSeek=0,lastSave=0,recorded="";
 
 /* ---------- helpers ---------- */
@@ -582,13 +554,57 @@ const store={
 };
 const gkey=g=>g.type+"|"+g.title.toLowerCase();
 const kindLabel=g=>g.type==="Movie"?"Hindi Movie":g.type==="Hentai"?"Hindi Hentai":"K-Drama";
+const isHentai=g=>g.type==="Hentai";
 
-/* ---------- recent watch storage ---------- */
+/* ---------- recent watch storage (max 5, sabse purana apne aap hat jata hai; hentai save nahi hota) ---------- */
 function getRecent(){try{return JSON.parse(localStorage.getItem("zt:recent"))||[]}catch{return []}}
 function pushRecent(g,ep){
-  let r=getRecent().filter(x=>x.g!==gkey(g));
+  if(isHentai(g))return;
+  const r=getRecent().filter(x=>x.g!==gkey(g));
   r.unshift({g:gkey(g),e:ep.id,t:Date.now()});
-  try{localStorage.setItem("zt:recent",JSON.stringify(r.slice(0,12)))}catch{}
+  const keep=r.slice(0,RECENT_MAX);
+  r.slice(RECENT_MAX).forEach(x=>{store.del("zt:"+x.e);store.del("ztd:"+x.e)});
+  try{localStorage.setItem("zt:recent",JSON.stringify(keep))}catch{}
+}
+
+/* ---------- smart search ---------- */
+const SYN=[
+  ["movie","movies","film","films","picture","cinema"],
+  ["kdrama","kdramas","korean","drama","dramas","serial","series"],
+  ["hindi","dubbed","dub"],
+  ["hentai","ecchi"]
+];
+const norm=s=>String(s||"").toLowerCase().replace(/[-']/g,"").replace(/[^a-z0-9\u0900-\u097f\s]/g," ").replace(/\s+/g," ").trim();
+const synOf=t=>{const g=SYN.find(x=>x.includes(t));return g?g:[t]};
+const tolerance=t=>t.length<4?0:t.length<7?1:2;
+function lev(a,b){
+  const m=a.length,n=b.length;if(!m)return n;if(!n)return m;
+  let p=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}
+  return p[n];
+}
+function tokCost(t,g){
+  let best=Infinity;
+  for(const v of synOf(t)){
+    if(g.hay.includes(v))return 0;
+    for(const w of g.words){
+      let d=lev(v,w);
+      if(w.length>v.length)d=Math.min(d,lev(v,w.slice(0,v.length)));
+      if(d<best)best=d;
+    }
+  }
+  return best;
+}
+function searchGroups(q,pool){
+  const toks=norm(q).split(" ").filter(Boolean);
+  if(!toks.length)return{list:pool,sugg:[]};
+  const scored=pool.map(g=>{
+    const c=toks.map(t=>tokCost(t,g));
+    return{g,ok:c.every((x,i)=>x<=tolerance(toks[i])),cost:c.reduce((a,b)=>a+b,0),ratio:c.reduce((a,x,i)=>a+Math.min(1,x/toks[i].length),0)/toks.length};
+  });
+  const list=scored.filter(x=>x.ok).sort((a,b)=>a.cost-b.cost||b.g.ts-a.g.ts).map(x=>x.g);
+  const sugg=list.length?[]:scored.sort((a,b)=>a.ratio-b.ratio||b.g.ts-a.g.ts).slice(0,6).map(x=>x.g);
+  return{list,sugg};
 }
 
 /* ---------- data (from PHP catalog) ---------- */
@@ -625,7 +641,11 @@ function buildGroups(){
     g.items.push(item);
   });
   groups=[...map.values()];
-  groups.forEach(g=>{g.items.sort((a,b)=>a.season-b.season||a.episode-b.episode);g.ts=Math.max(0,...g.items.map(x=>x.ts))});
+  groups.forEach(g=>{
+    g.items.sort((a,b)=>a.season-b.season||a.episode-b.episode);
+    g.ts=Math.max(0,...g.items.map(x=>x.ts));
+    g.hay=norm(g.title+" "+kindLabel(g));g.words=g.hay.split(" ");
+  });
   groups.sort((a,b)=>b.ts-a.ts);
 }
 
@@ -666,17 +686,19 @@ function rowCard(g,item,opts){
 }
 function renderRows(){
   const searching=$("search").value.trim()!=="";
+  // Recent Watch: max 5, hentai nahi
   const rr=$("recentRow");rr.replaceChildren();
-  getRecent().forEach(r=>{
-    const g=groups.find(x=>gkey(x)===r.g);if(!g)return;
+  getRecent().slice(0,RECENT_MAX).forEach(r=>{
+    const g=groups.find(x=>gkey(x)===r.g);if(!g||isHentai(g))return;
     const item=g.items.find(x=>x.id===r.e);if(!item)return;
     const pos=store.get("zt:"+item.id),dur=store.get("ztd:"+item.id);
     rr.appendChild(rowCard(g,item,{progress:dur?pos/dur*100:0}));
   });
   $("recentSection").hidden=searching||!rr.children.length;
+  // Latest Update: sirf pichle 2 din, hentai nahi
   const lr=$("latestRow");lr.replaceChildren();
   const now=Date.now(),seen=new Set();
-  allItems.filter(x=>x.ts&&now-x.ts<LATEST_MS).sort((a,b)=>b.ts-a.ts).forEach(item=>{
+  allItems.filter(x=>x.type!=="Hentai"&&x.ts&&now-x.ts<LATEST_MS).sort((a,b)=>b.ts-a.ts).forEach(item=>{
     const g=groups.find(x=>x.items.includes(item));if(!g||seen.has(gkey(g)))return;
     seen.add(gkey(g));if(seen.size>12)return;
     lr.appendChild(rowCard(g,item,{isNew:true}));
@@ -684,18 +706,23 @@ function renderRows(){
   $("latestSection").hidden=searching||!lr.children.length;
 }
 function render(){
-  const q=$("search").value.trim().toLowerCase();
-  const list=groups.filter(g=>(currentFilter==="all"||g.type===currentFilter)&&g.title.toLowerCase().includes(q));
+  const q=$("search").value.trim();
+  // "All" me hentai nahi dikhega; hentai sirf "Hindi Hentai" filter me
+  const base=groups.filter(g=>currentFilter==="all"?!isHentai(g):g.type===currentFilter);
+  let list=base,sugg=[];
+  if(q){const r=searchGroups(q,base);list=r.list;sugg=r.sugg}
   const cat=$("catalog");cat.replaceChildren();
   $("count").textContent=list.length+(list.length===1?" title":" titles");
   if(!list.length){
     const e=document.createElement("div");e.className="empty";
-    e.textContent=allItems.length?"Nothing found.":"Nothing published yet.";cat.appendChild(e);
+    e.textContent=!allItems.length?"Nothing published yet.":q?"\""+q+"\" nahi mila."+(sugg.length?" Shayad aap ye dhundh rahe the:":""):"Nothing found.";
+    cat.appendChild(e);
+    sugg.forEach(g=>cat.appendChild(makeCard(g)));
   }else list.forEach(g=>cat.appendChild(makeCard(g)));
   renderRows();
 }
 
-/* ---------- hero ---------- */
+/* ---------- hero (sirf 5, hentai nahi) ---------- */
 let heroTimer=null,heroList=[];
 function heroGo(i){
   const s=$("slider"),n=heroList.length;if(!n)return;
@@ -710,7 +737,7 @@ function heroAuto(){
 function renderSlider(){
   const slider=$("slider"),dots=$("dots");
   slider.replaceChildren();dots.replaceChildren();
-  heroList=groups.slice(0,8);
+  heroList=groups.filter(g=>!isHentai(g)).slice(0,HERO_MAX);
   $("featuredSection").hidden=!heroList.length;
   heroList.forEach((g,i)=>{
     const slide=document.createElement("div");slide.className="hero-slide";
@@ -838,11 +865,10 @@ function goBack(){
 }
 window.addEventListener("popstate",()=>{if(watchOpen)closeWatch()});
 
-/* ---------- video player ---------- */
+/* ---------- video player (direct MP4) ---------- */
 const V=$("video"),box=$("vbox");
-let hideT,tapT,lastTap=0,drag=false,hls=null,curUrl="",hlsLoad=null;
+let hideT,tapT,lastTap=0,drag=false,curUrl="";
 
-function loadHls(){return window.Hls?Promise.resolve():hlsLoad||(hlsLoad=new Promise((res,rej)=>{const s=document.createElement("script");s.src=HLS_SRC;s.crossOrigin="anonymous";s.onload=res;s.onerror=()=>{hlsLoad=null;rej()};document.head.appendChild(s)}))}
 function showUI(){
   box.classList.remove("idle");clearTimeout(hideT);
   if(!V.paused)hideT=setTimeout(()=>{if($("menu").classList.contains("open")){showUI();return}box.classList.add("idle")},2500);
@@ -852,19 +878,10 @@ function showErr(msg){$("verr").textContent=msg;$("verr").hidden=false;box.class
 function playVideo(url,at){
   const s=safeUrl(url);if(!s||curUrl===s)return;
   curUrl=s;pendingSeek=at||0;$("verr").hidden=true;box.classList.add("loading");
-  if(hls){hls.destroy();hls=null}
-  if((/\.m3u8(\?|$)/i.test(s)||/[?&]hls=1/.test(s))&&!V.canPlayType("application/vnd.apple.mpegurl")){
-    loadHls().then(()=>{
-      if(curUrl!==s)return;
-      if(!Hls.isSupported())return showErr("HLS supported nahi hai.");
-      hls=new Hls();hls.loadSource(s);hls.attachMedia(V);
-      hls.on(Hls.Events.ERROR,(_,d)=>{if(d.fatal)showErr("Video load nahi ho paya.")});
-      if(!holdPlay)V.play().catch(()=>{});
-    }).catch(()=>showErr("Player load nahi ho paya."));
-  }else{V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{})}
+  V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});
 }
 function stopVideo(){
-  curUrl="";if(hls){hls.destroy();hls=null}
+  curUrl="";
   V.pause();V.removeAttribute("src");V.load();
   $("bar").style.width="0%";$("buf").style.width="0%";
   $("cur").textContent="0:00";$("tot").textContent="0:00";
@@ -897,7 +914,7 @@ V.addEventListener("timeupdate",()=>{
   paint();
   if(!drag&&currentEpisode&&V.currentTime>3){
     if(recorded!==currentEpisode.id){recorded=currentEpisode.id;pushRecent(currentGroup,currentEpisode)}
-    if(Date.now()-lastSave>5000){lastSave=Date.now();store.set("zt:"+currentEpisode.id,Math.floor(V.currentTime));if(V.duration)store.set("ztd:"+currentEpisode.id,Math.floor(V.duration))}
+    if(!isHentai(currentGroup)&&Date.now()-lastSave>5000){lastSave=Date.now();store.set("zt:"+currentEpisode.id,Math.floor(V.currentTime));if(V.duration)store.set("ztd:"+currentEpisode.id,Math.floor(V.duration))}
   }
 });
 V.addEventListener("loadedmetadata",()=>{
