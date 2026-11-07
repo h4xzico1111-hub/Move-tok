@@ -10,122 +10,7 @@ $GH_TOKEN  = getenv('GH_TOKEN') ?: '';
 $CACHE_FILE = sys_get_temp_dir() . '/catalog.cache.json';
 $CACHE_TTL  = 15;
 
-// ---- Video protection ----
-// Real video links never reach the browser. The page only gets encrypted tokens (AES-256-GCM),
-// and the video is streamed by this server in Range chunks through ?v=TOKEN.
-$VIDEO_SECRET = getenv('VIDEO_SECRET') ?: ($GH_TOKEN ?: 'movetok-change-this-secret');
-$VKEY   = hash('sha256', $VIDEO_SECRET, true);
-$V_TTL  = 21600;     // token life: 6 hours (reloading the page gives fresh tokens)
-$V_CHUNK = 4194304;  // 4 MB per response
-
-function mt_b64e($s) { return rtrim(strtr(base64_encode($s), '+/', '-_'), '='); }
-function mt_b64d($s) { return base64_decode(strtr($s, '-_', '+/')); }
-function mt_enc($url, $ttl) {
-    global $VKEY;
-    $iv = random_bytes(12); $tag = '';
-    $c = openssl_encrypt(json_encode(['u' => $url, 'x' => time() + $ttl]), 'aes-256-gcm', $VKEY, OPENSSL_RAW_DATA, $iv, $tag);
-    return mt_b64e($iv . $tag . $c);
-}
-function mt_dec($t) {
-    global $VKEY;
-    $b = mt_b64d($t);
-    if (strlen($b) < 30) return null;
-    $p = openssl_decrypt(substr($b, 28), 'aes-256-gcm', $VKEY, OPENSSL_RAW_DATA, substr($b, 0, 12), substr($b, 12, 16));
-    if ($p === false) return null;
-    $d = json_decode($p, true);
-    if (!is_array($d) || empty($d['u']) || (int)($d['x'] ?? 0) < time()) return null;
-    return $d['u'];
-}
 function mt_is_m3u8($u) { return (bool)preg_match('/\.m3u8(\?|$)/i', $u); }
-function mt_base() {
-    $proto = !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) ? trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0])
-        : ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http');
-    return $proto . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
-}
-function mt_link($url, $ttl) { return mt_base() . '?v=' . mt_enc($url, $ttl); }
-function mt_deny($code = 403) { http_response_code($code); header('Content-Type: text/plain'); echo 'Forbidden'; exit; }
-function mt_guard() {
-    $sf = $_SERVER['HTTP_SEC_FETCH_SITE'] ?? '';
-    if ($sf !== '' && $sf !== 'same-origin') mt_deny();
-    $rf = $_SERVER['HTTP_REFERER'] ?? '';
-    if ($rf !== '') {
-        $rh = strtolower((string)parse_url($rf, PHP_URL_HOST));
-        $hh = strtolower((string)parse_url('//' . ($_SERVER['HTTP_HOST'] ?? ''), PHP_URL_HOST));
-        if ($rh !== $hh) mt_deny();
-    }
-}
-// Video file: never sent whole, only as Range chunks
-function mt_stream($url, $CH) {
-    @set_time_limit(0);
-    @ini_set('zlib.output_compression', '0');
-    while (ob_get_level()) ob_end_clean();
-    header('X-Accel-Buffering: no');
-    $a = 0; $e = $CH - 1; $suf = 0;
-    if (preg_match('/^bytes=(\d*)-(\d*)$/', trim($_SERVER['HTTP_RANGE'] ?? ''), $m)) {
-        if ($m[1] !== '') {
-            $a = (int)$m[1]; $e = $a + $CH - 1;
-            if ($m[2] !== '' && (int)$m[2] >= $a) $e = min((int)$m[2], $e);
-        } elseif ($m[2] !== '') {
-            $suf = min((int)$m[2], $CH);
-        }
-    }
-    $upRange = $suf ? 'bytes=-' . $suf : 'bytes=' . $a . '-' . $e;
-    $st = 0; $hd = []; $sent = false; $mode = 0; $skip = 0; $left = $CH;
-    $ch = curl_init($url);
-    $opts = [
-        CURLOPT_FOLLOWLOCATION => true, CURLOPT_MAXREDIRS => 5, CURLOPT_TIMEOUT => 120, CURLOPT_CONNECTTIMEOUT => 10,
-        CURLOPT_BUFFERSIZE => 131072, CURLOPT_TCP_NODELAY => true,
-        CURLOPT_HTTPHEADER => ['Range: ' . $upRange, 'User-Agent: Mozilla/5.0'],
-        CURLOPT_HEADERFUNCTION => function ($c, $h) use (&$st, &$hd) {
-            if (preg_match('#^HTTP/\S+\s+(\d+)#', $h, $mm)) { $st = (int)$mm[1]; $hd = []; }
-            elseif (strpos($h, ':') !== false) { [$k, $v] = explode(':', $h, 2); $hd[strtolower(trim($k))] = trim($v); }
-            return strlen($h);
-        },
-        CURLOPT_WRITEFUNCTION => function ($c, $d) use (&$st, &$hd, &$sent, &$mode, &$skip, &$left, $a, $suf, $CH) {
-            if (!$sent) {
-                if ($st === 206) {
-                    $mode = 1; http_response_code(206);
-                    if (isset($hd['content-range'])) header('Content-Range: ' . $hd['content-range']);
-                    if (isset($hd['content-length'])) header('Content-Length: ' . $hd['content-length']);
-                } elseif ($st === 200) {
-                    $mode = 2; $tot = (int)($hd['content-length'] ?? 0);
-                    $skip = $suf ? max(0, $tot - $suf) : $a;
-                    $len = $tot ? max(0, min($CH, $tot - $skip)) : $CH;
-                    $left = $len; http_response_code(206);
-                    header('Content-Range: bytes ' . $skip . '-' . ($skip + $len - 1) . '/' . ($tot ?: '*'));
-                    header('Content-Length: ' . $len);
-                } else {
-                    return 0;
-                }
-                $ct = $hd['content-type'] ?? '';
-                header('Content-Type: ' . (stripos($ct, 'video/') === 0 ? $ct : 'video/mp4'));
-                header('Accept-Ranges: bytes');
-                header('Cache-Control: private, no-store');
-                header('X-Content-Type-Options: nosniff');
-                $sent = true;
-            }
-            $n = strlen($d);
-            if ($mode === 1) { echo $d; flush(); return $n; }
-            if ($skip >= $n) { $skip -= $n; return $n; }
-            if ($skip > 0) { $d = substr($d, $skip); $skip = 0; }
-            if (strlen($d) > $left) $d = substr($d, 0, $left);
-            echo $d; $left -= strlen($d); flush();
-            return $left > 0 ? $n : 0;
-        },
-    ];
-    if (defined('CURL_HTTP_VERSION_2TLS')) $opts[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_2TLS;
-    curl_setopt_array($ch, $opts);
-    curl_exec($ch);
-    curl_close($ch);
-    if (!$sent) mt_deny(502);
-    exit;
-}
-if (isset($_GET['v'])) {
-    mt_guard();
-    $real = mt_dec((string)$_GET['v']);
-    if (!$real || !preg_match('#^https?://#i', $real) || mt_is_m3u8($real)) mt_deny();
-    mt_stream($real, $V_CHUNK);
-}
 
 $GH_DEBUG = '';
 function fetch_catalog($url, $token) {
@@ -173,26 +58,20 @@ if (isset($_GET['debug'])) {
     header('Content-Type: text/plain; charset=utf-8');
     echo "owner  : $GH_OWNER\nrepo   : $GH_REPO\nbranch : $GH_BRANCH\npaths  : " . implode(', ', $GH_PATHS) . "\n";
     echo "token  : " . ($GH_TOKEN ? 'set' : 'NOT set') . "\n";
-    echo "secret : " . (getenv('VIDEO_SECRET') ? 'VIDEO_SECRET set' : 'default (set VIDEO_SECRET)') . "\n";
     echo "fetch  : " . ($GH_DEBUG ?: 'cache used / not attempted') . "\n";
     echo "catalog: " . ($catalog ? count($catalog['anime'] ?? []) . ' titles' : 'EMPTY') . "\n";
     exit;
 }
 
-// Replace every real video link in the catalog with a protected token link (m3u8 links are dropped)
+// Direct video links (m3u8 links are dropped)
 if (is_array($catalog) && isset($catalog['anime']) && is_array($catalog['anime'])) {
     foreach ($catalog['anime'] as $i => $an) {
         foreach (($an['seasons'] ?? []) as $j => $se) {
             foreach (($se['episodes'] ?? []) as $k => $ep) {
                 $r =& $catalog['anime'][$i]['seasons'][$j]['episodes'][$k];
-                if (!empty($r['url']) && is_string($r['url'])) {
-                    $r['url'] = mt_is_m3u8($r['url']) ? '' : mt_link($r['url'], $V_TTL);
-                }
+                if (!empty($r['url']) && is_string($r['url']) && mt_is_m3u8($r['url'])) $r['url'] = '';
                 foreach (($r['sources'] ?? []) as $q => $x) {
-                    if (!empty($x['url']) && is_string($x['url'])) {
-                        if (mt_is_m3u8($x['url'])) unset($r['sources'][$q]);
-                        else $r['sources'][$q]['url'] = mt_link($x['url'], $V_TTL);
-                    }
+                    if (!empty($x['url']) && is_string($x['url']) && mt_is_m3u8($x['url'])) unset($r['sources'][$q]);
                 }
                 unset($r);
             }
@@ -845,7 +724,11 @@ function loadEpisode(){
     b.onclick=()=>{currentQuality=n;playVideo(q[n],V.currentTime);markQuality();closeMenu()};
     qBox.appendChild(b);
   });
-  if(!names.includes(currentQuality))currentQuality=names[0];
+  if(!names.includes(currentQuality)){
+    const c=navigator.connection;
+    const slow=c&&(c.saveData||/2g|3g/.test(c.effectiveType||"")||(c.downlink&&c.downlink<1.5));
+    currentQuality=slow?names[names.length-1]:names[0];
+  }
   markQuality();
   playVideo(q[currentQuality],store.get("zt:"+currentEpisode.id));
   holdPlay=false;
