@@ -169,8 +169,12 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
 .center .ic{filter:drop-shadow(0 2px 6px rgba(0,0,0,.8))}
 .idle .bottom,.idle .center{opacity:0;pointer-events:none}.idle .center button{pointer-events:none}
 .loading #big{opacity:0}
-.spinner{position:absolute;top:50%;left:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:none;z-index:2}
-.loading .spinner{display:block}@keyframes spin{to{transform:rotate(360deg)}}
+.loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;display:none;flex-direction:column;align-items:center;gap:14px;pointer-events:none;width:100%;padding:0 12px}
+.loading .loader{display:flex}
+.wave{display:flex;align-items:center;justify-content:center;gap:5px;height:46px}
+.wave i{display:block;width:9px;height:28px;border-radius:6px;background:#19f5cf;box-shadow:0 0 10px rgba(25,245,207,.9),0 0 22px rgba(25,245,207,.5);transform:scaleY(.2);animation:wv 1.2s ease-in-out infinite}
+@keyframes wv{0%,100%{transform:scaleY(.2);opacity:.5}50%{transform:scaleY(1);opacity:1}}
+.lt{font-size:13px;font-weight:700;color:#e4e4e4;text-align:center;text-shadow:0 1px 6px rgba(0,0,0,.9);white-space:nowrap}
 .prog{position:relative;height:22px;display:flex;align-items:center;cursor:pointer;touch-action:none}
 .track{position:relative;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.25);transition:height .15s}
 .prog:hover .track{height:6px}
@@ -350,7 +354,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   </div>
   <div class="video-box" id="vbox">
     <video id="video" playsinline webkit-playsinline preload="auto"></video>
-    <div class="spinner"></div>
+    <div class="loader"><div class="wave" id="wave"></div><div class="lt" id="lt">Loading...</div></div>
     <div class="center">
       <button id="rew" aria-label="Back 10 seconds"><svg class="ic"><use href="#i-rew"/></svg></button>
       <button id="big" aria-label="Play/Pause"><svg class="ic"><use id="bigIc" href="#i-play"/></svg></button>
@@ -762,7 +766,42 @@ function playVideo(url,at){
   const s=safeUrl(url);if(!s||curUrl===s)return;
   curUrl=s;pendingSeek=at||0;$("verr").hidden=true;box.classList.add("loading");
   V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});
+  curSize=0;
+  fetch(s,{headers:{Range:"bytes=0-0"}}).then(r=>{const m=/\/(\d+)$/.exec(r.headers.get("content-range")||"");if(m&&curUrl===s)curSize=+m[1]}).catch(()=>{});
 }
+/* ---------- loading wave + download/buffer info ---------- */
+(function(){
+  const w=$("wave");
+  for(let i=0;i<22;i++){const b=document.createElement("i");b.style.animationDelay=(i*0.07)+"s";b.style.width=(i%4===0?11:7)+"px";w.appendChild(b)}
+})();
+let curSize=0,lastEnd=0,lastT=0,speed=0,statT=null;
+function fmtSpeed(b){return b>=1048576?(b/1048576).toFixed(2)+" MB/s":(b/1024).toFixed(2)+" KB/s"}
+function bufAhead(){
+  let e=0;for(let i=0;i<V.buffered.length;i++)if(V.buffered.start(i)<=V.currentTime+.5)e=Math.max(e,V.buffered.end(i));
+  return e;
+}
+function statTick(){
+  const end=bufAhead(),now=Date.now(),d=V.duration;
+  if(curSize&&d&&lastT){
+    const inst=Math.max(0,(end-lastEnd)/d*curSize/((now-lastT)/1000));
+    speed=speed?speed*.5+inst*.5:inst;
+  }
+  lastEnd=end;lastT=now;
+  const ahead=Math.max(0,end-V.currentTime);
+  let txt;
+  if(curSize&&d)txt="Download: "+fmtSpeed(speed)+" | Buffer: "+ahead.toFixed(1)+" s";
+  else{
+    const c=navigator.connection;
+    txt="Loading... "+(c&&c.downlink?"Net: "+c.downlink+" Mbps | ":"")+"Buffer: "+ahead.toFixed(1)+" s";
+  }
+  $("lt").textContent=txt;
+}
+new MutationObserver(()=>{
+  if(box.classList.contains("loading")){
+    if(!statT){lastEnd=0;lastT=0;speed=0;$("lt").textContent="Loading...";statT=setInterval(statTick,1000)}
+  }else if(statT){clearInterval(statT);statT=null}
+}).observe(box,{attributes:true,attributeFilter:["class"]});
+
 function stopVideo(){
   curUrl="";
   V.pause();V.removeAttribute("src");V.load();
