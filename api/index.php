@@ -1,4 +1,131 @@
 <?php
+// ===== HLS PROXY ENGINE (banned.video) =====
+const HLS_ALLOWED_HOSTS = ['banned.video'];
+function hls_headers() {
+    return [
+        'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Origin: https://banned.video', 'Referer: https://banned.video/', 'Accept: */*', 'Connection: keep-alive',
+    ];
+}
+function hls_ssl() {
+    $c = [getenv('PREFIX') ? getenv('PREFIX') . '/etc/tls/cert.pem' : '', '/etc/ssl/certs/ca-certificates.crt', '/etc/pki/tls/certs/ca-bundle.crt', '/etc/ssl/cert.pem'];
+    foreach ($c as $f) if ($f && is_file($f)) return [CURLOPT_CAINFO => $f, CURLOPT_SSL_VERIFYPEER => true];
+    return [CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => 0];
+}
+function hls_join($base, $rel) {
+    $rel = trim($rel);
+    if ($rel === '') return $base;
+    if (preg_match('#^https?://#i', $rel)) return $rel;
+    $p = parse_url($base);
+    $scheme = $p['scheme'] ?? 'https'; $host = $p['host'] ?? '';
+    $port = isset($p['port']) ? ':' . $p['port'] : '';
+    if (strpos($rel, '//') === 0) return $scheme . ':' . $rel;
+    $query = '';
+    if (($q = strpos($rel, '?')) !== false) { $query = substr($rel, $q); $rel = substr($rel, 0, $q); }
+    if ($rel === '') $path = $p['path'] ?? '/';
+    elseif ($rel[0] === '/') $path = $rel;
+    else $path = preg_replace('#/[^/]*$#', '/', $p['path'] ?? '/') . $rel;
+    $out = [];
+    foreach (explode('/', $path) as $seg) {
+        if ($seg === '.') continue;
+        if ($seg === '..') { if (count($out) > 1) array_pop($out); continue; }
+        $out[] = $seg;
+    }
+    return $scheme . '://' . $host . $port . implode('/', $out) . $query;
+}
+function hls_host_ok($url) {
+    $h = strtolower(parse_url($url, PHP_URL_HOST) ?: '');
+    foreach (HLS_ALLOWED_HOSTS as $a) if ($h === $a || substr($h, -strlen($a) - 1) === '.' . $a) return true;
+    return false;
+}
+function hls_sign($u) {
+    return hash_hmac('sha256', $u, getenv('PROXY_SECRET') ?: hash('sha256', __FILE__ . (getenv('GH_TOKEN') ?: '')));
+}
+function hls_purl($u) {
+    return $_SERVER['SCRIPT_NAME'] . '?action=proxy&url=' . rawurlencode($u) . '&sig=' . hls_sign($u);
+}
+function hls_json($a) { header('Content-Type: application/json; charset=utf-8'); echo json_encode($a); exit; }
+
+function hls_engine() {
+    $action = $_GET['action'];
+    $url = $_GET['url'] ?? '';
+    $H = hls_headers();
+    if (!preg_match('#^https?://#i', $url)) {
+        if ($action === 'qualities') hls_json(['status' => 'error', 'message' => 'No URL provided']);
+        http_response_code(400); exit('No URL');
+    }
+    if (!hls_host_ok($url) && !hash_equals(hls_sign($url), (string)($_GET['sig'] ?? ''))) {
+        if ($action === 'qualities') hls_json(['status' => 'error', 'message' => 'Host not allowed']);
+        http_response_code(403); exit('Host not allowed');
+    }
+
+    if ($action === 'qualities') {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => true, CURLOPT_HTTPHEADER => $H, CURLOPT_TIMEOUT => 15] + hls_ssl());
+        $body = curl_exec($ch); $code = curl_getinfo($ch, CURLINFO_HTTP_CODE); $err = curl_error($ch); curl_close($ch);
+        if ($body === false) hls_json(['status' => 'error', 'message' => $err]);
+        if ($code !== 200 || strpos($body, '#EXTM3U') === false) hls_json(['status' => 'error', 'message' => "Failed to fetch M3U8 (HTTP $code)"]);
+        preg_match_all('/#EXT-X-STREAM-INF:[^\n]*?RESOLUTION=\d+x(\d+)[^\n]*\n([^\n]+)/', $body, $m, PREG_SET_ORDER);
+        $links = [];
+        foreach ($m as $v) $links[] = ['quality' => $v[1] . 'p', 'url' => hls_join($url, trim($v[2]))];
+        usort($links, fn($a, $b) => (int)$b['quality'] <=> (int)$a['quality']);
+        hls_json(['status' => 'success', 'links' => $links]);
+    }
+
+    // proxy
+    if (!empty($_SERVER['HTTP_RANGE'])) $H[] = 'Range: ' . $_SERVER['HTTP_RANGE'];
+    if (preg_match('#\.m3u8$#i', parse_url($url, PHP_URL_PATH) ?: '')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => true, CURLOPT_HTTPHEADER => $H, CURLOPT_TIMEOUT => 20] + hls_ssl());
+        $c = curl_exec($ch); $err = curl_error($ch); curl_close($ch);
+        if ($c === false) { http_response_code(500); exit($err); }
+        $c = preg_replace_callback('/URI="([^"]+)"/', fn($mm) => 'URI="' . hls_purl(hls_join($url, $mm[1])) . '"', $c);
+        $lines = explode("\n", $c);
+        foreach ($lines as $i => $l) {
+            $l = trim($l);
+            $lines[$i] = ($l !== '' && $l[0] !== '#') ? hls_purl(hls_join($url, $l)) : $l;
+        }
+        header('Content-Type: application/vnd.apple.mpegurl');
+        header('Cache-Control: no-cache');
+        echo implode("\n", $lines);
+        exit;
+    }
+
+    @set_time_limit(0);
+    while (ob_get_level()) ob_end_clean();
+    $sent = false; $status = 200; $pass = [];
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_FOLLOWLOCATION => true, CURLOPT_HTTPHEADER => $H, CURLOPT_TIMEOUT => 0, CURLOPT_CONNECTTIMEOUT => 20,
+        CURLOPT_HEADERFUNCTION => function ($ch, $h) use (&$status, &$pass) {
+            $len = strlen($h);
+            if (stripos($h, 'HTTP/') === 0) { $p = explode(' ', $h); $status = isset($p[1]) ? (int)$p[1] : 200; $pass = []; }
+            else {
+                $kv = explode(':', $h, 2);
+                if (count($kv) === 2 && in_array(strtolower(trim($kv[0])), ['content-type', 'content-length', 'content-range', 'accept-ranges']))
+                    $pass[strtolower(trim($kv[0]))] = trim($kv[1]);
+            }
+            return $len;
+        },
+        CURLOPT_WRITEFUNCTION => function ($ch, $d) use (&$sent, &$status, &$pass) {
+            if (!$sent) {
+                http_response_code($status);
+                if (!isset($pass['content-type'])) $pass['content-type'] = 'video/mp4';
+                foreach ($pass as $k => $v) header("$k: $v");
+                $sent = true;
+            }
+            echo $d; flush();
+            return strlen($d);
+        },
+    ] + hls_ssl());
+    curl_exec($ch);
+    if (!$sent) { http_response_code(502); echo curl_error($ch); }
+    curl_close($ch);
+    exit;
+}
+if (isset($_GET['action']) && in_array($_GET['action'], ['proxy', 'qualities'], true)) hls_engine();
+// ===== END HLS PROXY ENGINE =====
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 // ---- CONFIG ----
@@ -384,6 +511,24 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
 <script>
 const CATALOG = <?= json_encode($catalog, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;
 
+/* ---------- HLS proxy (banned.video) ---------- */
+const PROXY_HOSTS=["banned.video"],PROXY_URL=location.pathname;
+function needProxy(u){try{const h=new URL(u).hostname;return PROXY_HOSTS.some(p=>h===p||h.endsWith("."+p))}catch{return false}}
+function viaProxy(u){return needProxy(u)?PROXY_URL+"?action=proxy&url="+encodeURIComponent(u):u}
+function expandQualities(item,q){
+  Object.values(q).filter(u=>isHls(u)&&needProxy(u)).forEach(m=>{
+    fetch(PROXY_URL+"?action=qualities&url="+encodeURIComponent(m)).then(r=>r.json()).then(d=>{
+      if(d.status!=="success"||currentEpisode!==item)return;
+      d.links.forEach(l=>{
+        if(q[l.quality])return;q[l.quality]=l.url;
+        const b=document.createElement("button");b.className="opt";b.textContent=l.quality;
+        b.onclick=()=>{currentQuality=l.quality;playVideo(l.url,V.currentTime);markQuality();closeMenu()};
+        $("qOpts").appendChild(b);
+      });markQuality();
+    }).catch(()=>{});
+  });
+}
+
 const $=id=>document.getElementById(id);
 const LATEST_MS=2*24*60*60*1000;   // Latest Update: sirf 2 din
 const RECENT_MAX=5;                // Recent Watch: sirf 5
@@ -722,6 +867,7 @@ function loadEpisode(){
     currentQuality=names.includes("Auto")?"Auto":(slow?names[names.length-1]:names[0]);
   }
   markQuality();
+  expandQualities(currentEpisode,q);
   playVideo(q[currentQuality],store.get("zt:"+currentEpisode.id));
   holdPlay=false;
 }
@@ -766,11 +912,11 @@ function playVideo(url,at){
         if(d.type===Hls.ErrorTypes.MEDIA_ERROR&&hlsRetry<3){hlsRetry++;hls.recoverMediaError();return}
         showErr("Video load nahi ho paya (HLS). Net check karo ya baad me aao.");
       });
-      hls.loadSource(s);hls.attachMedia(V);
+      hls.loadSource(viaProxy(s));hls.attachMedia(V);
       return;
     }
     if(V.canPlayType("application/vnd.apple.mpegurl")){
-      V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});return;
+      V.src=viaProxy(s);V.load();if(!holdPlay)V.play().catch(()=>{});return;
     }
     showErr("Is browser me HLS (m3u8) support nahi hai.");return;
   }
