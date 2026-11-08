@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T04:14:08.136Z",
+  "updated_at": "2026-11-08T08:56:55.559Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -247,6 +247,39 @@
                 }
               ],
               "added_at": "2026-11-06T22:01:02.402Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raid2-hindi-bollywood-movie",
+      "slug": "raid2-hindi-bollywood-movie",
+      "title": "RAID2 Hindi Bollywood Movie",
+      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSF0pnBTlReO4RsE_2D5HaIiIsqZTHYm7k5NA3LpkP2cA&s=10",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-08T08:56:55.551Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "RAID2 Hindi Bollywood Movie",
+              "thumbnail": "",
+              "url": "https://rumble.com/hls-vod/8XVJxWQcafY/playlist.m3u8",
+              "quality": "Original",
+              "duration": "",
+              "format": "m3u8",
+              "added_at": "2026-11-08T08:56:55.556Z"
             }
           ]
         }
