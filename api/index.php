@@ -10,8 +10,6 @@ $GH_TOKEN  = getenv('GH_TOKEN') ?: '';
 $CACHE_FILE = sys_get_temp_dir() . '/catalog.cache.json';
 $CACHE_TTL  = 15;
 
-function mt_is_m3u8($u) { return (bool)preg_match('/\.m3u8(\?|$)/i', $u); }
-
 $GH_DEBUG = '';
 function fetch_catalog($url, $token) {
     global $GH_DEBUG;
@@ -62,22 +60,7 @@ if (isset($_GET['debug'])) {
     echo "catalog: " . ($catalog ? count($catalog['anime'] ?? []) . ' titles' : 'EMPTY') . "\n";
     exit;
 }
-
-// Direct video links (m3u8 links are dropped)
-if (is_array($catalog) && isset($catalog['anime']) && is_array($catalog['anime'])) {
-    foreach ($catalog['anime'] as $i => $an) {
-        foreach (($an['seasons'] ?? []) as $j => $se) {
-            foreach (($se['episodes'] ?? []) as $k => $ep) {
-                $r =& $catalog['anime'][$i]['seasons'][$j]['episodes'][$k];
-                if (!empty($r['url']) && is_string($r['url']) && mt_is_m3u8($r['url'])) $r['url'] = '';
-                foreach (($r['sources'] ?? []) as $q => $x) {
-                    if (!empty($x['url']) && is_string($x['url']) && mt_is_m3u8($x['url'])) unset($r['sources'][$q]);
-                }
-                unset($r);
-            }
-        }
-    }
-}
+// NOTE: m3u8 (HLS) links are now kept. The page plays them with hls.js.
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -396,6 +379,8 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   </div>
 </section>
 
+<!-- HLS (m3u8) support: loaded from cdnjs, pinned version -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.17/hls.min.js"></script>
 <script>
 const CATALOG = <?= json_encode($catalog, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;
 
@@ -722,7 +707,8 @@ function loadEpisode(){
   const qBox=$("qOpts");qBox.replaceChildren();closeMenu();
   if(!currentEpisode){stopVideo();showErr("No episodes available.");return}
   const q=getQualities(currentEpisode);
-  const names=Object.keys(q).sort((a,b)=>(parseInt(b)||0)-(parseInt(a)||0));
+  // "Auto" (HLS master link) sabse upar, baaki 1080p, 720p... ke order me
+  const names=Object.keys(q).sort((a,b)=>a==="Auto"?-1:b==="Auto"?1:(parseInt(b)||0)-(parseInt(a)||0));
   if(!names.length){stopVideo();showErr("Video link not available.");return}
   names.forEach(n=>{
     const b=document.createElement("button");b.className="opt";b.textContent=n;
@@ -732,7 +718,8 @@ function loadEpisode(){
   if(!names.includes(currentQuality)){
     const c=navigator.connection;
     const slow=c&&(c.saveData||/2g|3g/.test(c.effectiveType||"")||(c.downlink&&c.downlink<1.5));
-    currentQuality=slow?names[names.length-1]:names[0];
+    // "Auto" HLS khud quality badalta hai, isliye wo hamesha pehli choice
+    currentQuality=names.includes("Auto")?"Auto":(slow?names[names.length-1]:names[0]);
   }
   markQuality();
   playVideo(q[currentQuality],store.get("zt:"+currentEpisode.id));
@@ -753,9 +740,9 @@ function goBack(){
 }
 window.addEventListener("popstate",()=>{if(watchOpen)closeWatch()});
 
-/* ---------- video player (direct MP4) ---------- */
+/* ---------- video player (MP4 + HLS m3u8) ---------- */
 const V=$("video"),box=$("vbox");
-let hideT,tapT,lastTap=0,drag=false,curUrl="";
+let hideT,tapT,lastTap=0,drag=false,curUrl="",hls=null,hlsRetry=0;
 
 function showUI(){
   box.classList.remove("idle");clearTimeout(hideT);
@@ -763,9 +750,30 @@ function showUI(){
 }
 function closeMenu(){$("menu").classList.remove("open")}
 function showErr(msg){$("verr").textContent=msg;$("verr").hidden=false;box.classList.remove("loading")}
+const isHls=u=>/\.m3u8(\?|$)/i.test(u||"");
+function destroyHls(){if(hls){try{hls.destroy()}catch{}hls=null}hlsRetry=0}
 function playVideo(url,at){
   const s=safeUrl(url);if(!s||curUrl===s)return;
   curUrl=s;pendingSeek=at||0;$("verr").hidden=true;box.classList.add("loading");
+  destroyHls();
+  if(isHls(s)){
+    if(window.Hls&&Hls.isSupported()){
+      hls=new Hls({maxBufferLength:30,startPosition:pendingSeek>1?pendingSeek:-1});
+      hls.on(Hls.Events.MANIFEST_PARSED,()=>{if(!holdPlay)V.play().catch(()=>{})});
+      hls.on(Hls.Events.ERROR,(ev,d)=>{
+        if(!d||!d.fatal)return;
+        if(d.type===Hls.ErrorTypes.NETWORK_ERROR&&hlsRetry<3){hlsRetry++;hls.startLoad();return}
+        if(d.type===Hls.ErrorTypes.MEDIA_ERROR&&hlsRetry<3){hlsRetry++;hls.recoverMediaError();return}
+        showErr("Video load nahi ho paya (HLS). Net check karo ya baad me aao.");
+      });
+      hls.loadSource(s);hls.attachMedia(V);
+      return;
+    }
+    if(V.canPlayType("application/vnd.apple.mpegurl")){
+      V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});return;
+    }
+    showErr("Is browser me HLS (m3u8) support nahi hai.");return;
+  }
   V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});
 }
 /* ---------- loading wave + buffer info ---------- */
@@ -791,7 +799,7 @@ new MutationObserver(()=>{
 }).observe(box,{attributes:true,attributeFilter:["class"]});
 
 function stopVideo(){
-  curUrl="";
+  curUrl="";destroyHls();
   V.pause();V.removeAttribute("src");V.load();
   $("bar").style.width="0%";$("buf").style.width="0%";
   $("cur").textContent="0:00";$("tot").textContent="0:00";
@@ -838,7 +846,7 @@ V.addEventListener("progress",()=>{
 });
 ["waiting","seeking","loadstart"].forEach(ev=>V.addEventListener(ev,()=>box.classList.add("loading")));
 ["playing","canplay","seeked","loadeddata","loadedmetadata"].forEach(ev=>V.addEventListener(ev,()=>box.classList.remove("loading")));
-V.addEventListener("error",()=>{if(V.getAttribute("src"))showErr("Video load nahi ho paya. Dusri quality try karo ya baad me aao.")});
+V.addEventListener("error",()=>{if(!hls&&V.getAttribute("src"))showErr("Video load nahi ho paya. Dusri quality try karo ya baad me aao.")});
 V.addEventListener("ended",()=>{
   if(currentEpisode){store.del("zt:"+currentEpisode.id);store.del("ztd:"+currentEpisode.id)}
   const n=nextItem();if(n)selectEpisode(n);else showUI();
