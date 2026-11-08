@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T08:33:24.376Z",
+  "updated_at": "2026-11-08T08:46:34.441Z",
   "anime": [
     {
       "id": "overflow-hindi",
@@ -151,39 +151,6 @@
                 }
               ],
               "added_at": "2026-11-06T23:00:55.507Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "f",
-      "slug": "f",
-      "title": "F",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNOqgdVJcVbaz3MwvdGWbyjKZq1NmqbBmMzD8_aeDwdg&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "ongoing",
-      "featured": false,
-      "category": "hentai",
-      "popularity": 0,
-      "added_at": "2026-11-08T08:33:24.364Z",
-      "seasons": [
-        {
-          "number": 1,
-          "title": "Season 1",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Episode 1",
-              "thumbnail": "",
-              "url": "https://rumble.com/hls-vod/zgx0JwGjDKk/playlist.m3u8",
-              "quality": "Auto",
-              "duration": "",
-              "format": "m3u8",
-              "added_at": "2026-11-08T08:33:24.371Z"
             }
           ]
         }
