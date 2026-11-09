@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-09T18:03:49.049Z",
+  "updated_at": "2026-11-09T19:05:59.626Z",
   "anime": [
     {
       "id": "overflow-hindi",
@@ -134,6 +134,39 @@
                 }
               ],
               "added_at": "2026-11-06T23:00:55.507Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mistreated-bride-english-subbed",
+      "slug": "mistreated-bride-english-subbed",
+      "title": "Mistreated Bride (English Subbed)",
+      "poster": "https://imgs.search.brave.com/dh60oSGQ_47YWklFRmReYxPIaklbs3g0GMJwJTP5yMM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pYy12/dC1uc3MueGhjZG4u/Y29tL2EvTVRRMVpU/QmhaalZqWVdRNU5t/WXpZV0kxWmpZMk0y/Wm1OalJtWlRsbFky/WS9zKHc6MTI4MCxo/OjcyMCksanBlZy8w/MjcvMDgyLzA3My92/Mi8xMjgweDcyMC4y/MjQuanBn",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "hentai",
+      "popularity": 0,
+      "added_at": "2026-11-09T19:05:59.605Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://rumble.com/hls-vod/DogTwt_eB4c/playlist.m3u8",
+              "quality": "Auto",
+              "duration": "",
+              "format": "m3u8",
+              "added_at": "2026-11-09T19:05:59.620Z"
             }
           ]
         }
