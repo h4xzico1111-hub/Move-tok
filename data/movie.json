@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-09T03:41:07.546Z",
+  "updated_at": "2026-11-09T03:43:27.913Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -323,6 +323,49 @@
                 }
               ],
               "added_at": "2026-11-09T03:41:07.534Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "badnaam-2025-full-movie-in-punjabi-hd",
+      "slug": "badnaam-2025-full-movie-in-punjabi-hd",
+      "title": "Badnaam (2025) Full Movie in Punjabi | HD",
+      "poster": "https://in.bmscdn.com/events/moviecard/ET00424106.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-09T03:43:27.898Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Badnaam (2025) Full Movie in Punjabi | HD",
+              "thumbnail": "",
+              "url": "https://hugh.cdn.rumble.cloud/video/fww1/2b/s8/2/e/D/D/t/eDDty.caa.mp4",
+              "quality": "720p",
+              "duration": "",
+              "format": "mp4",
+              "sources": [
+                {
+                  "quality": "720p",
+                  "url": "https://hugh.cdn.rumble.cloud/video/fww1/2b/s8/2/e/D/D/t/eDDty.caa.mp4"
+                },
+                {
+                  "quality": "480p",
+                  "url": "https://hugh.cdn.rumble.cloud/video/fww1/2b/s8/2/e/D/D/t/eDDty.oaa.mp4"
+                }
+              ],
+              "added_at": "2026-11-09T03:43:27.902Z"
             }
           ]
         }
