@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T08:56:55.559Z",
+  "updated_at": "2026-11-09T03:41:07.546Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -280,6 +280,49 @@
               "duration": "",
               "format": "m3u8",
               "added_at": "2026-11-08T08:56:55.556Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kudumbasthan-2025-full-movie-in-hindi",
+      "slug": "kudumbasthan-2025-full-movie-in-hindi",
+      "title": "Kudumbasthan (2025) Full Movie in Hindi",
+      "poster": "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/kudumbasthan-et00429890-1737524358.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-09T03:41:07.521Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Kudumbasthan (2025) Full Movie in Hindi",
+              "thumbnail": "",
+              "url": "https://hugh.cdn.rumble.cloud/video/fww1/c7/s8/2/g/U/F/t/gUFty.caa.mp4",
+              "quality": "480p",
+              "duration": "",
+              "format": "mp4",
+              "sources": [
+                {
+                  "quality": "480p",
+                  "url": "https://hugh.cdn.rumble.cloud/video/fww1/c7/s8/2/g/U/F/t/gUFty.caa.mp4"
+                },
+                {
+                  "quality": "360p",
+                  "url": "https://hugh.cdn.rumble.cloud/video/fww1/c7/s8/2/g/U/F/t/gUFty.oaa.mp4"
+                }
+              ],
+              "added_at": "2026-11-09T03:41:07.534Z"
             }
           ]
         }
