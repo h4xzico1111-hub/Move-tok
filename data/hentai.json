@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-09T19:05:59.626Z",
+  "updated_at": "2026-11-09T19:07:28.079Z",
   "anime": [
     {
       "id": "overflow-hindi",
@@ -167,6 +167,16 @@
               "duration": "",
               "format": "m3u8",
               "added_at": "2026-11-09T19:05:59.620Z"
+            },
+            {
+              "number": 2,
+              "title": "Episode 2",
+              "thumbnail": "",
+              "url": "https://rumble.com/hls-vod/TYCHaTXkwLY/playlist.m3u8",
+              "quality": "Auto",
+              "duration": "",
+              "format": "m3u8",
+              "added_at": "2026-11-09T19:07:28.062Z"
             }
           ]
         }
