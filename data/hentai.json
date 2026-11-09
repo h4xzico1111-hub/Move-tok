@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T08:46:34.441Z",
+  "updated_at": "2026-11-09T18:03:49.049Z",
   "anime": [
     {
       "id": "overflow-hindi",
@@ -79,27 +79,10 @@
               "number": 5,
               "title": "Episode 5",
               "thumbnail": "",
-              "url": "https://archive.org/download/s-01-ep-05-overflow-hindi/%5BS01%5D%20EP05%20-%20Overflow%20%5BHindi%5D%20%281080p%29%20.mp4",
-              "quality": "1080p",
+              "url": "https://rumble.com/hls-vod/c2I7lO0f4CQ/playlist.m3u8",
+              "quality": "Auto",
               "duration": "",
-              "sources": [
-                {
-                  "quality": "1080p",
-                  "url": "https://archive.org/download/s-01-ep-05-overflow-hindi/%5BS01%5D%20EP05%20-%20Overflow%20%5BHindi%5D%20%281080p%29%20.mp4"
-                },
-                {
-                  "quality": "720p",
-                  "url": "https://archive.org/download/s-01-ep-05-overflow-hindi/%5BS01%5D%20EP05%20-%20Overflow%20%5BHindi%5D%20%281080p%29%20.mp4"
-                },
-                {
-                  "quality": "480p",
-                  "url": "https://archive.org/download/s-01-ep-05-overflow-hindi/%5BS01%5D%20EP05%20-%20Overflow%20%5BHindi%5D%20%281080p%29%20.mp4"
-                },
-                {
-                  "quality": "360p",
-                  "url": "https://archive.org/download/s-01-ep-05-overflow-hindi/%5BS01%5D%20EP05%20-%20Overflow%20%5BHindi%5D%20%281080p%29%20.mp4"
-                }
-              ],
+              "format": "m3u8",
               "added_at": "2026-11-07T15:10:00.537Z"
             }
           ]
