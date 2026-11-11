@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T08:57:14.399Z",
+  "updated_at": "2026-11-11T02:44:55.090Z",
   "anime": [
     {
       "id": "our-sticky-love-episode-1-hindi-dubbed-full-latest-k-drama",
@@ -317,6 +317,49 @@
                 }
               ],
               "added_at": "2026-11-06T14:25:24.357Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "my-dear-brother-episode-1-hindi-dubbed",
+      "slug": "my-dear-brother-episode-1-hindi-dubbed",
+      "title": "My Dear Brother episode 1 Hindi dubbed",
+      "poster": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhMRIZ1HrbMPwxbzWULQJPzpY_2ZrP1JzlhoBLjbcNS1-ZAo3ZccMqcAhvQsPSjM5rcMXfcxhQSgFGEpYXAtWttNiC58AtIStLM3RWC_XxT3IR5zEeybKLidfnVLj9d_zFpdpMjOluBJok/w1200-h630-p-k-no-nu/IMG_5652.JPG",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "anime",
+      "popularity": 0,
+      "added_at": "2026-11-11T02:44:55.078Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://hugh.cdn.rumble.cloud/video/s8/2/m/j/H/6/mjH6t.caa.mp4",
+              "quality": "480p",
+              "duration": "",
+              "format": "mp4",
+              "sources": [
+                {
+                  "quality": "480p",
+                  "url": "https://hugh.cdn.rumble.cloud/video/s8/2/m/j/H/6/mjH6t.caa.mp4"
+                },
+                {
+                  "quality": "360p",
+                  "url": "https://hugh.cdn.rumble.cloud/video/s8/2/m/j/H/6/mjH6t.oaa.mp4"
+                }
+              ],
+              "added_at": "2026-11-11T02:44:55.086Z"
             }
           ]
         }
