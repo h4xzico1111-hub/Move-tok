@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-10T01:29:51.925Z",
+  "updated_at": "2026-11-11T02:23:42.051Z",
   "anime": [
     {
       "id": "overflow-hindi",
@@ -112,27 +112,10 @@
               "number": 1,
               "title": "Episode 1",
               "thumbnail": "",
-              "url": "https://seed167b.bitchute.com/goFeiceMbQ4K/7WAgxlX45rGz.mp4",
-              "quality": "1080p",
+              "url": "https://rumble.com/hls-vod/hetfainthX8/playlist.m3u8",
+              "quality": "Auto",
               "duration": "",
-              "sources": [
-                {
-                  "quality": "1080p",
-                  "url": "https://seed167b.bitchute.com/goFeiceMbQ4K/7WAgxlX45rGz.mp4"
-                },
-                {
-                  "quality": "720p",
-                  "url": "https://seed167b.bitchute.com/goFeiceMbQ4K/7WAgxlX45rGz.mp4"
-                },
-                {
-                  "quality": "480p",
-                  "url": "https://seed167b.bitchute.com/goFeiceMbQ4K/7WAgxlX45rGz.mp4"
-                },
-                {
-                  "quality": "360p",
-                  "url": "https://seed167b.bitchute.com/goFeiceMbQ4K/7WAgxlX45rGz.mp4"
-                }
-              ],
+              "format": "m3u8",
               "added_at": "2026-11-06T23:00:55.507Z"
             }
           ]
