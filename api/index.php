@@ -207,9 +207,32 @@ function blk_catalog($existing) {
 
 /* ---------- LIKE / DISLIKE (single temp file, koi folder nahi banta) ---------- */
 $VOTE_FILE = sys_get_temp_dir() . '/mt.votes.json';
+$RD_URL = getenv('UPSTASH_REDIS_REST_URL') ?: (getenv('KV_REST_API_URL') ?: '');
+$RD_TOK = getenv('UPSTASH_REDIS_REST_TOKEN') ?: (getenv('KV_REST_API_TOKEN') ?: '');
+function rd($cmds) {
+    global $RD_URL, $RD_TOK;
+    if (!$RD_URL || !$RD_TOK) return null;
+    $ch = curl_init(rtrim($RD_URL, '/') . '/pipeline');
+    curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 4, CURLOPT_CONNECTTIMEOUT => 3,
+        CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $RD_TOK, 'Content-Type: application/json'],
+        CURLOPT_POSTFIELDS => json_encode($cmds)]);
+    $out = curl_exec($ch); $code = curl_getinfo($ch, CURLINFO_HTTP_CODE); curl_close($ch);
+    $j = $out ? json_decode($out, true) : null;
+    return ($code === 200 && is_array($j)) ? array_map(fn($x) => $x['result'] ?? null, $j) : null;
+}
 function vote_key($k) { return substr(md5(strtolower(trim((string)$k))), 0, 16); }
 function votes_load() {
     global $VOTE_FILE;
+    $res = rd([['HGETALL', 'mt:votes']]);
+    if ($res && is_array($res[0] ?? null)) {
+        $flat = $res[0]; $out = [];
+        for ($i = 0; $i + 1 < count($flat); $i += 2) {
+            [$vk, $f] = array_pad(explode(':', (string)$flat[$i], 2), 2, '');
+            if ($f === 'l' || $f === 'd') $out[$vk][$f] = max(0, (int)$flat[$i + 1]);
+        }
+        foreach ($out as $vk => $e) $out[$vk] = ['l' => $e['l'] ?? 0, 'd' => $e['d'] ?? 0];
+        return $out;
+    }
     $d = is_file($VOTE_FILE) ? json_decode((string)@file_get_contents($VOTE_FILE), true) : null;
     return is_array($d) ? $d : [];
 }
@@ -217,6 +240,21 @@ $__act0 = $_GET['action'] ?? '';
 if ($__act0 === 'vote' || $__act0 === 'votes') {
     header('Content-Type: application/json; charset=utf-8');
     $k = vote_key($_REQUEST['k'] ?? '');
+    if ($RD_URL && $RD_TOK) {
+        $cmds = [];
+        if ($__act0 === 'vote' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+            $okv = ['like', 'dislike', 'none'];
+            $v = in_array($_POST['v'] ?? '', $okv, true) ? $_POST['v'] : 'none';
+            $p = in_array($_POST['p'] ?? '', $okv, true) ? $_POST['p'] : 'none';
+            if ($p === 'like')    $cmds[] = ['HINCRBY', 'mt:votes', $k . ':l', -1];
+            if ($p === 'dislike') $cmds[] = ['HINCRBY', 'mt:votes', $k . ':d', -1];
+            if ($v === 'like')    $cmds[] = ['HINCRBY', 'mt:votes', $k . ':l', 1];
+            if ($v === 'dislike') $cmds[] = ['HINCRBY', 'mt:votes', $k . ':d', 1];
+        }
+        $cmds[] = ['HMGET', 'mt:votes', $k . ':l', $k . ':d'];
+        $res = rd($cmds);
+        if ($res) { $g = end($res); echo jEnc(['ok' => true, 'l' => max(0, (int)($g[0] ?? 0)), 'd' => max(0, (int)($g[1] ?? 0))]); exit; }
+    }
     $fh = @fopen($VOTE_FILE, 'c+');
     if (!$fh) { echo jEnc(['ok' => false]); exit; }
     flock($fh, LOCK_EX);
@@ -443,7 +481,7 @@ if (isset($_GET['debug'])) {
 }  
 $VOTES_MAP = [];
 if (is_array($catalog) && isset($catalog['anime']) && is_array($catalog['anime'])) {
-    $__v = votes_load();
+    $__v = [];
     foreach ($catalog['anime'] as &$__a) {
         if (!is_array($__a) || empty($__a['title'])) continue;
         $__c = $__a['category'] ?? '';
@@ -667,9 +705,7 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
 /* ---------- extra: filter bar under search ---------- */
 .fbar{max-width:1176px;margin:10px auto 0;padding:0 12px;display:flex;flex-direction:column;gap:8px}
 .fbar .filters{padding:2px 2px 4px}
-.sortsel{align-self:flex-start;padding:9px 14px;border-radius:30px;background:rgba(255,255,255,.07);border:1px solid var(--stroke);color:#fff;font-weight:800;font-size:13px;outline:none}
-.sortsel option{background:#12121c;color:#fff}
-@media(min-width:650px){.fbar{flex-direction:row;align-items:center}.fbar .filters{flex:1;min-width:0}.sortsel{align-self:center}}
+@media(min-width:650px){.fbar{flex-direction:row;align-items:center}.fbar .filters{flex:1;min-width:0}}
 /* ---------- extra: top rated slider ---------- */
 .toptrack{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 2px 10px;-webkit-overflow-scrolling:touch}
 .toptrack::-webkit-scrollbar{display:none}
@@ -691,11 +727,28 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
 /* ---------- extra: footer + sr-only ---------- */
 .foot{max-width:1176px;margin:10px auto 0;padding:18px 14px calc(26px + env(safe-area-inset-bottom));text-align:center;color:#fff;font-size:13px;font-weight:700;border-top:1px solid var(--stroke)}
 .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+/* ---------- comments ---------- */
+#commentSection{padding:0 14px 14px;margin-bottom:14px;border-radius:22px;background:var(--glass);border:1px solid var(--stroke)}
+.cm-form{display:flex;flex-direction:column;gap:10px}
+.cm-form input,.cm-form textarea{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--stroke);background:rgba(255,255,255,.07);color:#fff;font-size:15px;font-weight:600;outline:none;resize:vertical}
+.cm-form input::placeholder,.cm-form textarea::placeholder{color:#fff;opacity:1}
+.cm-form input:focus,.cm-form textarea:focus{border-color:var(--red)}
+.cm-form .hbtn{flex:none;align-self:flex-start;padding:10px 26px}
+.cm-form .hbtn:disabled{opacity:.6}
+.cm-err{color:#fff;font-size:13px;font-weight:700;min-height:0}
+.cm-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.cm-item{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid var(--stroke)}
+.cm-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.cm-top b{font-size:14px;color:#fff;overflow-wrap:anywhere}
+.cm-top span{font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
+.cm-text{margin:6px 0 0;font-size:14px;line-height:1.45;color:#fff;overflow-wrap:anywhere;white-space:pre-wrap}
+.cm-empty{padding:10px 0;text-align:center;color:#fff;font-weight:700}
 </style>  
 </head>  
 <body>  
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">  
   <symbol id="i-like" viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>  
   <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></symbol>  
   <symbol id="i-info" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>  
@@ -730,7 +783,6 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
     <button class="filter" data-filter="Movie">Hindi Movies</button>  
     <button class="filter" data-filter="Hentai">Hindi Hentai</button>  
   </div>
-  <select id="sortSel" class="sortsel" aria-label="Sort by"><option value="new">Newest</option><option value="old">Oldest</option><option value="az">A - Z</option><option value="top">Top Rated</option></select>
 </nav>  <main>
   <h1 class="sr-only">Move Tok - Watch Hindi Movies, K-Dramas &amp; Anime Online</h1>  
   <section id="featuredSection" hidden>  
@@ -797,10 +849,22 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
         </div>  
       </div>  
       <section id="seasonSection"><h2><svg><use href="#i-list"/></svg> Seasons</h2><div id="seasonButtons" class="seasons"></div></section>  
-      <section id="episodeSection"><h2><svg><use href="#i-playlist"/></svg> Episodes</h2><div id="episodeButtons" class="episodes"></div></section>  
+      <section id="episodeSection"><h2><svg><use href="#i-playlist"/></svg> Episodes</h2><div id="episodeButtons" class="episodes"></div></section>
+      <section id="commentSection">
+        <h2><svg><use href="#i-chat"/></svg> Comments (<span id="cmCount">0</span>)</h2>
+        <div class="cm-form">
+          <input id="cmName" type="text" maxlength="30" placeholder="Apna naam likho" autocomplete="nickname">
+          <textarea id="cmText" maxlength="500" rows="3" placeholder="Apna comment likho..."></textarea>
+          <div id="cmErr" class="cm-err"></div>
+          <button id="cmPost" class="hbtn play" type="button">Post Comment</button>
+        </div>
+        <div id="cmList" class="cm-list"></div>
+      </section>  
     </div>  
   </div>  
-</section>  <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>  <script>  
+</section>  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>  <script>  
 const VOTES = <?= json_encode((object)$VOTES_MAP) ?>;
 const CATALOG = <?= json_encode($catalog, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;  
   
@@ -808,7 +872,7 @@ const $=id=>document.getElementById(id);
 const LATEST_MS=2*24*60*60*1000;   // Latest Update: sirf 2 din  
 const RECENT_MAX=5;                // Recent Watch: sirf 5  
 const HERO_MAX=5;                  // Slider: sirf 5  
-let currentSort="new",infoMode=false,holdPlay=false,allItems=[],groups=[],currentFilter="all",currentGroup=null,currentEpisode=null,currentSeason=1,currentQuality="",watchOpen=false,pendingSeek=0,lastSave=0,recorded="";  
+let infoMode=false,holdPlay=false,allItems=[],groups=[],currentFilter="all",currentGroup=null,currentEpisode=null,currentSeason=1,currentQuality="",watchOpen=false,pendingSeek=0,lastSave=0,recorded="";  
   
 /* ---------- helpers ---------- */  
 function safeUrl(v){  
@@ -846,13 +910,26 @@ const kindLabel=g=>g.type==="Movie"?"Hindi Movie":g.type==="Hentai"?"Hindi Henta
 const isHentai=g=>g.type==="Hentai";  
   
 /* ---------- recent watch storage (max 5, sabse purana apne aap hat jata hai; hentai save nahi hota) ---------- */  
-function getRecent(){try{return JSON.parse(localStorage.getItem("zt:recent"))||[]}catch{return []}}  
+const WEEK_MS=7*24*60*60*1000;
+function getRecent(){
+  let r;try{r=JSON.parse(localStorage.getItem("zt:recent"))||[]}catch{r=[]}
+  if(!r.length)return r;
+  let ws=store.get("zt:wk");
+  if(!ws){ws=Math.min(...r.map(x=>x.t||Date.now()));store.set("zt:wk",ws)}
+  if(Date.now()-ws>=WEEK_MS){
+    r.forEach(x=>{store.del("zt:"+x.e);store.del("ztd:"+x.e)});
+    try{localStorage.setItem("zt:recent","[]")}catch{}
+    store.del("zt:wk");return [];
+  }
+  return r;
+}  
 function pushRecent(g,ep){  
   if(isHentai(g))return;  
-  const r=getRecent().filter(x=>x.g!==gkey(g));  
+  const cur=getRecent();if(!cur.length)store.set("zt:wk",Date.now());
+  const r=cur.filter(x=>x.g!==gkey(g));  
   r.unshift({g:gkey(g),e:ep.id,t:Date.now()});  
-  const keep=r.slice(0,RECENT_MAX);  
-  r.slice(RECENT_MAX).forEach(x=>{store.del("zt:"+x.e);store.del("ztd:"+x.e)});  
+  const keep=r;  
+    
   try{localStorage.setItem("zt:recent",JSON.stringify(keep))}catch{}  
 }  
   
@@ -977,7 +1054,7 @@ function voteScore(g){const v=VOTES[g.vk]||[0,0];return v[0]-v[1]}
 function topCmp(a,b){return (b.rating||0)-(a.rating||0)||voteScore(b)-voteScore(a)||b.ts-a.ts}
 function renderTop(searching){
   const row=$("topRow"),keep=row.scrollLeft;row.replaceChildren();
-  const list=groups.filter(g=>g.type==="Anime").sort(topCmp).slice(0,10);
+  const list=groups.filter(g=>g.type==="Anime").sort(topCmp).slice(0,100);
   list.forEach((g,i)=>{
     const sl=document.createElement("article");sl.className="tslide";
     const media=document.createElement("div");media.className="hero-media";addPoster(media,g.poster,g.title);
@@ -999,13 +1076,13 @@ function renderRows(){
   const searching=$("search").value.trim()!=="";  
   // Recent Watch: max 5, hentai nahi  
   const rr=$("recentRow");rr.replaceChildren();  
-  getRecent().slice(0,RECENT_MAX).forEach(r=>{  
+  getRecent().forEach(r=>{  
     const g=groups.find(x=>gkey(x)===r.g);if(!g||isHentai(g))return;  
     const item=g.items.find(x=>x.id===r.e);if(!item)return;  
     const pos=store.get("zt:"+item.id),dur=store.get("ztd:"+item.id);  
     rr.appendChild(rowCard(g,item,{progress:dur?pos/dur*100:0}));  
   });  
-  $("recentSection").hidden=searching||!rr.children.length;  
+  $("recentSection").hidden=searching||currentFilter==="Hentai"||!rr.children.length;  
   // Latest Update: sirf pichle 2 din, hentai nahi  
   const lr=$("latestRow");lr.replaceChildren();  
   const now=Date.now(),cand=[];  
@@ -1016,7 +1093,7 @@ function renderRows(){
     if(best)cand.push([g,best]);  
   });  
   cand.sort((a,b)=>b[1].ts-a[1].ts).slice(0,20).forEach(c=>lr.appendChild(rowCard(c[0],c[1],{isNew:true})));  
-  $("latestSection").hidden=searching||!lr.children.length;
+  $("latestSection").hidden=searching||currentFilter==="Hentai"||!lr.children.length;
   renderTop(searching);  
 }  
 function render(){  
@@ -1024,10 +1101,7 @@ function render(){
   // "All" me hentai nahi dikhega; hentai sirf "Hindi Hentai" filter me  
   const base=groups.filter(g=>currentFilter==="all"?!isHentai(g):g.type===currentFilter);  
   let list=base,sugg=[];  
-  if(q){const r=searchGroups(q,base);list=r.list;sugg=r.sugg}
-  else if(currentSort==="old")list=[...base].sort((a,b)=>a.ts-b.ts);
-  else if(currentSort==="az")list=[...base].sort((a,b)=>a.title.localeCompare(b.title));
-  else if(currentSort==="top")list=[...base].sort(topCmp);  
+  if(q){const r=searchGroups(q,base);list=r.list;sugg=r.sugg}  
   const cat=$("catalog");cat.replaceChildren();  
   $("count").textContent=list.length+(list.length===1?" title":" titles");  
   if(!list.length){  
@@ -1035,7 +1109,8 @@ function render(){
     e.textContent=!allItems.length?"Nothing published yet.":q?"\""+q+"\" nahi mila."+(sugg.length?" Shayad aap ye dhundh rahe the:":""):"Nothing found.";  
     cat.appendChild(e);  
     sugg.forEach(g=>cat.appendChild(makeCard(g)));  
-  }else list.forEach(g=>cat.appendChild(makeCard(g)));  
+  }else list.forEach(g=>cat.appendChild(makeCard(g)));
+  $("featuredSection").hidden=!heroList.length||currentFilter==="Hentai";  
   renderRows();  
 }  
   
@@ -1106,7 +1181,7 @@ function openGroup(g,startItem,noPlay){
     $("details").style.setProperty("--bg-image",'url("'+g.poster.replace(/["\\\n()]/g,c=>encodeURIComponent(c))+'")');  
   }else{p.removeAttribute("src");p.style.display="none";$("details").style.removeProperty("--bg-image")}  
   closeMenu();  
-  loadVotes(g);
+  loadVotes(g);loadComments(g);
   seo(g.title+" - Watch Online in Hindi | Move Tok","Watch "+g.title+" ("+kindLabel(g)+") online in HD on Move Tok. "+(g.type==="Movie"?"Full movie":g.items.length+" episodes")+" available.");
   const movie=g.type==="Movie";  
   $("seasonSection").hidden=movie;$("episodeSection").hidden=movie;  
@@ -1187,7 +1262,7 @@ function loadEpisode(noBlk){
 function markQuality(){document.querySelectorAll("#qOpts .opt").forEach(b=>b.classList.toggle("active",b.textContent===currentQuality))}  
 function closeWatch(){  
   stopVideo();infoMode=false;$("watch").classList.remove("info-mode");$("watch").style.display="none";closeMenu();  
-  document.body.style.overflow="";currentGroup=null;currentEpisode=null;currentQuality="";watchOpen=false;seo(SEO0.t,SEO0.d);  
+  document.body.style.overflow="";currentGroup=null;currentEpisode=null;currentQuality="";watchOpen=false;detachFb();seo(SEO0.t,SEO0.d);  
   const fs=document.fullscreenElement||document.webkitFullscreenElement;  
   if(fs)(document.exitFullscreen||document.webkitExitFullscreen).call(document);  
   renderRows();  
@@ -1428,30 +1503,87 @@ document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{
   render();  
 });  
   
-$("sortSel").onchange=e=>{currentSort=e.target.value;render()};
 
 /* ---------- like / dislike ---------- */
 const vRaw=g=>g.type+"|"+g.title;
 const myVote=g=>{try{return localStorage.getItem("mt:v:"+vRaw(g))||"none"}catch{return "none"}};
 function markVote(v){$("likeBtn").classList.toggle("on",v==="like");$("dislikeBtn").classList.toggle("on",v==="dislike")}
 function setCounts(l,d){$("likeN").textContent=l;$("dislikeN").textContent=d}
+function showCounts(g,l,d){const m=myVote(g);if(m==="like"&&l<1)l=1;if(m==="dislike"&&d<1)d=1;setCounts(l,d)}
+const FB_CFG={apiKey:"AIzaSyCYOS7gsCGzaySTiA7EmeqxcP2sa3bySRU",authDomain:"move-tok.firebaseapp.com",databaseURL:"https://move-tok-default-rtdb.firebaseio.com",projectId:"move-tok",storageBucket:"move-tok.firebasestorage.app",messagingSenderId:"994220546725",appId:"1:994220546725:web:71c3a8484416a9e8344b4c"};
+let DB=null;
+try{if(window.firebase){firebase.initializeApp(FB_CFG);DB=firebase.database()}}catch{}
+const gid=g=>g.vk||("h"+[...vRaw(g)].reduce((h,c)=>(h*31+c.charCodeAt(0))>>>0,7).toString(16));
+let voteRef=null,cmRef=null,lastPost=0;
+function detachFb(){if(voteRef){voteRef.off();voteRef=null}if(cmRef){cmRef.off();cmRef=null}}
 function loadVotes(g){
-  const b=VOTES[g.vk]||[0,0];setCounts(b[0],b[1]);markVote(myVote(g));
-  fetch("?action=votes&k="+encodeURIComponent(vRaw(g))).then(r=>r.json()).then(d=>{if(d&&d.ok&&currentGroup===g){setCounts(d.l,d.d);VOTES[g.vk]=[d.l,d.d]}}).catch(()=>{});
+  if(voteRef){voteRef.off();voteRef=null}
+  const b=VOTES[g.vk]||[0,0];showCounts(g,b[0],b[1]);markVote(myVote(g));
+  if(!DB)return;
+  voteRef=DB.ref("votes/"+gid(g));
+  voteRef.on("value",sn=>{
+    const v=sn.val()||{},l=Math.max(0,+v.l||0),d=Math.max(0,+v.d||0);
+    VOTES[g.vk]=[l,d];if(currentGroup===g)showCounts(g,l,d);
+  });
 }
 function castVote(kind){
-  const g=currentGroup;if(!g)return;
+  const g=currentGroup;if(!g||!DB)return;
   const prev=myVote(g),next=prev===kind?"none":kind;
   try{localStorage.setItem("mt:v:"+vRaw(g),next)}catch{}
-  let l=+$("likeN").textContent||0,d=+$("dislikeN").textContent||0;
-  if(prev==="like")l=Math.max(0,l-1);if(prev==="dislike")d=Math.max(0,d-1);
-  if(next==="like")l++;if(next==="dislike")d++;
-  setCounts(l,d);markVote(next);
-  const fd=new FormData();fd.append("k",vRaw(g));fd.append("v",next);fd.append("p",prev);
-  fetch("?action=vote",{method:"POST",body:fd}).then(r=>r.json()).then(r=>{if(r&&r.ok){VOTES[g.vk]=[r.l,r.d];if(currentGroup===g)setCounts(r.l,r.d)}}).catch(()=>{});
+  markVote(next);
+  const r=DB.ref("votes/"+gid(g));
+  const bump=(f,n)=>r.child(f).transaction(v=>Math.max(0,(v||0)+n));
+  if(prev==="like")bump("l",-1);if(prev==="dislike")bump("d",-1);
+  if(next==="like")bump("l",1);if(next==="dislike")bump("d",1);
 }
 $("likeBtn").onclick=()=>castVote("like");
 $("dislikeBtn").onclick=()=>castVote("dislike");
+if(DB)DB.ref("votes").once("value").then(sn=>{
+  const o=sn.val()||{};
+  Object.keys(o).forEach(k=>{VOTES[k]=[Math.max(0,+o[k].l||0),Math.max(0,+o[k].d||0)]});
+  renderRows();
+}).catch(()=>{});
+
+/* ---------- comments (Firebase Realtime Database) ---------- */
+function loadComments(g){
+  if(cmRef){cmRef.off();cmRef=null}
+  const list=$("cmList");list.replaceChildren();$("cmCount").textContent="0";$("cmErr").textContent="";
+  try{$("cmName").value=localStorage.getItem("mt:name")||""}catch{}
+  if(!DB){list.textContent="Comments abhi available nahi hain.";return}
+  cmRef=DB.ref("comments/"+gid(g)).limitToLast(100);
+  cmRef.on("value",sn=>{
+    if(currentGroup!==g)return;
+    const arr=[];sn.forEach(c=>{const v=c.val();if(v&&v.t)arr.push(v)});
+    arr.reverse();list.replaceChildren();$("cmCount").textContent=arr.length;
+    if(!arr.length){const e=document.createElement("div");e.className="cm-empty";e.textContent="Abhi koi comment nahi. Pehla comment aap karo!";list.appendChild(e);return}
+    arr.forEach(v=>{
+      const it=document.createElement("div");it.className="cm-item";
+      const top=document.createElement("div");top.className="cm-top";
+      const n=document.createElement("b");n.textContent=String(v.n||"User").slice(0,30);
+      const d=document.createElement("span");
+      d.textContent=v.ts?new Date(v.ts).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):"";
+      top.append(n,d);
+      const t=document.createElement("p");t.className="cm-text";t.textContent=String(v.t).slice(0,500);
+      it.append(top,t);list.appendChild(it);
+    });
+  });
+}
+function postComment(){
+  const g=currentGroup;if(!g||!DB)return;
+  const n=$("cmName").value.trim().slice(0,30),t=$("cmText").value.trim().slice(0,500),err=$("cmErr");
+  err.textContent="";
+  if(!n){err.textContent="Pehle apna naam likho.";$("cmName").focus();return}
+  if(!t){err.textContent="Comment likho.";$("cmText").focus();return}
+  if(Date.now()-lastPost<5000){err.textContent="Thoda ruko, 5 second baad dobara comment karo.";return}
+  lastPost=Date.now();
+  try{localStorage.setItem("mt:name",n)}catch{}
+  const b=$("cmPost");b.disabled=true;
+  DB.ref("comments/"+gid(g)).push({n:n,t:t,ts:firebase.database.ServerValue.TIMESTAMP})
+    .then(()=>{$("cmText").value=""})
+    .catch(()=>{err.textContent="Comment post nahi hua. Dobara try karo."})
+    .then(()=>{b.disabled=false});
+}
+$("cmPost").onclick=postComment;
 
 /* ---------- SEO (title/description badalte hain) ---------- */
 const SEO0={t:document.title,d:(document.querySelector('meta[name="description"]')||{}).content||""};
