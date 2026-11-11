@@ -31,6 +31,346 @@ function fetch_catalog($url, $token) {
     return $out === false ? null : $out;  
 }  
   
+/* ============ ENGINE FROM 1.php (blakiteapi) — no cache folder ============ */
+@ini_set('max_execution_time', 120);
+@ini_set('memory_limit', '256M');
+$BK_API   = 'https://blakiteapi.xyz/api/getAllAnime.php';
+$BK_EMBED = 'https://blakiteapi.xyz';
+$BK_FILE  = sys_get_temp_dir() . '/blk.catalog.json';   // single temp file, koi folder nahi banta
+$BK_TTL   = 43200;
+
+function cGet($url, $t = 30, $ref = null) {
+    $ch = curl_init();
+    $h = [
+        'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36',
+        'Accept: application/json, text/plain, */*',
+    ];
+    if ($ref) {
+        $h[] = "Referer: $ref";
+        $p = parse_url($ref);
+        if ($p) $h[] = 'Origin: ' . $p['scheme'] . '://' . $p['host'];
+    }
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url, CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => $t, CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_FOLLOWLOCATION => true, CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 3,
+        CURLOPT_HTTPHEADER => $h
+    ]);
+    if (defined('CURLOPT_REDIR_PROTOCOLS') && defined('CURLPROTO_HTTP')) {
+        curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+    }
+    $b = curl_exec($ch);
+    $c = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return ($c === 200 && $b) ? $b : null;
+}
+
+function jEnc($d) {
+    $r = json_encode($d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+    return $r ?: json_encode(['error' => 'encode fail']);
+}
+
+// 1.php ka item() logic -> index.php ke catalog format me
+function blk_item($id, $src, $cat) {
+    if (!is_array($src)) return null;
+    $t  = $src['TMDB_DATA'] ?? [];
+    $im = $src['IMAGES'] ?? [];
+    $seasons = [];
+    if (!empty($src['seasons']) && is_array($src['seasons'])) {
+        foreach ($src['seasons'] as $num => $sd) {
+            $eps = is_array($sd) ? (int)($sd['totalEpisodes'] ?? 0) : 0;
+            $numStr = (string)$num;
+            $n = (int) preg_replace('/\D/', '', $numStr);
+            if ($n === 0 && is_numeric($numStr)) $n = (int)$numStr;
+            $seasons[] = ['key' => $numStr, 'sortKey' => $n, 'eps' => $eps];
+        }
+        usort($seasons, fn($a, $b) => $a['sortKey'] - $b['sortKey']);
+    }
+    $type = $src['type'] ?? '';
+    $isMovie = strtolower($cat) === 'movies' || strtolower($type) === 'movie' || empty($seasons);
+
+    $idSafe = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$id);
+    if ($idSafe === '') return null;
+    $realTmdbId = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)($src['tmdbId'] ?? $src['originalTmdbId'] ?? $id));
+    if ($realTmdbId === '') return null;
+
+    $c = !empty($src['createdAt']) ? (int)strtotime($src['createdAt']) : 0;
+    $u = !empty($src['updatedAt']) ? (int)strtotime($src['updatedAt']) : 0;
+    $latest = max($c, $u);
+
+    $outSeasons = [];
+    if ($isMovie) {
+        $outSeasons[] = ['number' => 1, 'key' => '1', 'count' => 1];
+    } else {
+        foreach ($seasons as $i => $s) {
+            if ($s['eps'] < 1) continue;
+            $outSeasons[] = ['number' => $s['sortKey'] ?: ($i + 1), 'key' => $s['key'], 'count' => $s['eps']];
+        }
+        if (!$outSeasons) return null;
+    }
+
+    return [
+        'slug'     => 'blk-' . $idSafe,
+        'title'    => $src['title'] ?? 'Untitled',
+        'poster'   => $im['poster'] ?? '',
+        'banner'   => $im['backdrop'] ?? '',
+        'category' => $isMovie ? 'movie' : 'anime',
+        'added_at' => $latest ? gmdate('c', $latest) : '',
+        'blk'      => $realTmdbId,
+        'seasons'  => $outSeasons,
+    ];
+}
+
+// poora JSON ek saath decode nahi hota (phone par memory khatam ho jati hai): ek-ek item padhkar callback ko deta hai
+function blk_scan($raw, $cb) {
+    $n = strlen($raw); $i = 0; $d = 0; $isObj = []; $key = []; $idx = []; $start = 0;
+    while ($i < $n) {
+        $i += strcspn($raw, '"{}[]', $i);
+        if ($i >= $n) break;
+        $c = $raw[$i];
+        if ($c === '"') {
+            $j = $i + 1;
+            while (true) {
+                $j += strcspn($raw, '"\\', $j);
+                if ($j >= $n) return;
+                if ($raw[$j] === '\\') { $j += 2; continue; }
+                break;
+            }
+            if ($d >= 1 && $d <= 3 && !empty($isObj[$d])) {
+                $k = $j + 1;
+                while ($k < $n && ctype_space($raw[$k])) $k++;
+                if ($k < $n && $raw[$k] === ':') $key[$d] = json_decode(substr($raw, $i, $j - $i + 1));
+            }
+            $i = $j + 1;
+            continue;
+        }
+        if ($c === '{' || $c === '[') {
+            if ($d >= 1 && empty($isObj[$d]) && $d <= 3) $key[$d] = $idx[$d]++;
+            $d++;
+            $isObj[$d] = ($c === '{'); $idx[$d] = 0;
+            if ($d === 4) $start = $i;
+        } else {
+            if ($d === 4) {
+                $item = json_decode(substr($raw, $start, $i - $start + 1), true);
+                if (is_array($item) && ($key[1] ?? '') === 'data') $cb($key[3] ?? '', $item, (string)($key[2] ?? ''));
+            }
+            $d--;
+        }
+        $i++;
+    }
+}
+
+function blk_catalog($existing) {
+    global $BK_API, $BK_FILE, $BK_TTL;
+    $list = null;
+    if (is_file($BK_FILE) && (time() - filemtime($BK_FILE)) < $BK_TTL) {
+        $list = json_decode((string)@file_get_contents($BK_FILE), true);
+    }
+    if (!is_array($list)) {
+        $raw = null;
+        for ($__try = 0; $__try < 3; $__try++) {
+            $raw = cGet($BK_API, 40);
+            if ($raw) break;
+            if ($__try < 2) sleep($__try + 1);
+        }
+        $list = [];
+        if ($raw) {
+            blk_scan($raw, function($id, $src, $cat) use (&$list) {
+                $it = blk_item($id, $src, $cat);
+                if ($it) $list[] = $it;
+            });
+        }
+        unset($raw);
+        if ($list) {
+            @file_put_contents($BK_FILE, json_encode($list, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE), LOCK_EX);
+        } elseif (is_file($BK_FILE)) {
+            $list = json_decode((string)@file_get_contents($BK_FILE), true);
+        } else {
+            $list = null;
+        }
+    }
+    if (!is_array($list)) return [];
+    // jo title pehle se aapke upload (GitHub) me hai wo dobara nahi judega
+    $have = [];
+    foreach ($existing as $a) {
+        if (!is_array($a) || empty($a['title'])) continue;
+        $k = ($a['category'] ?? '') === 'movie' ? 'movie' : ((($a['category'] ?? '') === 'hentai') ? 'hentai' : 'anime');
+        $have[$k . '|' . strtolower(trim((string)$a['title']))] = 1;
+    }
+    return array_values(array_filter($list, fn($x) => empty($have[$x['category'] . '|' . strtolower(trim((string)$x['title']))])));
+}
+
+// ?action=stream  /  ?action=proxy  (1.php ka stream + proxy engine)
+$__act = $_GET['action'] ?? '';
+if ($__act === 'proxy') {
+    $url = $_GET['url'] ?? '';
+    if (!$url) { http_response_code(403); exit('forbidden'); }
+    if (!preg_match('#^https?://#i', $url)) { http_response_code(403); exit('forbidden'); }
+    $phost = parse_url($url, PHP_URL_HOST);
+    if (!$phost || !preg_match('/(^|\.)rumble\.(cloud|com)$/i', $phost)) { http_response_code(403); exit('forbidden'); }
+
+    while (ob_get_level()) ob_end_clean();
+
+    $sendH = [
+        'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36',
+        'Referer: https://blakiteapi.xyz/',
+        'Origin: https://blakiteapi.xyz',
+    ];
+    if (!empty($_SERVER['HTTP_RANGE'])) $sendH[] = 'Range: ' . $_SERVER['HTTP_RANGE'];
+
+    header('Access-Control-Allow-Origin: *');
+    header('Accept-Ranges: bytes');
+
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_MAXREDIRS => 3,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_HTTPHEADER => $sendH,
+        CURLOPT_HEADERFUNCTION => function($ch, $h) {
+            $len = strlen($h);
+            $t = trim($h);
+            if ($t === '' || stripos($t, 'HTTP/') === 0) return $len;
+            $parts = explode(':', $t, 2);
+            if (count($parts) === 2) {
+                $n = strtolower(trim($parts[0]));
+                $v = trim($parts[1]);
+                if (in_array($n, ['content-type','content-length','content-range','accept-ranges'])) {
+                    header($parts[0] . ': ' . $v);
+                }
+            }
+            return $len;
+        },
+        CURLOPT_WRITEFUNCTION => function($ch, $data) {
+            echo $data;
+            flush();
+            return strlen($data);
+        },
+    ]);
+    if (defined('CURLOPT_REDIR_PROTOCOLS') && defined('CURLPROTO_HTTP')) {
+        curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+    }
+    curl_exec($ch);
+    curl_close($ch);
+    exit;
+}
+
+if ($__act === 'stream') {
+    header('Content-Type: application/json; charset=utf-8');
+    $tmdbId   = preg_replace('/[^a-zA-Z0-9_\-]/', '', $_GET['tmdbId'] ?? '');
+    $uniqueId = preg_replace('/[^a-zA-Z0-9_\-]/', '', $_GET['uniqueId'] ?? '');
+    $isMovie  = empty($uniqueId);
+
+    if (!$tmdbId) { echo jEnc(['ok'=>false, 'error'=>'no tmdbId']); exit; }
+
+    $variants = array_values(array_unique(array_filter([
+        $tmdbId,
+        ltrim($tmdbId, '0'),
+        str_pad(ltrim($tmdbId, '0'), 6, '0', STR_PAD_LEFT),
+        str_pad(ltrim($tmdbId, '0'), 7, '0', STR_PAD_LEFT),
+        str_pad(ltrim($tmdbId, '0'), 10, '0', STR_PAD_LEFT),
+    ])));
+
+    $uidVariants = $isMovie ? [null] : [$uniqueId];
+
+    $apiData = null;
+    $usedTmdb = $tmdbId;
+    $usedUid = $uniqueId;
+    $lastRaw = '';
+
+    foreach ($variants as $v) {
+        foreach ($uidVariants as $u) {
+            $apiUrl = $u
+                ? "$BK_EMBED/api/get.php?id=" . urlencode($u) . "&tmdbId=" . urlencode($v)
+                : "$BK_EMBED/api/get.php?tmdbId=" . urlencode($v);
+            $raw = cGet($apiUrl, 12, "$BK_EMBED/");
+            $lastRaw = $raw ?: $lastRaw;
+            if (!$raw) continue;
+            $j = json_decode($raw, true);
+            if ($j && !empty($j['data']['dataId'])) {
+                $apiData = $j['data'];
+                $usedTmdb = $v;
+                $usedUid = $u;
+                break 2;
+            }
+        }
+    }
+
+    if (!$apiData) {
+        if ($lastRaw) {
+            @error_log('[Stream] no data tmdbId=' . $tmdbId . ' uid=' . $uniqueId . ' raw=' . substr($lastRaw, 0, 300));
+        }
+        echo jEnc(['ok' => false, 'error' => 'Stream not found']);
+        exit;
+    }
+
+    $dataId = $apiData['dataId'];
+    $format = strtoupper($apiData['format'] ?? 'M3U8');
+    $baseDURL = "https://hugh.cdn.rumble.cloud/video/";
+    $codeMap = ['240p'=>'oaa','360p'=>'baa','480p'=>'caa','720p'=>'gaa','1080p'=>'haa'];
+
+    $streams = [];
+
+    if ($format === 'M3U8') {
+        $ranges = [];
+        if (!empty($apiData['ranges'])) {
+            foreach (explode("\n", $apiData['ranges']) as $line) {
+                $line = trim($line);
+                if (preg_match('/(\d+\s*-\s*\d+)\s*\((\d+)\s*p\)/i', $line, $m)) {
+                    $ranges[(int)$m[2].'p'] = preg_replace('/\s+/', '', $m[1]);
+                }
+            }
+        }
+        foreach ($codeMap as $label => $code) {
+            if (!isset($ranges[$label])) continue;
+            $rng = urlencode($ranges[$label]);
+            $url = "{$baseDURL}{$dataId}.{$code}.tar?r_file=chunklist.m3u8&r_type=application%2Fvnd.apple.mpegurl&r_range={$rng}";
+            $streams[] = ['quality'=>$label, 'url'=>$url, 'type'=>'hls'];
+        }
+    }
+
+    if ($format === 'MP4' || empty($streams)) {
+        $qid = (int)($apiData['qid'] ?? 0);
+        $count = $qid > 0 ? min($qid, 5) : 4;
+        $codes = array_slice($codeMap, 0, $count, true);
+        foreach ($codes as $label => $code) {
+            $url = "{$baseDURL}{$dataId}.{$code}.mp4";
+            $streams[] = ['quality'=>$label, 'url'=>$url, 'type'=>'mp4'];
+        }
+    }
+
+    if (empty($streams)) {
+        echo jEnc(['ok'=>false, 'error'=>'No streams', 'format'=>$format]);
+        exit;
+    }
+
+    usort($streams, fn($a,$b) => (int)$a['quality'] - (int)$b['quality']);
+
+    $default = $apiData['quality'] ?? null;
+    if (!$default || !in_array($default, array_column($streams, 'quality'))) {
+        $default = $streams[count($streams)-1]['quality'];
+    }
+
+    echo jEnc([
+        'ok' => true,
+        'title' => $apiData['animeTitle'] ?? '',
+        'format' => $format,
+        'streams' => $streams,
+        'default' => $default,
+        'poster' => $apiData['poster'] ?? '',
+        'usedTmdb' => $usedTmdb,
+        'usedUid' => $usedUid,
+        'dataId' => $dataId,
+    ]);
+    exit;
+}
+/* ============ ENGINE END ============ */
+  
 $raw = null;  
 if (is_file($CACHE_FILE) && (time() - filemtime($CACHE_FILE)) < $CACHE_TTL) {  
     $raw = file_get_contents($CACHE_FILE);  
@@ -48,6 +388,8 @@ if (!$raw) {
             $merged['anime'] = array_merge($merged['anime'], $list);  
         }  
     }  
+    $bk = blk_catalog($merged['anime']);  
+    if ($bk) { $any = true; $merged['anime'] = array_merge($merged['anime'], $bk); }  
     if ($any) { $raw = json_encode($merged); @file_put_contents($CACHE_FILE, $raw, LOCK_EX); }  
     elseif (is_file($CACHE_FILE)) { $raw = file_get_contents($CACHE_FILE); }  
 }  
@@ -465,13 +807,13 @@ function buildItems(){
     const type=a.category==="movie"?"Movie":a.category==="hentai"?"Hentai":"Anime";  
     const poster=safeUrl(a.poster)||safeUrl(a.banner);  
     (Array.isArray(a.seasons)?a.seasons:[]).forEach(s=>{  
-      (Array.isArray(s.episodes)?s.episodes:[]).forEach(e=>{  
+      (Array.isArray(s.episodes)?s.episodes:Array.from({length:s.count||0},(_,i)=>({number:i+1}))).forEach(e=>{  
         const q={};  
         (e.sources||[]).forEach(x=>{const u=safeUrl(x&&x.url);if(u)q[x.quality||"Default"]=u});  
         const eu=safeUrl(e.url);  
         if(eu&&!Object.values(q).includes(eu))q[e.quality||"Default"]=eu;  
         out.push({id:a.slug+"|"+s.number+"|"+e.number,title:String(a.title).trim(),type,poster,  
-          season:Number(s.number)||1,episode:Number(e.number)||1,qualities:q,mp4Url:"",  
+          season:Number(s.number)||1,episode:Number(e.number)||1,qualities:q,mp4Url:"",blk:a.blk?{t:a.blk,u:a.category==="movie"?"":(s.key||s.number)+"-"+e.number}:null,  
           ts:toTime(e.added_at)||toTime(a.added_at)});  
       });  
     });  
@@ -680,11 +1022,20 @@ function updateLabel(){
   $("vTitle").textContent=currentGroup.title+(currentGroup.type==="Movie"||!currentEpisode?"":" • S"+currentEpisode.season+" E"+currentEpisode.episode);  
   $("nextBtn").hidden=!nextItem();  
 }  
-function loadEpisode(){  
+function blkLoad(item){
+  box.classList.add("loading");$("verr").hidden=true;
+  fetch("?action=stream&tmdbId="+encodeURIComponent(item.blk.t)+(item.blk.u?"&uniqueId="+encodeURIComponent(item.blk.u):""))
+    .then(r=>r.json())
+    .then(d=>{if(d&&d.ok&&d.streams)d.streams.forEach(s=>{item.qualities[s.quality]=s.url})})
+    .catch(()=>{})
+    .then(()=>{if(currentEpisode===item)loadEpisode(true)});
+}
+function loadEpisode(noBlk){  
   updateLabel();  
   if(infoMode){stopVideo();closeMenu();return}  
   const qBox=$("qOpts");qBox.replaceChildren();qBox.dataset.h="";closeMenu();  
   if(!currentEpisode){stopVideo();showErr("No episodes available.");return}  
+  if(!noBlk&&currentEpisode.blk&&!Object.keys(currentEpisode.qualities).length){blkLoad(currentEpisode);return}  
   const q=getQualities(currentEpisode);  
   // "Auto" (HLS master link) sabse upar, baaki 1080p, 720p... ke order me  
   const names=Object.keys(q).sort((a,b)=>a==="Auto"?-1:b==="Auto"?1:(parseInt(b)||0)-(parseInt(a)||0));  
@@ -729,7 +1080,7 @@ function showUI(){
 }  
 function closeMenu(){$("menu").classList.remove("open")}  
 function showErr(msg){$("verr").textContent=msg;$("verr").hidden=false;box.classList.remove("loading")}  
-const isHls=u=>/\.m3u8(\?|$)/i.test(u||"");  
+const isHls=u=>/\.m3u8(\?|&|$)|\.tar\?/i.test(u||"");  
 function destroyHls(){if(hls){try{hls.destroy()}catch{}hls=null}hlsRetry=0}  
 function hlsMenu(){  
   if(!hls||!hls.levels||!hls.levels.length)return;  
@@ -870,7 +1221,7 @@ V.addEventListener("progress",()=>{
 });  
 ["waiting","seeking","loadstart"].forEach(ev=>V.addEventListener(ev,()=>box.classList.add("loading")));  
 ["playing","canplay","seeked","loadeddata","loadedmetadata"].forEach(ev=>V.addEventListener(ev,()=>box.classList.remove("loading")));  
-V.addEventListener("error",()=>{if(!hls&&V.getAttribute("src"))showErr("Video load nahi ho paya. Dusri quality try karo ya baad me aao.")});  
+V.addEventListener("error",()=>{if(!hls&&V.getAttribute("src")){const ce=currentEpisode;if(ce&&ce.blk&&!ce.blkProxy&&!isHls(curUrl)){ce.blkProxy=true;Object.keys(ce.qualities).forEach(k=>{ce.qualities[k]=new URL("?action=proxy&url="+encodeURIComponent(ce.qualities[k]),location.href).href});curUrl="";loadEpisode(true);return}showErr("Video load nahi ho paya. Dusri quality try karo ya baad me aao.")}});  
 V.addEventListener("ended",()=>{  
   if(currentEpisode){store.del("zt:"+currentEpisode.id);store.del("ztd:"+currentEpisode.id)}  
   const n=nextItem();if(n)selectEpisode(n);else showUI();  
