@@ -37,7 +37,7 @@ function fetch_catalog($url, $token) {
 $BK_API   = 'https://blakiteapi.xyz/api/getAllAnime.php';
 $BK_EMBED = 'https://blakiteapi.xyz';
 $BK_FILE  = sys_get_temp_dir() . '/blk.catalog.json';   // single temp file, koi folder nahi banta
-$BK_TTL   = 43200;
+$BK_TTL   = 120;   // blakite par naya upload itne second ke andar site par aa jata hai
 
 function cGet($url, $t = 30, $ref = null) {
     $ch = curl_init();
@@ -89,7 +89,8 @@ function blk_item($id, $src, $cat) {
         usort($seasons, fn($a, $b) => $a['sortKey'] - $b['sortKey']);
     }
     $type = $src['type'] ?? '';
-    $isMovie = strtolower($cat) === 'movies' || strtolower($type) === 'movie' || empty($seasons);
+    if (stripos($cat, 'hentai') !== false) return null;   // hentai sirf aapke upload se
+    $isMovie = strtolower($cat) === 'movies' || strtolower($type) === 'movie';   // movies me sirf movies
 
     $idSafe = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$id);
     if ($idSafe === '') return null;
@@ -117,6 +118,7 @@ function blk_item($id, $src, $cat) {
         'poster'   => $im['poster'] ?? '',
         'banner'   => $im['backdrop'] ?? '',
         'category' => $isMovie ? 'movie' : 'anime',
+        'rating'   => round((float)($t['vote_average'] ?? $t['voteAverage'] ?? $t['rating'] ?? 0), 1),
         'added_at' => $latest ? gmdate('c', $latest) : '',
         'blk'      => $realTmdbId,
         'seasons'  => $outSeasons,
@@ -187,6 +189,7 @@ function blk_catalog($existing) {
             @file_put_contents($BK_FILE, json_encode($list, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE), LOCK_EX);
         } elseif (is_file($BK_FILE)) {
             $list = json_decode((string)@file_get_contents($BK_FILE), true);
+            @touch($BK_FILE);   // API down ho to har request par dobara na atke
         } else {
             $list = null;
         }
@@ -200,6 +203,42 @@ function blk_catalog($existing) {
         $have[$k . '|' . strtolower(trim((string)$a['title']))] = 1;
     }
     return array_values(array_filter($list, fn($x) => empty($have[$x['category'] . '|' . strtolower(trim((string)$x['title']))])));
+}
+
+/* ---------- LIKE / DISLIKE (single temp file, koi folder nahi banta) ---------- */
+$VOTE_FILE = sys_get_temp_dir() . '/mt.votes.json';
+function vote_key($k) { return substr(md5(strtolower(trim((string)$k))), 0, 16); }
+function votes_load() {
+    global $VOTE_FILE;
+    $d = is_file($VOTE_FILE) ? json_decode((string)@file_get_contents($VOTE_FILE), true) : null;
+    return is_array($d) ? $d : [];
+}
+$__act0 = $_GET['action'] ?? '';
+if ($__act0 === 'vote' || $__act0 === 'votes') {
+    header('Content-Type: application/json; charset=utf-8');
+    $k = vote_key($_REQUEST['k'] ?? '');
+    $fh = @fopen($VOTE_FILE, 'c+');
+    if (!$fh) { echo jEnc(['ok' => false]); exit; }
+    flock($fh, LOCK_EX);
+    $all = json_decode((string)stream_get_contents($fh), true);
+    if (!is_array($all)) $all = [];
+    $e = $all[$k] ?? ['l' => 0, 'd' => 0];
+    if ($__act0 === 'vote' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+        $okv = ['like', 'dislike', 'none'];
+        $v = in_array($_POST['v'] ?? '', $okv, true) ? $_POST['v'] : 'none';
+        $p = in_array($_POST['p'] ?? '', $okv, true) ? $_POST['p'] : 'none';
+        if ($p === 'like')    $e['l'] = max(0, (int)$e['l'] - 1);
+        if ($p === 'dislike') $e['d'] = max(0, (int)$e['d'] - 1);
+        if ($v === 'like')    $e['l'] = (int)$e['l'] + 1;
+        if ($v === 'dislike') $e['d'] = (int)$e['d'] + 1;
+        $all[$k] = $e;
+        ftruncate($fh, 0); rewind($fh);
+        fwrite($fh, json_encode($all));
+        fflush($fh);
+    }
+    flock($fh, LOCK_UN); fclose($fh);
+    echo jEnc(['ok' => true, 'l' => (int)$e['l'], 'd' => (int)$e['d']]);
+    exit;
 }
 
 // ?action=stream  /  ?action=proxy  (1.php ka stream + proxy engine)
@@ -402,214 +441,261 @@ if (isset($_GET['debug'])) {
     echo "catalog: " . ($catalog ? count($catalog['anime'] ?? []) . ' titles' : 'EMPTY') . "\n";  
     exit;  
 }  
+$VOTES_MAP = [];
+if (is_array($catalog) && isset($catalog['anime']) && is_array($catalog['anime'])) {
+    $__v = votes_load();
+    foreach ($catalog['anime'] as &$__a) {
+        if (!is_array($__a) || empty($__a['title'])) continue;
+        $__c = $__a['category'] ?? '';
+        $__t = $__c === 'movie' ? 'Movie' : ($__c === 'hentai' ? 'Hentai' : 'Anime');
+        $__a['vk'] = vote_key($__t . '|' . trim((string)$__a['title']));
+        if (isset($__v[$__a['vk']])) $VOTES_MAP[$__a['vk']] = [(int)$__v[$__a['vk']]['l'], (int)$__v[$__a['vk']]['d']];
+    }
+    unset($__a);
+}
+$__https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+$SITE_URL = ($__https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
+$SITE_NAME = 'Move Tok';
+$SITE_TITLE = 'Move Tok - Hindi Movies & K-Dramas';
+$SITE_DESC = 'Watch Hindi dubbed movies, K-Dramas and anime online in HD on Move Tok. Latest episodes, full movies and top rated anime in one place.';
+$SITE_IMG = 'https://i.ibb.co/QvS9K1F2/file-0000000088fc81f4b523066b82b7881f.png';
+$h = fn($x) => htmlspecialchars($x, ENT_QUOTES, 'UTF-8');
 ?>  <!DOCTYPE html>  <html lang="en">  
 <head>  
 <meta charset="UTF-8">  
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  
-<meta name="theme-color" content="#050505">  
+<meta name="theme-color" content="#06060c">  
 <meta name="referrer" content="no-referrer">  
-<title>Move Tok - Hindi Movies &amp; K-Dramas</title>  
+<title><?= $h($SITE_TITLE) ?></title>
+<meta name="description" content="<?= $h($SITE_DESC) ?>">
+<meta name="keywords" content="Move Tok, Hindi movies, Hindi dubbed anime, K-Dramas, Korean drama Hindi, watch anime online, full movies, top rated anime">
+<meta name="author" content="Harsh Singh">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="<?= $h($SITE_URL) ?>">
+<link rel="icon" href="<?= $h($SITE_IMG) ?>">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="<?= $h($SITE_NAME) ?>">
+<meta property="og:title" content="<?= $h($SITE_TITLE) ?>">
+<meta property="og:description" content="<?= $h($SITE_DESC) ?>">
+<meta property="og:url" content="<?= $h($SITE_URL) ?>">
+<meta property="og:image" content="<?= $h($SITE_IMG) ?>">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<?= $h($SITE_TITLE) ?>">
+<meta name="twitter:description" content="<?= $h($SITE_DESC) ?>">
+<meta name="twitter:image" content="<?= $h($SITE_IMG) ?>">
+<script type="application/ld+json"><?= json_encode(['@context'=>'https://schema.org','@type'=>'WebSite','name'=>$SITE_NAME,'url'=>$SITE_URL,'description'=>$SITE_DESC,'inLanguage'=>'hi','publisher'=>['@type'=>'Organization','name'=>$SITE_NAME,'logo'=>$SITE_IMG]], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_HEX_TAG) ?></script>  
 <link rel="preconnect" href="https://fonts.googleapis.com">  
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">  
-<style>  
-:root{--bg:#050505;--card:#141414;--pink:#ffffff;--pink-soft:rgba(255,255,255,.12);--text:#f2f2f2;--muted:#909090;--border:#232323;--head:52px}  
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}  
-body{margin:0;background:var(--bg);color:var(--text);font-family:Nunito,Arial,sans-serif}  
-button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}[hidden]{display:none!important}  
-.ic{width:1em;height:1em;fill:currentColor;display:block;pointer-events:none}  
-header{position:relative;z-index:5;display:flex;align-items:center;gap:10px;padding:12px;background:rgba(5,5,5,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}  
-.logo{width:56px;height:56px;object-fit:cover;border-radius:50%;border:2px solid rgba(255,59,74,.55);background:#000;flex:0 0 auto}  
-.brand{font-size:28px;font-weight:900;white-space:nowrap;color:#fff;letter-spacing:-.4px}.brand span{color:var(--pink)}  
-.search{margin-left:auto;flex:1;width:100%;max-width:330px;min-width:0;font-size:14px;padding:11px 14px;border:1px solid #262626;border-radius:12px;background:#151515;color:#eee;outline:none;transition:border-color .2s}  
-.search:focus{border-color:var(--pink)}  
-main{max-width:1200px;margin:auto;padding:16px}  
-h2 {display: flex;align-items: center;gap: 8px;font-size: 21px;font-weight: 800;color: #fff;margin: 18px 0 12px;}  
-h2::before {content: "";display: inline-block;width: 4px;height: 22px;background-color: var(--red);border-radius: 4px;}  
-h2 svg {width: 22px;height: 22px;fill: var(--red);}  
-.row-head{display:flex;align-items:center;justify-content:space-between}  
-.row-head h2{margin:18px 0 12px}  
-.hero{position:relative;margin:0 -16px;overflow:hidden}  
-.hero-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}  
-.hero-track::-webkit-scrollbar,.filters::-webkit-scrollbar,.seasons::-webkit-scrollbar,.hrow::-webkit-scrollbar{display:none}  
-.hero-slide{flex:0 0 100%;scroll-snap-align:start;position:relative;overflow:hidden}  
-.hero-media{position:relative;width:100%;aspect-ratio:1/1;max-height:48vh;background:#0b0b0b;overflow:hidden}  
-.hero-media .bg{display:none;position:absolute;inset:-20px;width:calc(100% + 40px);height:calc(100% + 40px);object-fit:cover;filter:blur(28px) brightness(.5)}  
-.hero-media .fg{position:relative;display:block;width:100%;height:100%;object-fit:cover;object-position:center top}  
-.hero-media::after{content:"";position:absolute;inset:auto 0 0;height:62%;background:linear-gradient(to top,var(--bg) 8%,rgba(5,5,5,.75) 40%,transparent);pointer-events:none}  
-.hero-body{position:relative;margin-top:-140px;padding:0 18px 6px;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center}  
-.hero-kind{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#cfcfcf}  
-.hero-kind i{width:3px;height:3px;border-radius:50%;background:#777}  
-.hero-title{margin:6px 0 12px;font-size:clamp(20px,5.2vw,30px);font-weight:900;line-height:1.2;color:#fff;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}  
-.hero-actions{display:flex;gap:10px;width:100%;max-width:420px}  
-.hbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border:0;border-radius:8px;font-weight:800;font-size:15px}  
-.hbtn .ic{font-size:22px}  
-.hbtn.play{background:#fff;color:#000}  
-.hbtn:active{transform:scale(.97)}  
-.dots{display:flex;justify-content:center;gap:6px;padding:14px 0 4px}  
-.dot{width:6px;height:6px;padding:0;border:0;border-radius:3px;background:#444;transition:all .25s}  
-.dot.active{width:20px;background:var(--pink)}  
-.hero-nav{display:none;position:absolute;top:50%;margin-top:-40px;z-index:3;width:44px;height:80px;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:30px;align-items:center;justify-content:center;border-radius:10px}  
-.hero-nav.prev{left:12px}.hero-nav.next{right:12px}  
-.filters{display:flex;gap:10px;overflow-x:auto;padding:4px 0 18px;scrollbar-width:none}  
-.filter,.season-btn{flex:0 0 auto;padding:10px 18px;border:1px solid #262626;border-radius:30px;background:#141414;color:#b0b0b0;font-weight:800;font-size:13px;transition:all .2s}  
-.filter.active,.season-btn.active,.episode-btn.active{background:#fff;color:#000;border-color:#fff;box-shadow:0 4px 12px rgba(255,255,255,.2)}  
-.hrow{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 8px;scrollbar-width:none;scroll-snap-type:x proximity}  
-.rcard{flex:0 0 138px;scroll-snap-align:start;cursor:pointer;transition:transform .2s}  
-.rcard:active{transform:scale(.97)}  
-.rcard .poster{border-radius:18px}  
-.rcard .badge{font-size:11px;padding:5px 10px;bottom:8px}  
-.rcard .card-title{font-size:13.5px;margin-top:8px;padding:0 4px}  
-.pbar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.25);z-index:3}  
-.pbar i{display:block;height:100%;background:#fff}  
-.new-tag{position:absolute;top:8px;left:8px;z-index:3;background:#fff;color:#000;font-size:10px;font-weight:900;padding:3px 8px;border-radius:10px;letter-spacing:.4px}  
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}  
-.card{min-width:0;cursor:pointer;background:none;border:0;transition:transform .22s}  
-.card:active{transform:scale(.97)}  
-.poster{position:relative;aspect-ratio:3/4;border-radius:26px;background:#111;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.6)}  
-.poster .bg{display:none}  
-.poster .fg{position:relative;display:block;width:100%;height:100%;object-fit:cover}  
-.badge{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:2;max-width:90%;padding:7px 14px;border-radius:20px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--pink);font-size:13px;font-weight:900;white-space:nowrap}  
-.card-info{padding:10px 6px 0}  
-.card-title{font-size:16px;font-weight:800;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}  
-.card-sub{margin-top:4px;color:var(--muted);font-size:11.5px;font-weight:600}  
-.card-info .card-sub{display:none}  
-.empty{grid-column:1/-1;padding:34px 10px;text-align:center;color:var(--muted)}  
-.watch{display:none;position:fixed;inset:0;z-index:20;overflow-y:auto;background:var(--bg)}  
-.watch-head{position:sticky;top:0;z-index:7;height:var(--head);display:flex;align-items:center;gap:6px;padding:0 10px 0 6px;background:#0a0a0a;border-bottom:1px solid var(--border)}  
-.watch-head .back{width:42px;height:42px;border:0;border-radius:50%;background:none;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center}  
-.watch-head .back:active{background:rgba(255,255,255,.12)}  
-.watch-head span{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}  
-.video-box{position:sticky;top:var(--head);z-index:5;width:100%;aspect-ratio:16/9;max-height:70vh;background:#000;overflow:hidden;user-select:none;-webkit-user-select:none;margin:0 auto}  
-.video-box:fullscreen{max-height:none;max-width:none;aspect-ratio:auto;height:100%}  
-.video-box:-webkit-full-screen{max-height:none;max-width:none;aspect-ratio:auto;height:100%}  
-.video-box.idle{cursor:none}  
-video{width:100%;height:100%;object-fit:contain;background:#000;display:block}  
-.bottom{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:22px 12px 8px;background:linear-gradient(transparent,rgba(0,0,0,.9));transition:opacity .25s}  
-.center{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;gap:clamp(18px,8vw,60px);pointer-events:none;transition:opacity .25s}  
-.center button{pointer-events:auto;border:0;color:#fff;background:rgba(0,0,0,.45);border-radius:50%;width:46px;height:46px;font-size:28px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}  
-.center #big{width:64px;height:64px;font-size:48px;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}  
-.center .ic{filter:drop-shadow(0 2px 6px rgba(0,0,0,.8))}  
-.idle .bottom,.idle .center{opacity:0;pointer-events:none}.idle .center button{pointer-events:none}  
-.loading #big{opacity:0}  
-.loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;display:none;flex-direction:column;align-items:center;gap:8px;pointer-events:none;width:100%;padding:0 12px}  
-.loading .loader{display:flex}  
-.wave{display:flex;align-items:center;justify-content:center;gap:3px;height:24px}  
-.wave i{display:block;width:4px;height:16px;border-radius:3px;background:#ff3b4a;box-shadow:0 0 6px rgba(255,59,74,.9),0 0 14px rgba(255,59,74,.45);transform:scaleY(.25);animation:wv 1.1s ease-in-out infinite}  
-@keyframes wv{0%,100%{transform:scaleY(.25);opacity:.5}50%{transform:scaleY(1);opacity:1}}  
-.lt{font-size:11px;font-weight:700;color:#ddd;text-align:center;text-shadow:0 1px 6px rgba(0,0,0,.9);white-space:nowrap}  
-.prog{position:relative;height:22px;display:flex;align-items:center;cursor:pointer;touch-action:none}  
-.track{position:relative;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.25);transition:height .15s}  
-.prog:hover .track{height:6px}  
-.buf,.bar{position:absolute;left:0;top:0;height:100%;border-radius:2px;width:0}  
-.buf{background:rgba(255,255,255,.35)}.bar{background:#fff}  
-.bar::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;background:#fff;border-radius:50%;box-shadow:0 0 6px rgba(0,0,0,.6)}  
-.ctrls{display:flex;align-items:center;gap:6px;color:#fff}  
-.ctrl-btn{background:none;border:0;color:#fff;font-size:26px;min-width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:8px}  
-.ctrl-btn:active{background:rgba(255,255,255,.15)}  
-.time{font-size:12px;font-weight:700;color:#ddd;white-space:nowrap}.sp{flex:1}  
-.menu{display:none;position:absolute;right:10px;bottom:62px;z-index:6;width:190px;max-height:75%;overflow-y:auto;padding:8px;border:1px solid #2a2a2a;border-radius:12px;background:rgba(17,17,17,.96);backdrop-filter:blur(10px);box-shadow:0 12px 30px rgba(0,0,0,.7)}  
-.menu.open{display:block}  
-.menu strong{display:block;padding:6px 10px 2px;font-size:11px;color:#888;letter-spacing:.5px;text-transform:uppercase}  
-.opts{display:flex;flex-wrap:wrap;gap:4px;padding:4px}  
-.opt{padding:7px 11px;border:0;border-radius:8px;background:rgba(255,255,255,.07);color:#ddd;font-size:12.5px;font-weight:700}  
-.opt.active{background:rgba(255,255,255,.18);color:#fff;outline:1px solid #fff}  
-.verr{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:rgba(0,0,0,.85);color:#ccc;font-weight:700}  
-.details{position:relative;padding:20px 18px 40px;overflow:hidden;min-height:60vh}  
-.details-content{position:relative;max-width:1000px;margin:0 auto}  
-.anime-info{display:flex;flex-direction:row;align-items:flex-start;gap:15px;margin-bottom:25px}  
-.detail-poster{flex:0 0 auto;width:110px;max-width:110px;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:12px;border:1px solid #1f1f1f;background:#1a1a1a;box-shadow:0 8px 25px rgba(0,0,0,.5)}  
-.detail-text{flex:1;min-width:0}  
-.detail-title{font-size:clamp(18px,5vw,28px);line-height:1.25;overflow-wrap:anywhere;color:#fff;margin:0 0 12px}  
-.tag{display:inline-block;padding:6px 12px;border-radius:25px;background:var(--pink-soft);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:12px;font-weight:800;margin:0 5px 8px 0}  
-.seasons{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 16px;scrollbar-width:none}  
-.season-btn{min-width:118px;padding:12px 16px;background:#161616}  
-.episodes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}  
-.episode-btn{min-height:60px;border:1px solid #262626;border-radius:14px;background:#161616;color:#eaeaea;font-size:18px;font-weight:800;transition:all .2s}  
-@media(min-width:650px){  
-  .hero{margin:0;border-radius:16px}  
-  .hero-media{aspect-ratio:auto;height:clamp(220px,32vw,360px);max-height:none}  
-  .hero-media .bg{display:block}  
-  .hero-media .fg{object-fit:contain;object-position:center}  
-  .hero-media::after{height:70%}  
-  .hero-body{position:absolute;left:0;bottom:0;margin:0;padding:0 40px 34px;align-items:flex-start;text-align:left;width:60%}  
-  .hero-title{font-size:clamp(24px,3vw,38px);-webkit-line-clamp:2}  
-  .hero-actions{max-width:200px}  
-  .hero-nav{display:flex}  
-  .dots{padding:12px 0 0}  
-  .grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}  
-  .rcard{flex-basis:180px}  
-  .card:hover,.rcard:hover{transform:translateY(-4px)}  
-  .episodes{grid-template-columns:repeat(8,minmax(0,1fr))}  
-  .detail-poster{width:150px;max-width:150px}  
-  .detail-title{font-size:clamp(22px,3vw,32px)}  
-  .video-box{max-width:1000px;margin-top:14px;border-radius:14px;max-height:calc(100vh - 120px)}  
-  .video-box:fullscreen{margin:0;border-radius:0}  
-}  
-@media(max-width:360px){.brand{font-size:22px}.logo{width:46px;height:46px}header{gap:7px;padding:9px}.search{padding:9px 11px;font-size:13px}.episodes{gap:7px}.episode-btn{min-height:50px;font-size:16px}.ctrl-btn{min-width:34px}.detail-poster{width:96px;max-width:96px}}  
-:root{--red:#ff3b4a;--pink:#ff3b4a;--pink-soft:rgba(255,59,74,.14)}  
-.brand{color:#fff}  
-.hbtn.play{background:var(--red);color:#fff}  
-.filter.active,.season-btn.active,.episode-btn.active{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 4px 14px rgba(255,59,74,.35)}  
-.pbar i{background:var(--red)}  
-.new-tag{background:var(--red);color:#fff}  
-.bar{background:var(--red)}  
-.bar::after{background:var(--red)}  
-.opt.active{background:rgba(255,59,74,.2);color:#fff;outline:1px solid var(--red)}  
-.tag{border-color:rgba(255,59,74,.45);color:#ff7a85}  
-.dot.active{background:var(--red)}  
-.hero-media .fg{opacity:.72;filter:blur(1px) saturate(1.05)}  
-.hero-media .bg{opacity:.9}  
-.hbtn {flex: 1;display: flex;align-items: center;justify-content: center;gap: 8px;padding: 12px 20px;border-radius: 50px;font-weight: 800;font-size: 15px;white-space: nowrap;backdrop-filter: blur(12px);-webkit-backdrop-filter: blur(12px);transition: all 0.3s ease;border: 1px solid transparent;}  
-.hbtn .ic { font-size: 20px; }  
-.hbtn.play {background: rgba(255, 59, 74, 0.65);color: #fff;border: 1px solid rgba(255, 59, 74, 0.5);box-shadow: 0 4px 15px rgba(255, 59, 74, 0.3);}  
-.hbtn.info {background: rgba(255, 255, 255, 0.12);color: #fff;border: 1px solid rgba(255, 255, 255, 0.3);box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);}  
-.hbtn:active { transform: scale(0.95); }  
-.hbtn.play:active { background: rgba(255, 59, 74, 0.85); }  
-.hbtn.info:active { background: rgba(255, 255, 255, 0.25); }  
-@media(min-width:650px){.hero-actions{max-width:380px}}  
-.info-mode #vbox{display:none}  
-#infoPlay{display:none;flex:none;margin-top:6px;padding:10px 20px}  
-.info-mode #infoPlay{display:flex}  
-.hero-media .fg,.hero-media .bg{filter:none}  
-.hero-media .fg{opacity:1;image-rendering:auto}  
-.hero-media .bg{opacity:1;filter:blur(24px) brightness(.55) saturate(1.2)}  
-.hero-kind i{display:none}  
-@media (max-width:899px){  
-  .hero-slide{height:min(74vh,620px)}  
-  .hero-media{position:absolute;inset:0;aspect-ratio:auto;max-height:none;height:100%;padding:0}  
-  .hero-media .bg{display:block}  
-  .hero-media .fg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center 40%}  
-  .hero-media::after{height:60%;background:linear-gradient(to top,var(--bg) 4%,rgba(5,5,5,.78) 38%,transparent)}  
-  .hero-body{position:absolute;left:0;right:0;bottom:0;margin:0;padding:0 16px 14px;gap:0}  
-  .hero-title{font-size:clamp(22px,6.4vw,32px);margin:8px 0 14px;text-shadow:0 2px 12px rgba(0,0,0,.8)}  
-  .hero-kind{flex-wrap:wrap;justify-content:center;gap:8px}  
-  .hero-kind span{padding:5px 12px;border-radius:50px;font-size:12px;font-weight:700;color:#eee;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}  
-  .hero-kind span:first-child{background:rgba(255,59,74,.35);border-color:rgba(255,59,74,.6)}  
-  .hero-actions{max-width:360px}  
-  .dots{gap:5px;padding:12px 24px 4px}  
-  .dot{flex:1;max-width:34px;height:4px;border-radius:2px;background:#3a3a3a}  
-  .dot.active{flex:2.4;max-width:70px;background:#ff3b4a}  
-}  
-.sbox{display:contents}  
-.sbtn{display:none}  
-@media (max-width:899px){  
-  header{position:absolute;top:0;left:0;right:0;padding:12px 14px;background:linear-gradient(to bottom,rgba(0,0,0,.75),rgba(0,0,0,.35) 60%,transparent);backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:0}  
-  main{padding-top:0}  
-  body:has(#featuredSection[hidden]) main{padding-top:84px}  
-  .brand{text-shadow:0 2px 10px rgba(0,0,0,.7)}  
-  .sbox{display:flex;align-items:center;margin-left:auto;gap:6px;padding:2px;border-radius:50px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}  
-  .sbtn{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border:0;border-radius:50%;background:transparent;color:#fff}  
-  .sbtn svg{width:22px;height:22px;fill:none}  
-  .search{display:none;margin:0;width:0;flex:1;max-width:none;border:0;background:transparent;padding:8px 6px;font-size:15px}  
-  header.s-open .brand,header.s-open .logo{display:none}  
-  header.s-open .sbox{flex:1;margin-left:0;background:rgba(20,20,20,.88)}  
-  header.s-open .search{display:block;width:100%}  
-}  
+<style>
+:root{--bg:#06060c;--text:#fff;--muted:#fff;--red:#ff3b4a;--pink:#ff3b4a;--violet:#8a5cff;--stroke:rgba(255,255,255,.13);--glass:linear-gradient(135deg,rgba(255,255,255,.11),rgba(255,255,255,.04));--shadow:0 10px 34px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.10);--grad:linear-gradient(135deg,#ff3b4a,#ff4f93 55%,#8a5cff);--blur:blur(18px) saturate(150%);--head:56px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Nunito,Arial,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 42% at 8% -4%,rgba(255,59,74,.30),transparent 70%),radial-gradient(48% 40% at 104% 18%,rgba(138,92,255,.28),transparent 70%),radial-gradient(70% 50% at 50% 108%,rgba(0,150,255,.16),transparent 70%)}
+button,input{font:inherit}
+button{cursor:pointer;touch-action:manipulation;color:inherit;background:none;border:0;padding:0}
+[hidden]{display:none!important}
+.ic{width:1em;height:1em;fill:currentColor;display:block;pointer-events:none}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:8px}
+.hero-track::-webkit-scrollbar,.filters::-webkit-scrollbar,.seasons::-webkit-scrollbar,.hrow::-webkit-scrollbar{display:none}
+
+/* ---------- header (glass bar) ---------- */
+header{position:sticky;top:calc(8px + env(safe-area-inset-top));z-index:10;display:flex;align-items:center;gap:10px;margin:calc(8px + env(safe-area-inset-top)) auto 0;width:calc(100% - 24px);max-width:1176px;padding:8px 12px;border-radius:22px;background:var(--glass);border:1px solid var(--stroke);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow)}
+.logo{width:44px;height:44px;object-fit:cover;border-radius:50%;border:2px solid rgba(255,59,74,.6);background:#000;flex:0 0 auto;box-shadow:0 0 18px rgba(255,59,74,.35)}
+.brand{font-size:23px;font-weight:900;white-space:nowrap;letter-spacing:-.4px;color:#fff}
+.sbox{display:flex;align-items:center;margin-left:auto;gap:6px;padding:2px;border-radius:50px;background:rgba(255,255,255,.07);border:1px solid var(--stroke)}
+.sbtn{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;color:#fff}
+.sbtn svg{width:21px;height:21px;fill:none}
+.search{display:none;margin:0;width:0;flex:1;min-width:0;border:0;background:transparent;color:#fff;padding:8px 6px;font-size:15px;outline:none}
+.search::placeholder{color:#fff;opacity:1}
+header.s-open .brand,header.s-open .logo{display:none}
+header.s-open .sbox{flex:1;margin-left:0}
+header.s-open .search{display:block;width:100%}
+@media(min-width:900px){
+  .sbox{display:contents}
+  .sbtn{display:none}
+  .search{display:block;margin-left:auto;flex:1;width:100%;max-width:340px;border:1px solid var(--stroke);border-radius:14px;background:rgba(255,255,255,.06);padding:11px 14px;font-size:14px;transition:border-color .2s,box-shadow .2s}
+  .search:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,59,74,.18)}
+}
+
+main{max-width:1200px;margin:auto;padding:6px 14px 40px}
+h2{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:900;color:#fff;margin:22px 0 12px;letter-spacing:-.2px}
+h2::before{content:"";display:inline-block;width:4px;height:22px;border-radius:4px;background:var(--grad);box-shadow:0 0 14px rgba(255,59,74,.6)}
+h2 svg{width:20px;height:20px;fill:var(--red)}
+.row-head{display:flex;align-items:center;justify-content:space-between}
+.row-head h2{margin:22px 0 12px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;margin:14px 0 0;border-radius:26px;overflow:hidden;background:var(--glass);border:1px solid var(--stroke);box-shadow:var(--shadow)}
+.hero-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.hero-slide{flex:0 0 100%;scroll-snap-align:start;position:relative;height:min(64vh,520px);overflow:hidden}
+.hero-media{position:absolute;inset:0;background:#0b0b14;overflow:hidden}
+.hero-media .bg{display:block;position:absolute;inset:-24px;width:calc(100% + 48px);height:calc(100% + 48px);object-fit:cover;filter:blur(30px) brightness(.5) saturate(1.3)}
+.hero-media .fg{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center 30%}
+.hero-media::after{content:"";position:absolute;inset:auto 0 0;height:65%;background:linear-gradient(to top,rgba(6,6,12,.96) 5%,rgba(6,6,12,.6) 45%,transparent);pointer-events:none}
+.hero-body{position:absolute;left:0;right:0;bottom:0;padding:0 16px 16px;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center}
+.hero-kind{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.hero-kind i{display:none}
+.hero-kind span{padding:5px 12px;border-radius:50px;font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.hero-kind span:first-child{background:rgba(255,59,74,.32);border-color:rgba(255,99,115,.6)}
+.hero-title{margin:10px 0 14px;font-size:clamp(22px,6vw,34px);font-weight:900;line-height:1.2;color:#fff;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 2px 14px rgba(0,0,0,.8)}
+.hero-actions{display:flex;gap:10px;width:100%;max-width:380px}
+.hbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:50px;font-weight:800;font-size:15px;white-space:nowrap;color:#fff;border:1px solid transparent;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .15s,box-shadow .2s}
+.hbtn .ic{font-size:20px}
+.hbtn.play{background:var(--grad);border-color:rgba(255,255,255,.28);box-shadow:0 8px 24px rgba(255,59,74,.4)}
+.hbtn.info{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28)}
+.hbtn:active{transform:scale(.95)}
+.dots{display:flex;justify-content:center;gap:6px;padding:12px 0;background:rgba(0,0,0,.25)}
+.dot{width:6px;height:6px;padding:0;border:0;border-radius:3px;background:rgba(255,255,255,.3);transition:all .25s}
+.dot.active{width:22px;background:var(--grad)}
+.hero-nav{display:none;position:absolute;top:50%;margin-top:-40px;z-index:3;width:44px;height:72px;color:#fff;font-size:28px;align-items:center;justify-content:center;border-radius:14px;background:rgba(255,255,255,.1);border:1px solid var(--stroke);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.hero-nav.prev{left:12px}.hero-nav.next{right:12px}
+
+/* ---------- filters ---------- */
+.filters{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 16px;scrollbar-width:none}
+.filter,.season-btn{flex:0 0 auto;padding:10px 18px;border-radius:30px;background:rgba(255,255,255,.07);border:1px solid var(--stroke);color:#fff;font-weight:800;font-size:13px;transition:all .2s;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.filter.active,.season-btn.active,.episode-btn.active{background:var(--grad);color:#fff;border-color:rgba(255,255,255,.35);box-shadow:0 6px 20px rgba(255,59,74,.35)}
+
+/* ---------- rows + grid ---------- */
+.hrow{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none;scroll-snap-type:x proximity}
+.rcard{flex:0 0 140px;scroll-snap-align:start;cursor:pointer;transition:transform .2s}
+.rcard .card-title{font-size:13.5px;margin-top:8px;padding:0 4px}
+.rcard .badge{font-size:11px;padding:5px 10px;bottom:8px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 14px}
+.card{min-width:0;cursor:pointer;background:none;border:0;transition:transform .22s}
+.card:active,.rcard:active{transform:scale(.97)}
+.poster{position:relative;aspect-ratio:3/4;border-radius:22px;background:#12121c;overflow:hidden;border:1px solid var(--stroke);box-shadow:0 12px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12)}
+.poster .bg{display:none}
+.poster .fg{display:block;width:100%;height:100%;object-fit:cover}
+.poster::after{content:"";position:absolute;inset:auto 0 0;height:45%;background:linear-gradient(to top,rgba(6,6,12,.85),transparent);pointer-events:none}
+.badge{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:2;max-width:90%;padding:6px 12px;border-radius:20px;background:rgba(14,14,24,.6);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.new-tag{position:absolute;top:8px;left:8px;z-index:3;background:var(--grad);color:#fff;font-size:10px;font-weight:900;padding:3px 9px;border-radius:10px;letter-spacing:.4px;box-shadow:0 4px 12px rgba(255,59,74,.45)}
+.pbar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.25);z-index:3}
+.pbar i{display:block;height:100%;background:var(--grad)}
+.card-info{padding:10px 4px 0}
+.card-title{font-size:15px;font-weight:800;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.card-sub{margin-top:4px;color:var(--muted);font-size:11.5px;font-weight:600}
+.card-info .card-sub{display:none}
+.empty{grid-column:1/-1;padding:34px 10px;text-align:center;color:var(--muted)}
+
+/* ---------- watch page ---------- */
+.watch{display:none;position:fixed;inset:0;z-index:100;overflow-y:auto;background:radial-gradient(60% 40% at 8% 0%,rgba(255,59,74,.24),transparent 70%),radial-gradient(50% 40% at 100% 22%,rgba(138,92,255,.22),transparent 70%),var(--bg)}
+.watch-head{position:sticky;top:0;z-index:7;height:var(--head);display:flex;align-items:center;gap:6px;padding:0 12px 0 6px;background:rgba(10,10,18,.6);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-bottom:1px solid var(--stroke)}
+.watch-head .back{width:42px;height:42px;border-radius:50%;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center}
+.watch-head .back:active{background:rgba(255,255,255,.14)}
+.watch-head span{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.video-box{position:sticky;top:var(--head);z-index:5;width:100%;aspect-ratio:16/9;max-height:70vh;background:#000;overflow:hidden;user-select:none;-webkit-user-select:none;margin:0 auto}
+.video-box:fullscreen{max-height:none;max-width:none;aspect-ratio:auto;height:100%;margin:0;border-radius:0}
+.video-box:-webkit-full-screen{max-height:none;max-width:none;aspect-ratio:auto;height:100%;margin:0;border-radius:0}
+.video-box.idle{cursor:none}
+video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+.bottom{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:22px 12px 8px;background:linear-gradient(transparent,rgba(0,0,0,.88));transition:opacity .25s}
+.center{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;gap:clamp(18px,8vw,60px);pointer-events:none;transition:opacity .25s}
+.center button{pointer-events:auto;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);border-radius:50%;width:46px;height:46px;font-size:28px;display:flex;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.center #big{width:64px;height:64px;font-size:44px;background:rgba(255,255,255,.16)}
+.center .ic{filter:drop-shadow(0 2px 6px rgba(0,0,0,.8))}
+.idle .bottom,.idle .center{opacity:0;pointer-events:none}.idle .center button{pointer-events:none}
+.loading #big{opacity:0}
+.loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;display:none;flex-direction:column;align-items:center;gap:8px;pointer-events:none;width:100%;padding:0 12px}
+.loading .loader{display:flex}
+.wave{display:flex;align-items:center;justify-content:center;gap:3px;height:24px}
+.wave i{display:block;width:4px;height:16px;border-radius:3px;background:#ff3b4a;box-shadow:0 0 6px rgba(255,59,74,.9),0 0 14px rgba(255,59,74,.45);transform:scaleY(.25);animation:wv 1.1s ease-in-out infinite}
+@keyframes wv{0%,100%{transform:scaleY(.25);opacity:.5}50%{transform:scaleY(1);opacity:1}}
+.lt{font-size:11px;font-weight:700;color:#fff;text-align:center;text-shadow:0 1px 6px rgba(0,0,0,.9);white-space:nowrap}
+.prog{position:relative;height:22px;display:flex;align-items:center;cursor:pointer;touch-action:none}
+.track{position:relative;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.25);transition:height .15s}
+.prog:hover .track{height:6px}
+.buf,.bar{position:absolute;left:0;top:0;height:100%;border-radius:2px;width:0}
+.buf{background:rgba(255,255,255,.35)}.bar{background:var(--grad)}
+.bar::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;background:#fff;border-radius:50%;box-shadow:0 0 8px rgba(255,59,74,.8)}
+.ctrls{display:flex;align-items:center;gap:6px;color:#fff}
+.ctrl-btn{color:#fff;font-size:26px;min-width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px}
+.ctrl-btn:active{background:rgba(255,255,255,.15)}
+.time{font-size:12px;font-weight:700;color:#fff;white-space:nowrap}.sp{flex:1}
+.menu{display:none;position:absolute;right:10px;bottom:62px;z-index:6;width:200px;max-height:75%;overflow-y:auto;padding:8px;border:1px solid var(--stroke);border-radius:16px;background:rgba(18,18,30,.72);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:0 14px 34px rgba(0,0,0,.6)}
+.menu.open{display:block}
+.menu strong{display:block;padding:6px 10px 2px;font-size:11px;color:#fff;letter-spacing:.5px;text-transform:uppercase}
+.opts{display:flex;flex-wrap:wrap;gap:4px;padding:4px}
+.opt{padding:7px 11px;border-radius:9px;background:rgba(255,255,255,.08);color:#fff;font-size:12.5px;font-weight:700;border:1px solid transparent}
+.opt.active{background:rgba(255,59,74,.22);color:#fff;border-color:var(--red)}
+.verr{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:rgba(0,0,0,.85);color:#fff;font-weight:700}
+
+.details{position:relative;padding:20px 16px 44px;overflow:hidden;min-height:60vh}
+.details::before{content:"";position:absolute;inset:-40px;background-image:var(--bg-image);background-size:cover;background-position:center;filter:blur(60px) saturate(1.4);opacity:.3;pointer-events:none}
+.details-content{position:relative;max-width:1000px;margin:0 auto}
+.anime-info{display:flex;flex-direction:row;align-items:flex-start;gap:15px;margin-bottom:22px;padding:14px;border-radius:24px;background:var(--glass);border:1px solid var(--stroke);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow)}
+.detail-poster{flex:0 0 auto;width:110px;max-width:110px;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:16px;border:1px solid var(--stroke);background:#1a1a26;box-shadow:0 8px 25px rgba(0,0,0,.5)}
+.detail-text{flex:1;min-width:0}
+.detail-title{font-size:clamp(18px,5vw,28px);line-height:1.25;overflow-wrap:anywhere;color:#fff;margin:0 0 12px}
+.tag{display:inline-block;padding:6px 12px;border-radius:25px;background:rgba(255,59,74,.13);border:1px solid rgba(255,99,115,.4);color:#fff;font-size:12px;font-weight:800;margin:0 5px 8px 0}
+#episodeSection,#seasonSection{padding:0 14px 14px;margin-bottom:14px;border-radius:22px;background:var(--glass);border:1px solid var(--stroke)}
+.seasons{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 4px;scrollbar-width:none}
+.season-btn{min-width:118px;padding:11px 16px}
+.episodes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.episode-btn{min-height:56px;border:1px solid var(--stroke);border-radius:14px;background:rgba(255,255,255,.07);color:#fff;font-size:18px;font-weight:800;transition:all .2s}
+#infoPlay{display:none;flex:none;margin-top:6px;padding:10px 20px}
+.info-mode #vbox{display:none}
+.info-mode #infoPlay{display:flex}
+
+@media(min-width:650px){
+  .hero-nav{display:flex}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:24px 18px}
+  .rcard{flex-basis:180px}
+  .card:hover,.rcard:hover{transform:translateY(-4px)}
+  .card:hover .poster,.rcard:hover .poster{border-color:rgba(255,99,115,.5);box-shadow:0 16px 38px rgba(255,59,74,.22),inset 0 1px 0 rgba(255,255,255,.14)}
+  .episodes{grid-template-columns:repeat(8,minmax(0,1fr))}
+  .detail-poster{width:150px;max-width:150px}
+  .detail-title{font-size:clamp(22px,3vw,32px)}
+  .video-box{max-width:1000px;margin-top:14px;border-radius:20px;max-height:calc(100vh - 120px);border:1px solid var(--stroke);box-shadow:0 20px 50px rgba(0,0,0,.6)}
+}
+@media(min-width:900px){
+  .hero-slide{height:clamp(300px,34vw,420px)}
+  .hero-media .fg{object-position:88% center}
+  .hero-media::after{height:100%;background:linear-gradient(to right,rgba(6,6,12,.94) 8%,rgba(6,6,12,.55) 45%,transparent 75%),linear-gradient(to top,rgba(6,6,12,.8),transparent 55%)}
+  .hero-body{align-items:flex-start;text-align:left;width:58%;padding:0 40px 34px}
+  .hero-kind{justify-content:flex-start}
+  .hero-title{font-size:clamp(24px,3vw,38px)}
+  .hero-actions{max-width:380px}
+}
+@media(max-width:360px){.brand{font-size:19px}.logo{width:38px;height:38px}.episodes{gap:7px}.episode-btn{min-height:48px;font-size:16px}.ctrl-btn{min-width:34px}.detail-poster{width:96px;max-width:96px}}
+
+/* ---------- extra: player fixes ---------- */
+.loading .center button{opacity:0;pointer-events:none}
+.lt{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+/* ---------- extra: filter bar under search ---------- */
+.fbar{max-width:1176px;margin:10px auto 0;padding:0 12px;display:flex;flex-direction:column;gap:8px}
+.fbar .filters{padding:2px 2px 4px}
+.sortsel{align-self:flex-start;padding:9px 14px;border-radius:30px;background:rgba(255,255,255,.07);border:1px solid var(--stroke);color:#fff;font-weight:800;font-size:13px;outline:none}
+.sortsel option{background:#12121c;color:#fff}
+@media(min-width:650px){.fbar{flex-direction:row;align-items:center}.fbar .filters{flex:1;min-width:0}.sortsel{align-self:center}}
+/* ---------- extra: top rated slider ---------- */
+.toptrack{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 2px 10px;-webkit-overflow-scrolling:touch}
+.toptrack::-webkit-scrollbar{display:none}
+.tslide{flex:0 0 86%;max-width:560px;scroll-snap-align:center;position:relative;height:min(58vh,440px);border-radius:26px;overflow:hidden;background:var(--glass);border:1px solid var(--stroke);box-shadow:var(--shadow);cursor:pointer}
+.trank{position:absolute;top:12px;left:12px;z-index:3;background:var(--grad);color:#fff;font-weight:900;font-size:14px;padding:5px 13px;border-radius:14px;box-shadow:0 4px 12px rgba(255,59,74,.45)}
+.tbody{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 16px 16px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.tbody .hero-title{margin:0}
+.tmeta{display:flex;flex-wrap:wrap;gap:8px}
+.tmeta span{padding:4px 11px;border-radius:50px;font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+.tbody .hbtn{flex:none;padding:10px 22px}
+@media(min-width:900px){.tslide{flex-basis:560px;height:380px}}
+/* ---------- extra: like / dislike ---------- */
+.vote{display:flex;gap:10px;margin:2px 0 8px}
+.vbtn{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;background:rgba(255,255,255,.08);border:1px solid var(--stroke);color:#fff;font-weight:800;font-size:14px;transition:all .2s}
+.vbtn .ic{font-size:20px}
+.vbtn.dis .ic{transform:rotate(180deg)}
+.vbtn.on{background:var(--grad);border-color:rgba(255,255,255,.35);box-shadow:0 6px 18px rgba(255,59,74,.35)}
+.vbtn:active{transform:scale(.95)}
+/* ---------- extra: footer + sr-only ---------- */
+.foot{max-width:1176px;margin:10px auto 0;padding:18px 14px calc(26px + env(safe-area-inset-bottom));text-align:center;color:#fff;font-size:13px;font-weight:700;border-top:1px solid var(--stroke)}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
 </style>  
 </head>  
 <body>  
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">  
+  <symbol id="i-like" viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>  
   <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></symbol>  
   <symbol id="i-info" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>  
@@ -634,9 +720,19 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   <div class="brand">Move Tok</div>  
   <div class="sbox">  
     <button id="sBtn" class="sbtn" type="button" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>  
-    <input id="search" class="search" type="search" placeholder="Search movies, K-Dramas...">  
+    <input id="search" class="search" type="search" placeholder="Search movies, dramas, anime...">  
   </div>  
-</header>  <main>  
+</header>
+<nav class="fbar" aria-label="Filter and sort">
+  <div class="filters">  
+    <button class="filter active" data-filter="all">All</button>  
+    <button class="filter" data-filter="Anime">Dramas &amp; Anime</button>  
+    <button class="filter" data-filter="Movie">Hindi Movies</button>  
+    <button class="filter" data-filter="Hentai">Hindi Hentai</button>  
+  </div>
+  <select id="sortSel" class="sortsel" aria-label="Sort by"><option value="new">Newest</option><option value="old">Oldest</option><option value="az">A - Z</option><option value="top">Top Rated</option></select>
+</nav>  <main>
+  <h1 class="sr-only">Move Tok - Watch Hindi Movies, K-Dramas &amp; Anime Online</h1>  
   <section id="featuredSection" hidden>  
     <div class="hero">  
       <button id="heroPrev" class="hero-nav prev" aria-label="Previous"><svg class="ic"><use href="#i-left"/></svg></button>  
@@ -650,21 +746,22 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
   </section>    <section id="latestSection" hidden>  
     <div class="row-head"><h2><svg><use href="#i-bell"/></svg> Latest Update</h2></div>  
     <div id="latestRow" class="hrow"></div>  
-  </section>    <div class="row-head"><h2><svg><use href="#i-star"/></svg> Newest Drops</h2><span id="count" class="card-sub">0 titles</span></div>  
-  <div class="filters">  
-    <button class="filter active" data-filter="all">All</button>  
-    <button class="filter" data-filter="Anime">K-Dramas</button>  
-    <button class="filter" data-filter="Movie">Hindi Movies</button>  
-    <button class="filter" data-filter="Hentai">Hindi Hentai</button>  
-  </div>  
+  </section>    <section id="topSection" hidden>
+    <div class="row-head"><h2><svg><use href="#i-star"/></svg> Top Rated Anime</h2></div>
+    <div id="topRow" class="toptrack"></div>
+  </section>
+  <div class="row-head"><h2><svg><use href="#i-star"/></svg> Newest Drops</h2><span id="count" class="card-sub">0 titles</span></div>  
+    
   <div id="catalog" class="grid"><div class="empty">Loading...</div></div>  
-</main>  <section id="watch" class="watch">  
+<noscript><ul><?php foreach (array_slice(is_array($catalog) ? ($catalog['anime'] ?? []) : [], 0, 60) as $__n) { if (!empty($__n['title']) && ($__n['category'] ?? '') !== 'hentai') echo '<li>' . $h($__n['title']) . '</li>'; } ?></ul></noscript>
+</main>
+<footer class="foot">&copy; 2026 Move Tok. Made with ❤️ in India by Harsh Singh</footer>  <section id="watch" class="watch">  
   <div class="watch-head">  
     <button id="backBtn" class="back" aria-label="Back"><svg class="ic"><use href="#i-back"/></svg></button>  
     <span id="vTitle"></span>  
   </div>  
   <div class="video-box" id="vbox">  
-    <video id="video" playsinline webkit-playsinline preload="auto"></video>  
+    <video id="video" playsinline webkit-playsinline preload="auto" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></video>  
     <div class="loader"><div class="wave" id="wave"></div><div class="lt" id="lt">Loading...</div></div>  
     <div class="center">  
       <button id="rew" aria-label="Back 10 seconds"><svg class="ic"><use href="#i-rew"/></svg></button>  
@@ -694,7 +791,8 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
         <img id="detailPoster" class="detail-poster" alt="Poster">  
         <div class="detail-text">  
           <h1 id="detailTitle" class="detail-title"></h1>  
-          <div><span id="detailType" class="tag"></span><span id="episodeLabel" class="tag"></span><span id="infoLabel" class="tag"></span></div>  
+          <div><span id="detailType" class="tag"></span><span id="episodeLabel" class="tag"></span><span id="infoLabel" class="tag"></span></div>
+          <div class="vote"><button id="likeBtn" class="vbtn" type="button" aria-label="Like"><svg class="ic"><use href="#i-like"/></svg><span id="likeN">0</span></button><button id="dislikeBtn" class="vbtn dis" type="button" aria-label="Dislike"><svg class="ic"><use href="#i-like"/></svg><span id="dislikeN">0</span></button></div>  
           <button id="infoPlay" class="hbtn play" type="button"><svg class="ic"><use href="#i-play"/></svg>Watch Now</button>  
         </div>  
       </div>  
@@ -703,13 +801,14 @@ video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
     </div>  
   </div>  
 </section>  <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>  <script>  
+const VOTES = <?= json_encode((object)$VOTES_MAP) ?>;
 const CATALOG = <?= json_encode($catalog, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;  
   
 const $=id=>document.getElementById(id);  
 const LATEST_MS=2*24*60*60*1000;   // Latest Update: sirf 2 din  
 const RECENT_MAX=5;                // Recent Watch: sirf 5  
 const HERO_MAX=5;                  // Slider: sirf 5  
-let infoMode=false,holdPlay=false,allItems=[],groups=[],currentFilter="all",currentGroup=null,currentEpisode=null,currentSeason=1,currentQuality="",watchOpen=false,pendingSeek=0,lastSave=0,recorded="";  
+let currentSort="new",infoMode=false,holdPlay=false,allItems=[],groups=[],currentFilter="all",currentGroup=null,currentEpisode=null,currentSeason=1,currentQuality="",watchOpen=false,pendingSeek=0,lastSave=0,recorded="";  
   
 /* ---------- helpers ---------- */  
 function safeUrl(v){  
@@ -743,7 +842,7 @@ const store={
   del(k){try{localStorage.removeItem(k)}catch{}}  
 };  
 const gkey=g=>g.type+"|"+g.title.toLowerCase();  
-const kindLabel=g=>g.type==="Movie"?"Hindi Movie":g.type==="Hentai"?"Hindi Hentai":"K-Drama";  
+const kindLabel=g=>g.type==="Movie"?"Hindi Movie":g.type==="Hentai"?"Hindi Hentai":"Drama / Anime";  
 const isHentai=g=>g.type==="Hentai";  
   
 /* ---------- recent watch storage (max 5, sabse purana apne aap hat jata hai; hentai save nahi hota) ---------- */  
@@ -814,7 +913,7 @@ function buildItems(){
         if(eu&&!Object.values(q).includes(eu))q[e.quality||"Default"]=eu;  
         out.push({id:a.slug+"|"+s.number+"|"+e.number,title:String(a.title).trim(),type,poster,  
           season:Number(s.number)||1,episode:Number(e.number)||1,qualities:q,mp4Url:"",blk:a.blk?{t:a.blk,u:a.category==="movie"?"":(s.key||s.number)+"-"+e.number}:null,  
-          ts:toTime(e.added_at)||toTime(a.added_at)});  
+          rating:Number(a.rating)||0,vk:a.vk||"",ts:toTime(e.added_at)||toTime(a.added_at)});  
       });  
     });  
   });  
@@ -825,7 +924,7 @@ function buildGroups(){
   const map=new Map();  
   allItems.forEach(item=>{  
     const key=item.type+"|"+item.title.toLowerCase();  
-    if(!map.has(key))map.set(key,{title:item.title,type:item.type,poster:item.poster,items:[]});  
+    if(!map.has(key))map.set(key,{title:item.title,type:item.type,poster:item.poster,vk:item.vk,rating:0,items:[]});  
     const g=map.get(key);  
     if(!g.poster&&item.poster)g.poster=item.poster;  
     g.items.push(item);  
@@ -833,7 +932,7 @@ function buildGroups(){
   groups=[...map.values()];  
   groups.forEach(g=>{  
     g.items.sort((a,b)=>a.season-b.season||a.episode-b.episode);  
-    g.ts=Math.max(0,...g.items.map(x=>x.ts));  
+    g.ts=Math.max(0,...g.items.map(x=>x.ts));g.rating=Math.max(0,...g.items.map(x=>x.rating||0));  
     g.hay=norm(g.title+" "+kindLabel(g));g.words=g.hay.split(" ");  
   });  
   groups.sort((a,b)=>b.ts-a.ts);  
@@ -874,6 +973,28 @@ function rowCard(g,item,opts){
   const t=document.createElement("div");t.className="card-title";t.textContent=g.title;  
   card.append(poster,t);card.onclick=()=>openGroup(g,item);return card;  
 }  
+function voteScore(g){const v=VOTES[g.vk]||[0,0];return v[0]-v[1]}
+function topCmp(a,b){return (b.rating||0)-(a.rating||0)||voteScore(b)-voteScore(a)||b.ts-a.ts}
+function renderTop(searching){
+  const row=$("topRow"),keep=row.scrollLeft;row.replaceChildren();
+  const list=groups.filter(g=>g.type==="Anime").sort(topCmp).slice(0,10);
+  list.forEach((g,i)=>{
+    const sl=document.createElement("article");sl.className="tslide";
+    const media=document.createElement("div");media.className="hero-media";addPoster(media,g.poster,g.title);
+    media.querySelectorAll("img").forEach(im=>{im.loading=i<2?"eager":"lazy"});
+    const rk=document.createElement("span");rk.className="trank";rk.textContent="#"+(i+1);
+    const body=document.createElement("div");body.className="tbody";
+    const t=document.createElement("div");t.className="hero-title";t.textContent=g.title;
+    const meta=document.createElement("div");meta.className="tmeta";
+    if(g.rating){const r=document.createElement("span");r.textContent="★ "+g.rating.toFixed(1);meta.appendChild(r)}
+    const sn=new Set(g.items.map(x=>x.season)).size;
+    const m2=document.createElement("span");m2.textContent=sn+(sn===1?" Season":" Seasons")+" • "+g.items.length+" EP";meta.appendChild(m2);
+    const pb=document.createElement("button");pb.className="hbtn play";pb.append(icon("i-play"),document.createTextNode("Watch Now"));
+    body.append(t,meta,pb);sl.append(media,rk,body);sl.onclick=()=>openGroup(g);row.appendChild(sl);
+  });
+  row.scrollLeft=keep;
+  $("topSection").hidden=searching||!list.length||!(currentFilter==="all"||currentFilter==="Anime");
+}
 function renderRows(){  
   const searching=$("search").value.trim()!=="";  
   // Recent Watch: max 5, hentai nahi  
@@ -887,20 +1008,26 @@ function renderRows(){
   $("recentSection").hidden=searching||!rr.children.length;  
   // Latest Update: sirf pichle 2 din, hentai nahi  
   const lr=$("latestRow");lr.replaceChildren();  
-  const now=Date.now(),seen=new Set();  
-  allItems.filter(x=>x.type!=="Hentai"&&x.ts&&now-x.ts<LATEST_MS).sort((a,b)=>b.ts-a.ts).forEach(item=>{  
-    const g=groups.find(x=>x.items.includes(item));if(!g||seen.has(gkey(g)))return;  
-    seen.add(gkey(g));if(seen.size>12)return;  
-    lr.appendChild(rowCard(g,item,{isNew:true}));  
+  const now=Date.now(),cand=[];  
+  groups.forEach(g=>{  
+    if(isHentai(g)||!g.ts||now-g.ts>=LATEST_MS)return;  
+    let best=null;  
+    g.items.forEach(x=>{if(x.ts&&now-x.ts<LATEST_MS&&(!best||x.ts>best.ts||(x.ts===best.ts&&(x.season>best.season||(x.season===best.season&&x.episode>best.episode)))))best=x});  
+    if(best)cand.push([g,best]);  
   });  
-  $("latestSection").hidden=searching||!lr.children.length;  
+  cand.sort((a,b)=>b[1].ts-a[1].ts).slice(0,20).forEach(c=>lr.appendChild(rowCard(c[0],c[1],{isNew:true})));  
+  $("latestSection").hidden=searching||!lr.children.length;
+  renderTop(searching);  
 }  
 function render(){  
   const q=$("search").value.trim();  
   // "All" me hentai nahi dikhega; hentai sirf "Hindi Hentai" filter me  
   const base=groups.filter(g=>currentFilter==="all"?!isHentai(g):g.type===currentFilter);  
   let list=base,sugg=[];  
-  if(q){const r=searchGroups(q,base);list=r.list;sugg=r.sugg}  
+  if(q){const r=searchGroups(q,base);list=r.list;sugg=r.sugg}
+  else if(currentSort==="old")list=[...base].sort((a,b)=>a.ts-b.ts);
+  else if(currentSort==="az")list=[...base].sort((a,b)=>a.title.localeCompare(b.title));
+  else if(currentSort==="top")list=[...base].sort(topCmp);  
   const cat=$("catalog");cat.replaceChildren();  
   $("count").textContent=list.length+(list.length===1?" title":" titles");  
   if(!list.length){  
@@ -979,6 +1106,8 @@ function openGroup(g,startItem,noPlay){
     $("details").style.setProperty("--bg-image",'url("'+g.poster.replace(/["\\\n()]/g,c=>encodeURIComponent(c))+'")');  
   }else{p.removeAttribute("src");p.style.display="none";$("details").style.removeProperty("--bg-image")}  
   closeMenu();  
+  loadVotes(g);
+  seo(g.title+" - Watch Online in Hindi | Move Tok","Watch "+g.title+" ("+kindLabel(g)+") online in HD on Move Tok. "+(g.type==="Movie"?"Full movie":g.items.length+" episodes")+" available.");
   const movie=g.type==="Movie";  
   $("seasonSection").hidden=movie;$("episodeSection").hidden=movie;  
   selectEpisode(startItem||g.items[0]||null,true);  
@@ -1058,7 +1187,7 @@ function loadEpisode(noBlk){
 function markQuality(){document.querySelectorAll("#qOpts .opt").forEach(b=>b.classList.toggle("active",b.textContent===currentQuality))}  
 function closeWatch(){  
   stopVideo();infoMode=false;$("watch").classList.remove("info-mode");$("watch").style.display="none";closeMenu();  
-  document.body.style.overflow="";currentGroup=null;currentEpisode=null;currentQuality="";watchOpen=false;  
+  document.body.style.overflow="";currentGroup=null;currentEpisode=null;currentQuality="";watchOpen=false;seo(SEO0.t,SEO0.d);  
   const fs=document.fullscreenElement||document.webkitFullscreenElement;  
   if(fs)(document.exitFullscreen||document.webkitExitFullscreen).call(document);  
   renderRows();  
@@ -1299,6 +1428,39 @@ document.querySelectorAll(".filter").forEach(b=>b.onclick=()=>{
   render();  
 });  
   
+$("sortSel").onchange=e=>{currentSort=e.target.value;render()};
+
+/* ---------- like / dislike ---------- */
+const vRaw=g=>g.type+"|"+g.title;
+const myVote=g=>{try{return localStorage.getItem("mt:v:"+vRaw(g))||"none"}catch{return "none"}};
+function markVote(v){$("likeBtn").classList.toggle("on",v==="like");$("dislikeBtn").classList.toggle("on",v==="dislike")}
+function setCounts(l,d){$("likeN").textContent=l;$("dislikeN").textContent=d}
+function loadVotes(g){
+  const b=VOTES[g.vk]||[0,0];setCounts(b[0],b[1]);markVote(myVote(g));
+  fetch("?action=votes&k="+encodeURIComponent(vRaw(g))).then(r=>r.json()).then(d=>{if(d&&d.ok&&currentGroup===g){setCounts(d.l,d.d);VOTES[g.vk]=[d.l,d.d]}}).catch(()=>{});
+}
+function castVote(kind){
+  const g=currentGroup;if(!g)return;
+  const prev=myVote(g),next=prev===kind?"none":kind;
+  try{localStorage.setItem("mt:v:"+vRaw(g),next)}catch{}
+  let l=+$("likeN").textContent||0,d=+$("dislikeN").textContent||0;
+  if(prev==="like")l=Math.max(0,l-1);if(prev==="dislike")d=Math.max(0,d-1);
+  if(next==="like")l++;if(next==="dislike")d++;
+  setCounts(l,d);markVote(next);
+  const fd=new FormData();fd.append("k",vRaw(g));fd.append("v",next);fd.append("p",prev);
+  fetch("?action=vote",{method:"POST",body:fd}).then(r=>r.json()).then(r=>{if(r&&r.ok){VOTES[g.vk]=[r.l,r.d];if(currentGroup===g)setCounts(r.l,r.d)}}).catch(()=>{});
+}
+$("likeBtn").onclick=()=>castVote("like");
+$("dislikeBtn").onclick=()=>castVote("dislike");
+
+/* ---------- SEO (title/description badalte hain) ---------- */
+const SEO0={t:document.title,d:(document.querySelector('meta[name="description"]')||{}).content||""};
+function seo(t,d){
+  document.title=t;
+  const m=document.querySelector('meta[name="description"]');if(m&&d)m.setAttribute("content",d);
+  const og=document.querySelector('meta[property="og:title"]');if(og)og.setAttribute("content",t);
+}
+
 /* ---------- start ---------- */  
 allItems=buildItems();  
 buildGroups();render();renderSlider();  
