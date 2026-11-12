@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-12T14:01:07.817Z",
+  "updated_at": "2026-11-12T22:41:02.584Z",
   "anime": [
     {
       "id": "overflow-hindi",
@@ -198,10 +198,10 @@
               "number": 1,
               "title": "Episode 1",
               "thumbnail": "",
-              "url": "https://hugh.cdn.rumble.cloud/video/s8/2/m/j/H/6/mjH6t.oaa.mp4",
-              "quality": "360p",
+              "url": "https://rumble.com/hls-vod/66RIGvXdVqs/playlist.m3u8",
+              "quality": "Auto",
               "duration": "",
-              "format": "mp4",
+              "format": "m3u8",
               "added_at": "2026-11-12T14:01:07.804Z"
             }
           ]
