@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-11T02:51:47.349Z",
+  "updated_at": "2026-11-13T05:52:12.259Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -324,6 +324,39 @@
                 }
               ],
               "added_at": "2026-11-09T03:43:27.902Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dilwale-dulhania-le-jayenge",
+      "slug": "dilwale-dulhania-le-jayenge",
+      "title": "Dilwale dulhania Le jayenge",
+      "poster": "https://imgs.search.brave.com/XLAUirmlSzzaxfTu2tYWaAL3eybLF2-OhPN02GgCIgA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMuZGlnaXQuaW4v/T1RUL3YyL2ltYWdl/cy9kaWx3YWxlLWR1/bGhhbmlhLWxlLWph/eWVuZ2UtMTA5Njg2/anBnP3RyPXctNjAw",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-13T05:52:12.234Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Dilwale dulhania Le jayenge",
+              "thumbnail": "",
+              "url": "https://archive.org/download/Natsuko/Natsuko.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-13T05:52:12.247Z"
             }
           ]
         }
