@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-14T03:28:17.084Z",
+  "updated_at": "2026-11-14T03:30:27.729Z",
   "anime": [
     {
       "id": "our-sticky-love-episode-1-hindi-dubbed-full-latest-k-drama",
@@ -490,6 +490,39 @@
               "duration": "",
               "format": "m3u8",
               "added_at": "2026-11-14T03:28:17.078Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "overgeared-s-1",
+      "slug": "overgeared-s-1",
+      "title": "Overgeared (S-1)",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjQ3YWEzMDUtZTgyZS00YjUzLWJjNTktZThjZDM4OWQ1MWY1XkEyXkFqcGc@._V1_.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "anime",
+      "popularity": 0,
+      "added_at": "2026-11-14T03:30:27.718Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://rumble.com/hls-vod/mRZEssM4xJM/playlist.m3u8?esp=hd",
+              "quality": "Auto",
+              "duration": "",
+              "format": "m3u8",
+              "added_at": "2026-11-14T03:30:27.720Z"
             }
           ]
         }
