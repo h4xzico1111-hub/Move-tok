@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-14T03:27:46.447Z",
+  "updated_at": "2026-11-14T03:28:17.084Z",
   "anime": [
     {
       "id": "our-sticky-love-episode-1-hindi-dubbed-full-latest-k-drama",
@@ -480,6 +480,16 @@
               "duration": "",
               "format": "m3u8",
               "added_at": "2026-11-14T03:27:46.440Z"
+            },
+            {
+              "number": 5,
+              "title": "Episode 5",
+              "thumbnail": "",
+              "url": "https://rumble.com/hls-vod/bfbQR5CfKug/playlist.m3u8?esp=hd",
+              "quality": "Auto",
+              "duration": "",
+              "format": "m3u8",
+              "added_at": "2026-11-14T03:28:17.078Z"
             }
           ]
         }
