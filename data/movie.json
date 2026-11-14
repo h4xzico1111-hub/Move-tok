@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-13T06:00:42.179Z",
+  "updated_at": "2026-11-14T12:21:19.760Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -357,6 +357,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-13T05:52:12.247Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lagaan-2001-hindi-dvdrip-xvi-d-m-su-b-x-rg",
+      "slug": "lagaan-2001-hindi-dvdrip-xvi-d-m-su-b-x-rg",
+      "title": "Lagaan 2001 Hindi DVDRip Xvi D M Su B X RG",
+      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT53_yLaBw2sj6Jzxrmtz8UPfb2PQuixjea9QYSLwh59g&s=10",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-14T12:21:19.745Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Lagaan 2001 Hindi DVDRip Xvi D M Su B X RG",
+              "thumbnail": "",
+              "url": "https://archive.org/download/lagaan-2001-hindi-dvdrip-xvi-d-m-su-b-x-rg/Lagaan%202001%20Hindi%20DVDRip%20XviD%20M-SuB%20xRG.mp4",
+              "quality": "480p",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-14T12:21:19.751Z"
             }
           ]
         }
