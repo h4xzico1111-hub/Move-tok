@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-14T03:24:10.774Z",
+  "updated_at": "2026-11-14T03:25:42.280Z",
   "anime": [
     {
       "id": "our-sticky-love-episode-1-hindi-dubbed-full-latest-k-drama",
@@ -417,6 +417,39 @@
               "duration": "",
               "format": "m3u8",
               "added_at": "2026-11-14T03:24:10.771Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tokyo-revenger-season-4",
+      "slug": "tokyo-revenger-season-4",
+      "title": "Tokyo revenger season 4",
+      "poster": "https://yourimageshare.com/ib/5K2NCpalIy.png",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "anime",
+      "popularity": 0,
+      "added_at": "2026-11-14T03:25:42.272Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://rumble.com/hls-vod/Jb-slhRtuk4/playlist.m3u8",
+              "quality": "Auto",
+              "duration": "",
+              "format": "m3u8",
+              "added_at": "2026-11-14T03:25:42.272Z"
             }
           ]
         }
