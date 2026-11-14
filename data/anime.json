@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-11T02:45:53.062Z",
+  "updated_at": "2026-11-14T03:24:10.774Z",
   "anime": [
     {
       "id": "our-sticky-love-episode-1-hindi-dubbed-full-latest-k-drama",
@@ -384,6 +384,39 @@
                 }
               ],
               "added_at": "2026-11-11T02:45:53.056Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "black-clover-season-2",
+      "slug": "black-clover-season-2",
+      "title": "Black Clover Season 2",
+      "poster": "https://yourimageshare.com/ib/TSrTQtSWVS.webp",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "anime",
+      "popularity": 0,
+      "added_at": "2026-11-14T03:24:10.766Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://rumble.com/hls-vod/66MUQhci36Q/playlist.m3u8",
+              "quality": "Auto",
+              "duration": "",
+              "format": "m3u8",
+              "added_at": "2026-11-14T03:24:10.771Z"
             }
           ]
         }
