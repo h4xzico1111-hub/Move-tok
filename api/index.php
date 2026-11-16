@@ -863,29 +863,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
 .fbar{max-width:1176px;margin:10px auto 0;padding:0 12px;display:flex;flex-direction:column;gap:8px}
 .fbar .filters{padding:2px 2px 4px}
 @media(min-width:650px){.fbar{flex-direction:row;align-items:center}.fbar .filters{flex:1;min-width:0}}
-
-/* ---------- download ---------- */
-.dl-btn{display:inline-flex;align-items:center;gap:6px;background:#111 !important;color:#fff !important;border-color:#111 !important;cursor:pointer}
-.dl-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-.dl-ov{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:16px}
-.dl-ov.open{display:flex}
-.dl-box{width:100%;max-width:380px;background:#fff;border-radius:22px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.4);color:var(--text)}
-.dl-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.dl-head b{font-size:17px}
-.dl-x{font-size:26px;line-height:1;padding:2px 8px;color:var(--muted)}
-.dl-sub{font-size:12.5px;font-weight:700;color:var(--muted);margin:0 0 12px;overflow-wrap:anywhere}
-.dl-opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:20px}
-.dl-q{padding:9px 16px;border-radius:12px;background:#f1f1f4;border:2px solid transparent;font-weight:800;font-size:14px;color:var(--text)}
-.dl-q.active{background:#111;color:#fff}
-.dl-go{width:100%;padding:13px;border-radius:50px;background:#111;color:#fff;font-weight:800;font-size:15px}
-.dl-go:disabled{opacity:.45}
-.dl-prog{display:none;margin-top:12px}
-.dl-prog.on{display:block}
-.dl-track{height:8px;border-radius:8px;background:#e5e5ea;overflow:hidden}
-.dl-bar{height:100%;width:0;background:#111;transition:width .2s}
-.dl-msg{margin-top:8px;font-size:12.5px;font-weight:700;color:var(--muted);text-align:center;overflow-wrap:anywhere}
-.dl-cancel{display:none;margin:8px auto 0;font-size:13px;font-weight:800;color:#d33}
-.dl-cancel.on{display:block}
 </style>
 </head>    
 <body>    
@@ -1028,7 +1005,7 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
         <img id="detailPoster" class="detail-poster" alt="Poster">    
         <div class="detail-text">    
           <h1 id="detailTitle" class="detail-title"></h1>    
-          <div><span id="detailType" class="tag"></span><span id="episodeLabel" class="tag"></span><span id="infoLabel" class="tag"></span><button id="dlBtn" class="tag dl-btn" type="button"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>Download</button></div>  
+          <div><span id="detailType" class="tag"></span><span id="episodeLabel" class="tag"></span><span id="infoLabel" class="tag"></span></div>  
           <button id="infoPlay" class="hbtn play" type="button"><svg class="ic"><use href="#i-play"/></svg>Watch Now</button>    
         </div>    
       </div>    
@@ -1048,16 +1025,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
   </div>    
 </section>  
 
-<div id="dlOv" class="dl-ov">
-  <div class="dl-box">
-    <div class="dl-head"><b>Download</b><button id="dlX" class="dl-x" type="button" aria-label="Close">&times;</button></div>
-    <p id="dlSub" class="dl-sub"></p>
-    <div id="dlOpts" class="dl-opts"></div>
-    <button id="dlGo" class="dl-go" type="button" disabled>Download</button>
-    <div id="dlProg" class="dl-prog"><div class="dl-track"><div id="dlBar" class="dl-bar"></div></div><div id="dlMsg" class="dl-msg"></div></div>
-    <button id="dlCancel" class="dl-cancel" type="button">Cancel</button>
-  </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>  
 <script>    
 const CATALOG = <?= json_encode($catalog, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;    
@@ -1910,174 +1877,6 @@ $("infoPlay").onclick=()=>{
   if(currentEpisode)loadEpisode();
   else if(currentGroup&&currentGroup.items[0])selectEpisode(currentGroup.items[0]);
 };
-
-/* ============ DOWNLOAD ============ */
-(function(){
-  const ov=$("dlOv"),opts=$("dlOpts"),go=$("dlGo"),prog=$("dlProg"),bar=$("dlBar"),msg=$("dlMsg"),cancel=$("dlCancel");
-  let selQ="",qmap={},busy=false,abortC=null,itemRef=null;
-
-  function setMsg(t){msg.textContent=t}
-  function setPct(p){bar.style.width=Math.max(0,Math.min(100,p))+"%"}
-  function mb(n){return (n/1048576).toFixed(1)+" MB"}
-  function safeName(s){return String(s).replace(/[\\\/:*?"<>|]+/g," ").replace(/\s+/g," ").trim().slice(0,90)||"video"}
-  function baseName(){
-    const g=currentGroup,e=currentEpisode;
-    let n=g?g.title:"video";
-    if(g&&g.type!=="Movie"&&e)n+=" S"+e.season+"E"+e.episode;
-    return safeName(n+" "+selQ.replace(/\s/g,""));
-  }
-  function saveBlob(blob,name){
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);a.download=name;
-    document.body.appendChild(a);a.click();
-    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},60000);
-  }
-  function loadQualities(item){
-    if(Object.keys(item.qualities||{}).length||!item.blk)return Promise.resolve();
-    const u="?action=stream&tmdbId="+encodeURIComponent(item.blk.t)+(item.blk.u?"&uniqueId="+encodeURIComponent(item.blk.u):"");
-    return fetch(u).then(r=>r.json()).then(d=>{
-      if(d&&d.ok&&d.streams)d.streams.forEach(x=>{item.qualities[x.quality]=x.url});
-    }).catch(()=>{});
-  }
-  function renderOpts(){
-    opts.replaceChildren();
-    qmap=getQualities(itemRef);
-    const names=Object.keys(qmap).sort((a,b)=>a==="Auto"?-1:b==="Auto"?1:(parseInt(b)||0)-(parseInt(a)||0));
-    if(!names.length){opts.textContent="Download link available nahi hai.";go.disabled=true;return}
-    names.forEach(n=>{
-      const b=document.createElement("button");b.type="button";b.className="dl-q";b.textContent=n;
-      b.onclick=()=>{if(busy)return;selQ=n;opts.querySelectorAll(".dl-q").forEach(x=>x.classList.toggle("active",x===b));go.disabled=false};
-      opts.appendChild(b);
-    });
-  }
-  function openDl(){
-    if(!currentGroup||!currentEpisode)return;
-    itemRef=currentEpisode;selQ="";go.disabled=true;busy=false;
-    prog.classList.remove("on");cancel.classList.remove("on");setPct(0);setMsg("");
-    const e=currentEpisode;
-    $("dlSub").textContent=currentGroup.title+(currentGroup.type==="Movie"?"":" • Season "+e.season+" • EP "+e.episode);
-    ov.classList.add("open");
-    opts.textContent="Loading...";
-    loadQualities(itemRef).then(()=>{if(ov.classList.contains("open")&&itemRef===e)renderOpts()});
-  }
-  function closeDl(){
-    if(busy&&abortC){abortC.abort()}
-    busy=false;ov.classList.remove("open");
-  }
-
-  /* ---- HLS (m3u8) downloader ---- */
-  async function getText(url,sig){
-    const r=await fetch(url,{signal:sig});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    return r.text();
-  }
-  function parseMaster(txt,base){
-    const L=txt.split(/\r?\n/);let best=null;
-    for(let i=0;i<L.length;i++){
-      if(L[i].startsWith("#EXT-X-STREAM-INF")){
-        const bw=+((L[i].match(/BANDWIDTH=(\d+)/)||[])[1]||0);
-        let j=i+1;while(j<L.length&&(!L[j].trim()||L[j].startsWith("#")))j++;
-        if(L[j]&&(!best||bw>best.bw))best={bw,url:new URL(L[j].trim(),base).href};
-      }
-    }
-    return best&&best.url;
-  }
-  async function dlHls(url,sig){
-    setMsg("Playlist load ho rahi hai...");
-    let base=url,txt=await getText(url,sig);
-    if(txt.includes("#EXT-X-STREAM-INF")){
-      const v=parseMaster(txt,base);
-      if(!v)throw new Error("Playlist invalid");
-      base=v;txt=await getText(v,sig);
-    }
-    if(/#EXT-X-KEY:(?!METHOD=NONE)/.test(txt))throw new Error("Ye video encrypted hai, download possible nahi.");
-    const L=txt.split(/\r?\n/);
-    let init=null;const segs=[];
-    for(const raw of L){
-      const l=raw.trim();if(!l)continue;
-      if(l.startsWith("#EXT-X-MAP")){
-        const m=l.match(/URI="([^"]+)"/);if(m)init=new URL(m[1],base).href;
-      }else if(l[0]!=="#")segs.push(new URL(l,base).href);
-    }
-    if(!segs.length)throw new Error("Segments nahi mile");
-    const isFmp4=!!init;
-    const blobs=new Array(segs.length);
-    let done=0,next=0,bytes=0;
-    async function one(i){
-      for(let t=0;t<4;t++){
-        try{
-          const r=await fetch(segs[i],{signal:sig});
-          if(!r.ok)throw new Error("HTTP "+r.status);
-          return await r.blob();
-        }catch(e){
-          if(sig.aborted)throw e;
-          if(t===3)throw e;
-          await new Promise(res=>setTimeout(res,700*(t+1)));
-        }
-      }
-    }
-    async function worker(){
-      while(true){
-        const i=next++;if(i>=segs.length)return;
-        const b=await one(i);blobs[i]=b;bytes+=b.size;done++;
-        setPct(done/segs.length*100);
-        setMsg(done+" / "+segs.length+" parts • "+mb(bytes));
-      }
-    }
-    await Promise.all(Array.from({length:4},worker));
-    const parts=[];
-    if(init){const r=await fetch(init,{signal:sig});parts.push(await r.blob())}
-    return {blob:new Blob(parts.concat(blobs),{type:isFmp4?"video/mp4":"video/mp2t"}),ext:isFmp4?"mp4":"ts"};
-  }
-
-  /* ---- MP4 downloader ---- */
-  async function dlMp4(url,sig){
-    setMsg("Download shuru...");
-    const r=await fetch(url,{signal:sig});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    const total=+r.headers.get("content-length")||0;
-    if(!r.body||!r.body.getReader)return {blob:await r.blob(),ext:"mp4"};
-    const rd=r.body.getReader();
-    let parts=[],pending=[],pendSize=0,got=0;
-    while(true){
-      const {done,value}=await rd.read();
-      if(done)break;
-      pending.push(value);pendSize+=value.length;got+=value.length;
-      if(pendSize>8*1048576){parts.push(new Blob(pending));pending=[];pendSize=0}
-      if(total)setPct(got/total*100);
-      setMsg(mb(got)+(total?" / "+mb(total):""));
-    }
-    if(pending.length)parts.push(new Blob(pending));
-    return {blob:new Blob(parts,{type:"video/mp4"}),ext:"mp4"};
-  }
-
-  go.onclick=async()=>{
-    if(busy||!selQ)return;
-    const url=qmap[selQ];if(!url)return;
-    busy=true;go.disabled=true;
-    prog.classList.add("on");cancel.classList.add("on");setPct(0);setMsg("Shuru ho raha hai...");
-    abortC=new AbortController();
-    try{
-      const res=/\.m3u8|\.tar/i.test(url)?await dlHls(url,abortC.signal):await dlMp4(url,abortC.signal);
-      saveBlob(res.blob,baseName()+"."+res.ext);
-      setPct(100);setMsg("Download complete ✓ (file save ho gayi)");
-    }catch(e){
-      if(abortC.signal.aborted){setMsg("Cancel ho gaya.");setPct(0)}
-      else{
-        setMsg((e&&e.message?e.message:"Error")+" — direct link khol raha hoon...");
-        if(!/\.m3u8|\.tar/i.test(url)&&!/encrypted/i.test(e&&e.message||"")){
-          const a=document.createElement("a");a.href=url;a.download=baseName()+".mp4";a.target="_blank";a.rel="noopener";
-          document.body.appendChild(a);a.click();a.remove();
-        }
-      }
-    }
-    busy=false;abortC=null;cancel.classList.remove("on");go.disabled=false;
-  };
-  cancel.onclick=()=>{if(abortC)abortC.abort()};
-  $("dlX").onclick=closeDl;
-  ov.addEventListener("click",e=>{if(e.target===ov&&!busy)closeDl()});
-  $("dlBtn").onclick=openDl;
-})();
 
 /* ============ COMMENTS ============ */
 function timeAgo(ts){
