@@ -785,14 +785,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
 .info-mode #vbox{display:none}
 .info-mode #infoPlay{display:flex}
 
-/* ---------- vote ---------- */
-.vote{display:flex;gap:10px;margin:2px 0 8px}
-.vbtn{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;background:#fff;border:1px solid var(--stroke);color:var(--text);font-weight:800;font-size:14px;transition:all .2s;box-shadow:var(--shadow-sm)}
-.vbtn .ic{font-size:20px}
-.vbtn.dis .ic{transform:rotate(180deg)}
-.vbtn.on{background:#111;border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.3)}
-.vbtn:active{transform:scale(.95)}
-
 /* ---------- comments ---------- */
 .cm-form{display:flex;flex-direction:column;gap:10px}
 .cm-form input,.cm-form textarea{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--stroke);background:#fff;color:var(--text);font-size:15px;font-weight:600;outline:none;resize:vertical;font-family:inherit}
@@ -869,7 +861,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
 </head>    
 <body>    
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">    
-  <symbol id="i-like" viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></symbol>  
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></symbol>  
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>    
   <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></symbol>    
@@ -943,7 +934,7 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
     <div id="latestRow" class="hrow"></div>    
   </section>    
   <section id="topSection" hidden>  
-    <div class="row-head"><h2><svg><use href="#i-star"/></svg> <span id="topTitle">Top Rated Anime</span></h2></div>  
+    <div class="row-head"><h2><svg><use href="#i-star"/></svg> <span id="topTitle">Top Rated</span></h2></div>  
     <div id="topRow" class="toptrack"></div>  
   </section>  
   <div class="row-head"><h2><svg><use href="#i-star"/></svg> Newest Drops</h2><span id="count" class="card-sub">0 titles</span></div>  
@@ -1009,10 +1000,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
         <div class="detail-text">    
           <h1 id="detailTitle" class="detail-title"></h1>    
           <div><span id="detailType" class="tag"></span><span id="episodeLabel" class="tag"></span><span id="infoLabel" class="tag"></span></div>  
-          <div class="vote">
-            <button id="likeBtn" class="vbtn" type="button" aria-label="Like"><svg class="ic"><use href="#i-like"/></svg><span id="likeN">0</span></button>
-            <button id="dislikeBtn" class="vbtn dis" type="button" aria-label="Dislike"><svg class="ic"><use href="#i-like"/></svg><span id="dislikeN">0</span></button>
-          </div>    
           <button id="infoPlay" class="hbtn play" type="button"><svg class="ic"><use href="#i-play"/></svg>Watch Now</button>    
         </div>    
       </div>    
@@ -1079,7 +1066,7 @@ function applyView(view) {
             $("topTitle").textContent = "Top Rated Hentai";
             document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
         } else {
-            $("topTitle").textContent = "Top Rated Anime";
+            $("topTitle").textContent = "Top Rated";
             document.querySelector(".filter[data-filter='all']").classList.add("active");
             currentFilter = 'all';
         }
@@ -1205,7 +1192,6 @@ function getRecent(){
   return r;
 }
 function pushRecent(g,ep){
-  if(isHentai(g))return;
   const cur=getRecent();if(!cur.length)store.set("zt:wk",Date.now());
   const r=cur.filter(x=>x.g!==gkey(g));
   r.unshift({g:gkey(g),e:ep.id,t:Date.now()});
@@ -1336,11 +1322,10 @@ function rowCard(g,item,opts){
   const t=document.createElement("div");t.className="card-title";t.textContent=g.title;
   card.append(poster,t);card.onclick=()=>openGroup(g,item);return card;
 }
-function voteScore(g){const v=VOTES[g.vk]||[0,0];return v[0]-v[1]}
-function topCmp(a,b){return (b.rating||0)-(a.rating||0)||voteScore(b)-voteScore(a)||b.ts-a.ts}
+function topCmp(a,b){return (b.rating||0)-(a.rating||0)||b.ts-a.ts}
 function renderTop(searching){
   const row=$("topRow"),keep=row.scrollLeft;row.replaceChildren();
-  const list=groups.filter(g=>currentView==='hentai' ? isHentai(g) : (g.type==="Anime" && !isHentai(g))).sort(topCmp).slice(0,100);
+  const list=groups.filter(g=>currentView==='hentai' ? isHentai(g) : true).sort(topCmp).slice(0,100);
   list.forEach((g,i)=>{
     const sl=document.createElement("article");sl.className="tslide";
     const media=document.createElement("div");media.className="hero-media";addPoster(media,g.poster,g.title);addBanner(media,g);
@@ -1365,7 +1350,7 @@ function renderRows(){
   const rr=$("recentRow");rr.replaceChildren();
   if(currentView === 'home'){
       getRecent().forEach(r=>{
-        const g=groups.find(x=>gkey(x)===r.g);if(!g||isHentai(g))return;
+        const g=groups.find(x=>gkey(x)===r.g);if(!g)return;
         const item=g.items.find(x=>x.id===r.e);if(!item)return;
         const pos=store.get("zt:"+item.id),dur=store.get("ztd:"+item.id);
         rr.appendChild(rowCard(g,item,{progress:dur?pos/dur*100:0}));
@@ -1377,7 +1362,6 @@ function renderRows(){
   const lr=$("latestRow");lr.replaceChildren();
   const now=Date.now(),cand=[];
   groups.forEach(g=>{
-    if(currentView==='home' && isHentai(g))return;
     if(currentView==='hentai' && !isHentai(g))return;
     
     if(!g.ts||now-g.ts>=LATEST_MS)return;
@@ -1393,7 +1377,7 @@ function renderRows(){
 function render(){
   if (currentView === 'search') {
       const q=$("searchPageInput").value.trim();
-      const base = groups.filter(g => !isHentai(g)); 
+      const base = groups; 
       let list = [], sugg = [];
       if(q) {
           const r = searchGroups(q, base);
@@ -1418,8 +1402,8 @@ function render(){
       const q=$("search").value.trim();
       const base=groups.filter(g=>{
           if (currentView === 'hentai') return isHentai(g);
-          if (isHentai(g)) return false;
-          return currentFilter === 'all' || g.type === currentFilter;
+          if (currentFilter === 'all') return true; // Include Hentai in "All"
+          return g.type === currentFilter;
       });
       let list=base,sugg=[];
       if(q){const r=searchGroups(q,base);list=r.list;sugg=r.sugg}
@@ -1431,7 +1415,7 @@ function render(){
         cat.appendChild(e);
         sugg.forEach(g=>cat.appendChild(makeCard(g)));
       }else list.forEach(g=>cat.appendChild(makeCard(g)));
-      $("featuredSection").hidden=!heroList.length||currentView==='hentai' && heroList.length===0;
+      $("featuredSection").hidden=!heroList.length;
       renderRows();
   }
 }
@@ -1452,7 +1436,7 @@ function renderSlider(){
   const slider=$("slider"),dots=$("dots");
   slider.replaceChildren();dots.replaceChildren();
   
-  heroList = groups.filter(g => currentView === 'hentai' ? isHentai(g) : !isHentai(g)).slice(0, HERO_MAX);
+  heroList = groups.filter(g => currentView === 'hentai' ? isHentai(g) : true).slice(0, HERO_MAX);
   
   $("featuredSection").hidden=!heroList.length;
   heroList.forEach((g,i)=>{
@@ -1525,7 +1509,7 @@ function showWatch(g, startItem, noPlay) {
     $("details").style.setProperty("--bg-image",'url("'+g.poster.replace(/["\\n()]/g,c=>encodeURIComponent(c))+'")');
   }else{p.removeAttribute("src");p.style.display="none";$("details").style.removeProperty("--bg-image")}
   closeMenu();
-  loadVotes(g);loadComments(g);
+  loadComments(g);
   seo(g.title+" - Watch Online in Hindi | Move Tok","Watch "+g.title+" ("+kindLabel(g)+") online in HD on Move Tok. "+(g.type==="Movie"?"Full movie":g.items.length+" episodes")+" available.");
   const movie=g.type==="Movie";
   $("seasonSection").hidden=movie;$("episodeSection").hidden=movie;
@@ -1839,7 +1823,7 @@ V.addEventListener("timeupdate",()=>{
   $("cur").textContent=fmt(V.currentTime);
   if(dur){
     $("bar").style.width=(V.currentTime/dur*100)+"%";
-    if(currentEpisode&&currentGroup&&!isHentai(currentGroup)&&Date.now()-lastSave>5000&&V.currentTime>5){
+    if(currentEpisode&&currentGroup&&Date.now()-lastSave>5000&&V.currentTime>5){
       lastSave=Date.now();
       store.set("zt:"+currentEpisode.id,V.currentTime);
       store.set("ztd:"+currentEpisode.id,dur);
@@ -1888,94 +1872,9 @@ $("infoPlay").onclick=()=>{
   else if(currentGroup&&currentGroup.items[0])selectEpisode(currentGroup.items[0]);
 };
 
-/* ============ VOTES ============ */
-let voteState={l:0,d:0,my:"none"};
-function loadVotes(g){
-  voteState={l:0,d:0,my:"none"};
-  
-  // Get user's choice from local storage ONLY
-  try {
-    const saved = localStorage.getItem("mt_vote_" + g.vk);
-    if (saved === 'like' || saved === 'dislike') voteState.my = saved;
-  } catch {}
-
-  renderVotes(); // Show 0 immediately while DB fetches
-
-  if(g.vk){
-    fetch("?action=votes&k="+encodeURIComponent(g.vk))
-      .then(r=>r.json())
-      .then(d=>{
-        if(d && d.ok){
-            voteState.l = d.l;
-            voteState.d = d.d;
-            // Ensure it shows at least 1 if the user is the one who just voted
-            if(voteState.my === 'like') voteState.l = Math.max(1, voteState.l);
-            if(voteState.my === 'dislike') voteState.d = Math.max(1, voteState.d);
-            renderVotes();
-        }
-      })
-      .catch(()=>{});
-  }
-}
-
-function renderVotes(){
-  $("likeN").textContent=voteState.l;
-  $("dislikeN").textContent=voteState.d;
-  $("likeBtn").classList.toggle("on",voteState.my==="like");
-  $("dislikeBtn").classList.toggle("on",voteState.my==="dislike");
-}
-
-function castVote(action){
-  if(!currentGroup||!currentGroup.vk)return;
-
-  const prev = voteState.my;
-  const next = (prev === action) ? "none" : action; // Toggle logic
-
-  // Optimistic update
-  if(prev === 'like') voteState.l = Math.max(0, voteState.l - 1);
-  if(prev === 'dislike') voteState.d = Math.max(0, voteState.d - 1);
-
-  if(next === 'like') voteState.l++;
-  if(next === 'dislike') voteState.d++;
-
-  voteState.my = next;
-  renderVotes();
-
-  // Save User's Choice to LocalStorage
-  try {
-    if (next === 'none') localStorage.removeItem("mt_vote_" + currentGroup.vk);
-    else localStorage.setItem("mt_vote_" + currentGroup.vk, next);
-  } catch {}
-
-  // Send to Backend
-  const fd = new FormData();
-  fd.append("k", currentGroup.vk);
-  fd.append("v", next);
-  fd.append("p", prev);
-
-  fetch("?action=vote", { method: "POST", body: fd })
-    .then(r => r.json())
-    .then(d => {
-      if (d && d.ok) {
-        // Sync perfectly with DB
-        voteState.l = d.l;
-        voteState.d = d.d;
-        renderVotes();
-      } else {
-        // Revert on failure
-        loadVotes(currentGroup);
-      }
-    })
-    .catch(() => loadVotes(currentGroup));
-}
-
-$("likeBtn").onclick=()=>castVote("like");
-$("dislikeBtn").onclick=()=>castVote("dislike");
-
 /* ============ COMMENTS ============ */
 function timeAgo(ts){
   if(!ts)return "";
-  // Check if timestamp is in milliseconds (Firebase .sv timestamp)
   const isMs = ts > 99999999999;
   const date = isMs ? ts : ts * 1000;
   const diff = (Date.now() - date) / 1000;
@@ -2048,7 +1947,6 @@ $("search").addEventListener("focus", () => {
   render();
 });
 $("searchPageInput").addEventListener("input", render);
-// REMOVED searchBackBtn event listener
 
 document.querySelectorAll(".filter").forEach(btn=>{
   btn.onclick=()=>{
