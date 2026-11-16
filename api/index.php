@@ -354,9 +354,9 @@ if (in_array($__a0, ['votes', 'vote', 'cm', 'cm_add', 'demand_add'], true)) {
         $title = clean_txt($_POST['title'] ?? '', 100);  
         if ($n === '') { echo jEnc(['ok' => false, 'error' => 'Pehle apna naam likho.']); exit; }  
         if ($title === '') { echo jEnc(['ok' => false, 'error' => 'Kya dekhna hai wo likho.']); exit; }  
-        if (!rate_ok('demand', 10)) { echo jEnc(['ok' => false, 'error' => 'Thoda ruko, 10 second baad dobara try karo.']); exit; }  
+        
         $r = fb('POST', 'demands', [], ['n' => $n, 'type' => $type, 'title' => $title, 'ts' => ['.sv' => 'timestamp']]);  
-        echo jEnc($r['ok'] ? ['ok' => true] : ['ok' => false, 'error' => 'Demand post nahi hui.']);  
+        echo jEnc($r['ok'] ? ['ok' => true] : ['ok' => false, 'error' => 'Database Error: ' . ($r['err'] ?? 'Unknown')]);  
         exit;
     }
 }  
@@ -1368,7 +1368,7 @@ function rowCard(g,item,opts){
 function topCmp(a,b){return (b.rating||0)-(a.rating||0)||b.ts-a.ts}
 function renderTop(searching){
   const row=$("topRow"),keep=row.scrollLeft;row.replaceChildren();
-  const list=groups.filter(g=>currentView==='hentai' ? isHentai(g) : true).sort(topCmp).slice(0,100);
+  const list=groups.filter(g=>currentView==='hentai' ? isHentai(g) : !isHentai(g)).sort(topCmp).slice(0,100);
   list.forEach((g,i)=>{
     const sl=document.createElement("article");sl.className="tslide";
     const media=document.createElement("div");media.className="hero-media";addPoster(media,g.poster,g.title);addBanner(media,g);
@@ -1393,7 +1393,7 @@ function renderRows(){
   const rr=$("recentRow");rr.replaceChildren();
   if(currentView === 'home'){
       getRecent().forEach(r=>{
-        const g=groups.find(x=>gkey(x)===r.g);if(!g)return;
+        const g=groups.find(x=>gkey(x)===r.g);if(!g || isHentai(g))return;
         const item=g.items.find(x=>x.id===r.e);if(!item)return;
         const pos=store.get("zt:"+item.id),dur=store.get("ztd:"+item.id);
         rr.appendChild(rowCard(g,item,{progress:dur?pos/dur*100:0}));
@@ -1405,6 +1405,7 @@ function renderRows(){
   const lr=$("latestRow");lr.replaceChildren();
   const now=Date.now(),cand=[];
   groups.forEach(g=>{
+    if(currentView==='home' && isHentai(g))return; // Exclude Hentai from Home
     if(currentView==='hentai' && !isHentai(g))return;
     
     if(!g.ts||now-g.ts>=LATEST_MS)return;
@@ -1445,7 +1446,7 @@ function render(){
       const q=$("search").value.trim();
       const base=groups.filter(g=>{
           if (currentView === 'hentai') return isHentai(g);
-          if (currentFilter === 'all') return true; // Include Hentai in "All"
+          if (currentFilter === 'all') return !isHentai(g); // Exclude Hentai from Home "All"
           return g.type === currentFilter;
       });
       let list=base,sugg=[];
@@ -1479,7 +1480,7 @@ function renderSlider(){
   const slider=$("slider"),dots=$("dots");
   slider.replaceChildren();dots.replaceChildren();
   
-  heroList = groups.filter(g => currentView === 'hentai' ? isHentai(g) : true).slice(0, HERO_MAX);
+  heroList = groups.filter(g => currentView === 'hentai' ? isHentai(g) : !isHentai(g)).slice(0, HERO_MAX);
   
   $("featuredSection").hidden=!heroList.length;
   heroList.forEach((g,i)=>{
