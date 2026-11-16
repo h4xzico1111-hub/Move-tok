@@ -773,6 +773,46 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
 .opt.active{background:#fff !important;color:#000 !important;border-color:#fff !important;}
 .verr{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:rgba(0,0,0,0.9) !important;color:#fff;font-weight:700}
 
+/* DOWNLOAD PROGRESS BAR OVERLAY */
+.dl-progress-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 400px;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  z-index: 20;
+  color: #fff;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.dl-progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.dl-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+#dlProgressFill {
+  height: 100%;
+  width: 0%;
+  background: #fff;
+  border-radius: 4px;
+  transition: width 0.2s;
+}
+
 /* ---------- details ---------- */
 .details{position:relative;padding:20px 16px 44px;overflow:hidden;min-height:60vh}
 .details::before{content:"";position:absolute;inset:-40px;background-image:var(--bg-image);background-size:cover;background-position:center;filter:blur(60px) saturate(1.2) brightness(.9);opacity:.3;pointer-events:none}
@@ -868,6 +908,7 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
 <body>    
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">    
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></symbol>  
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>    
   <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></symbol>    
   <symbol id="i-info" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>    
@@ -988,6 +1029,7 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
         <div class="time"><span id="cur">0:00</span> / <span id="tot">0:00</span></div>    
         <div class="sp"></div>    
         <button id="muteBtn" class="ctrl-btn" aria-label="Mute"><svg class="ic"><use id="muteIc" href="#i-vol"/></svg></button>    
+        <button id="dlBtn" class="ctrl-btn" aria-label="Download"><svg class="ic"><use href="#i-download"/></svg></button>
         <button id="setBtn" class="ctrl-btn" aria-label="Settings"><svg class="ic"><use href="#i-gear"/></svg></button>    
         <button id="fsBtn" class="ctrl-btn" aria-label="Fullscreen"><svg class="ic"><use id="fsIc" href="#i-fs"/></svg></button>    
       </div>    
@@ -996,6 +1038,16 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
       <strong>Quality</strong><div id="qOpts" class="opts"></div>    
       <strong>Speed</strong><div id="sOpts" class="opts"></div>    
     </div>    
+    <div id="dlMenu" class="menu" style="right: 10px; bottom: 62px;">
+      <strong>Download Quality</strong><div id="dlOpts" class="opts"></div>
+    </div>
+    <div id="dlProgressWrap" class="dl-progress-wrap" hidden>
+      <div class="dl-progress-info">
+        <span id="dlText">Downloading...</span>
+        <span id="dlPct">0%</span>
+      </div>
+      <div class="dl-progress-bar"><div id="dlProgressFill"></div></div>
+    </div>
     <div id="verr" class="verr" hidden></div>    
   </div>    
 
@@ -1575,6 +1627,7 @@ function blkLoad(item){
 }
 function loadEpisode(noBlk){
   updateLabel();
+  $("dlProgressWrap").hidden = true;
   if(infoMode){stopVideo();closeMenu();return}
   const qBox=$("qOpts");qBox.replaceChildren();qBox.dataset.h="";closeMenu();
   if(!currentEpisode){stopVideo();showErr("No episodes available.");return}
@@ -1600,6 +1653,7 @@ function markQuality(){document.querySelectorAll("#qOpts .opt").forEach(b=>b.cla
 function hideWatch(){
   stopVideo();infoMode=false;$("watch").classList.remove("info-mode");$("watch").style.display="none";closeMenu();
   document.body.style.overflow="";currentGroup=null;currentEpisode=null;currentQuality="";watchOpen=false;detachFb();seo(SEO0.t,SEO0.d);
+  $("dlProgressWrap").hidden = true;
   const fs=document.fullscreenElement||document.webkitFullscreenElement;
   if(fs)(document.exitFullscreen||document.webkitExitFullscreen).call(document);
 }
@@ -1636,9 +1690,12 @@ let hideT,tapT,lastTap=0,drag=false,curUrl="",hls=null,hlsRetry=0;
 
 function showUI(){
   box.classList.remove("idle");clearTimeout(hideT);
-  if(!V.paused)hideT=setTimeout(()=>{if($("menu").classList.contains("open")){showUI();return}box.classList.add("idle")},2500);
+  if(!V.paused)hideT=setTimeout(()=>{if($("menu").classList.contains("open") || $("dlMenu").classList.contains("open")){showUI();return}box.classList.add("idle")},2500);
 }
-function closeMenu(){$("menu").classList.remove("open")}
+function closeMenu(){
+  $("menu").classList.remove("open");
+  $("dlMenu").classList.remove("open");
+}
 function showErr(msg){$("verr").textContent=msg;$("verr").hidden=false;box.classList.remove("loading")}
 const isHls=u=>/\.m3u8|\.tar/i.test(u||"");
 function destroyHls(){if(hls){try{hls.destroy()}catch{}hls=null}hlsRetry=0}
@@ -1718,6 +1775,87 @@ function playVideo(url,at){
   V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});
 }
 
+function startDownload(url, filename) {
+  if (!url) return;
+  
+  if (isHls(url)) {
+    window.open(url, "_blank");
+    return;
+  }
+  
+  const wrap = $("dlProgressWrap");
+  wrap.hidden = false;
+  $("dlProgressFill").style.width = "0%";
+  $("dlPct").textContent = "0%";
+  $("dlText").textContent = "Starting download...";
+  
+  let dlUrl = url;
+  if (dlUrl.includes("rumble.cloud") || dlUrl.includes("rumble.com")) {
+      dlUrl = "?action=proxy&url=" + encodeURIComponent(dlUrl);
+  }
+  
+  fetch(dlUrl)
+    .then(response => {
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      const contentLength = response.headers.get("Content-Length");
+      
+      if (!contentLength || !response.body) {
+         const a = document.createElement("a");
+         a.href = url;
+         a.download = filename;
+         a.target = "_blank";
+         document.body.appendChild(a);
+         a.click();
+         a.remove();
+         wrap.hidden = true;
+         return;
+      }
+      
+      const total = parseInt(contentLength, 10);
+      let loaded = 0;
+      const chunks = [];
+      const reader = response.body.getReader();
+      
+      const readChunk = ({ done, value }) => {
+        if (done) {
+          const blob = new Blob(chunks);
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+          wrap.hidden = true;
+          return;
+        }
+        
+        chunks.push(value);
+        loaded += value.length;
+        const pct = Math.min(100, Math.round((loaded / total) * 100));
+        $("dlProgressFill").style.width = pct + "%";
+        $("dlPct").textContent = pct + "%";
+        $("dlText").textContent = `Downloading (${(loaded/1024/1024).toFixed(1)}MB / ${(total/1024/1024).toFixed(1)}MB)`;
+        
+        reader.read().then(readChunk);
+      };
+      
+      reader.read().then(readChunk);
+    })
+    .catch(err => {
+      console.warn("Download fetch failed, opening in new tab", err);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      wrap.hidden = true;
+    });
+}
+
 /* ============ WIRE UP ALL BUTTONS ============ */
 
 // Play/Pause (small + big)
@@ -1747,17 +1885,56 @@ $("muteBtn").onclick=()=>{
 // Settings menu
 $("setBtn").onclick=(e)=>{
   e.stopPropagation();
+  $("dlMenu").classList.remove("open");
   const m=$("menu");
   m.classList.toggle("open");
+};
+
+// Download Menu
+$("dlBtn").onclick = (e) => {
+  e.stopPropagation();
+  $("menu").classList.remove("open");
+  if (!currentEpisode) return;
+  const q = getQualities(currentEpisode);
+  const names = Object.keys(q).sort((a,b)=>a==="Auto"?-1:b==="Auto"?1:(parseInt(b)||0)-(parseInt(a)||0));
+  if (!names.length) {
+    alert("Download link not available.");
+    return;
+  }
+  
+  const opts = $("dlOpts");
+  opts.replaceChildren();
+  
+  names.forEach(n => {
+    const b = document.createElement("button");
+    b.className = "opt";
+    b.textContent = n;
+    b.onclick = () => {
+      $("dlMenu").classList.remove("open");
+      const filename = (currentGroup.title + " - " + (currentGroup.type === 'Movie' ? 'Movie' : `S${currentEpisode.season}E${currentEpisode.episode}`) + " - " + n + ".mp4").replace(/[^a-z0-9\-_ .]/gi, '_');
+      startDownload(q[n], filename);
+    };
+    opts.appendChild(b);
+  });
+  
+  const dm = $("dlMenu");
+  dm.classList.toggle("open");
 };
 
 // Click outside closes menu
 document.addEventListener("click",e=>{
   const m=$("menu");
-  if(!m||!m.classList.contains("open"))return;
-  if(m.contains(e.target))return;
-  if(e.target===$("setBtn")||$("setBtn").contains(e.target))return;
-  closeMenu();
+  if(m && m.classList.contains("open")) {
+      if(!m.contains(e.target) && e.target!==$("setBtn") && !$("setBtn").contains(e.target)) {
+          m.classList.remove("open");
+      }
+  }
+  const dm=$("dlMenu");
+  if(dm && dm.classList.contains("open")) {
+      if(!dm.contains(e.target) && e.target!==$("dlBtn") && !$("dlBtn").contains(e.target)) {
+          dm.classList.remove("open");
+      }
+  }
 });
 
 // Speed options
