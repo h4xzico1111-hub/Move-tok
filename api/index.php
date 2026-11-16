@@ -721,9 +721,7 @@ h2 svg{width:20px;height:20px;fill:var(--text)}
 
 /* ---------- watch page ---------- */
 .watch{display:none;position:fixed;inset:0;z-index:100;overflow-y:auto;background:radial-gradient(60% 40% at 8% 0%,rgba(17,17,17,.06),transparent 70%),radial-gradient(50% 40% at 100% 22%,rgba(34,34,34,.06),transparent 70%),var(--bg)}
-.watch-head{position:relative;z-index:7;height:var(--head);display:flex;align-items:center;gap:6px;padding:0 12px 0 6px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-bottom:1px solid var(--stroke)}
-.watch-head .back{width:42px;height:42px;border-radius:50%;color:var(--text);font-size:24px;display:flex;align-items:center;justify-content:center}
-.watch-head .back:active{background:rgba(0,0,0,.06)}
+.watch-head{position:relative;z-index:7;height:var(--head);display:flex;align-items:center;padding:0 16px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-bottom:1px solid var(--stroke)}
 .watch-head span{font-weight:800;font-size:15px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ---------- video player ---------- */
@@ -915,6 +913,7 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
     <a href="#" onclick="setView('terms');return false;">Terms & Conditions</a>
     <a href="#" onclick="setView('disclaimer');return false;">Disclaimer</a>
     <a href="#" onclick="setView('contact');return false;">Contact Us</a>
+    <a href="https://t.me/movetok1" target="_blank">Telegram</a>
 </div>
 
 <nav class="fbar" aria-label="Filter" id="filterNav">  
@@ -961,8 +960,7 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
 <section id="searchPage" style="display:none;">
     <div style="max-width:1200px; margin:0 auto; padding:20px 14px;">
         <div style="display:flex; gap:10px; margin-bottom:20px;">
-            <input id="searchPageInput" type="search" placeholder="Search movies, anime..." style="flex:1; padding:14px 18px; border-radius:16px; border:1px solid var(--stroke); font-size:16px; outline:none; background:#fff; box-shadow:var(--shadow-sm);">
-            <button id="searchBackBtn" style="padding:0 20px; border-radius:16px; background:#111; color:#fff; font-weight:800;">Back</button>
+            <input id="searchPageInput" type="search" placeholder="Search movies, anime..." style="flex:1; width:100%; padding:14px 18px; border-radius:16px; border:1px solid var(--stroke); font-size:16px; outline:none; background:#fff; box-shadow:var(--shadow-sm);">
         </div>
         <div class="row-head"><h2><svg><use href="#i-star"/></svg> Search Results</h2><span id="searchCount" class="card-sub">0 titles</span></div>
         <div id="searchResults" class="grid"></div>
@@ -973,7 +971,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
 
 <section id="watch" class="watch">    
   <div class="watch-head">    
-    <button id="backBtn" class="back" aria-label="Back"><svg class="ic"><use href="#i-back"/></svg></button>    
     <span id="vTitle"></span>    
   </div>    
   <div class="video-box" id="vbox">    
@@ -1049,6 +1046,13 @@ let infoMode=false, holdPlay=false, allItems=[], groups=[], currentFilter="all",
 
 /* ---------- MENU & PAGE ROUTING ---------- */
 function setView(view) {
+    if (!history.state || history.state.view !== view) {
+        history.pushState({ view }, '', location.href);
+    }
+    applyView(view);
+}
+
+function applyView(view) {
     currentView = view;
     closeMenuUI();
     
@@ -1085,14 +1089,15 @@ function setView(view) {
     } else if (view === 'search') {
         searchP.style.display = "block";
         sBox.style.display = "none";
-        menuBtn.style.marginLeft = "auto"; // Push to right
+        menuBtn.style.marginLeft = "auto";
         $("searchPageInput").focus();
         render();
         window.scrollTo(0, 0);
     } else {
         pageC.style.display = "block";
         sBox.style.display = "none";
-        menuBtn.style.marginLeft = "auto"; // Push to right
+        menuBtn.style.marginLeft = "auto";
+        $("searchPageInput").value = "";
         renderPage(view);
         window.scrollTo(0, 0);
     }
@@ -1124,7 +1129,8 @@ function renderPage(view) {
     } else if (view === 'contact') {
         html = `<h1>Contact Us</h1>
                 <p>If you have any questions or suggestions about our website, do not hesitate to contact us.</p>
-                <p>Email: <a href="mailto:h4xzico1111@gmail.com">h4xzico1111@gmail.com</a></p>`;
+                <p>Email: <a href="mailto:h4xzico1111@gmail.com">h4xzico1111@gmail.com</a></p>
+                <p>Telegram: <a href="https://t.me/movetok1" target="_blank">@movetok1</a></p>`;
     }
     $("pageText").innerHTML = html;
 }
@@ -1496,14 +1502,20 @@ function detachFb(){}
 const V=$("video"), box=$("vbox");
 
 /* ---------- openGroup ---------- */
-function openGroup(g,startItem,noPlay){
+function openGroup(g, startItem, noPlay) {
+  history.pushState({ view: 'watch', groupKey: gkey(g), episodeId: startItem ? startItem.id : null, noPlay: !!noPlay }, '', location.href);
+  showWatch(g, startItem, noPlay);
+}
+
+function showWatch(g, startItem, noPlay) {
   holdPlay=false;
   infoMode=!!noPlay;
   $("watch").classList.toggle("info-mode",infoMode);
   currentGroup=g;currentEpisode=null;currentQuality="";recorded="";
   $("watch").style.display="block";$("watch").scrollTop=0;
   document.body.style.overflow="hidden";
-  if(!watchOpen){watchOpen=true;try{history.pushState({zentaiWatch:true},"",location.href)}catch{}}
+  watchOpen=true;
+  
   $("detailTitle").textContent=g.title;$("vTitle").textContent=g.title;
   $("detailType").textContent=kindLabel(g);
   $("infoLabel").textContent=g.type==="Movie"?"Full Movie":metaText(g);
@@ -1520,6 +1532,7 @@ function openGroup(g,startItem,noPlay){
   selectEpisode(startItem||g.items[0]||null,true);
   showUI();
 }
+
 function leaveInfo(){if(!infoMode)return;infoMode=false;$("watch").classList.remove("info-mode");$("episodeLabel").hidden=false}
 function selectEpisode(item,keepInfo){
   if(!keepInfo)leaveInfo();
@@ -1594,19 +1607,39 @@ function loadEpisode(noBlk){
   holdPlay=false;
 }
 function markQuality(){document.querySelectorAll("#qOpts .opt").forEach(b=>b.classList.toggle("active",b.textContent===currentQuality))}
-function closeWatch(){
+function hideWatch(){
   stopVideo();infoMode=false;$("watch").classList.remove("info-mode");$("watch").style.display="none";closeMenu();
   document.body.style.overflow="";currentGroup=null;currentEpisode=null;currentQuality="";watchOpen=false;detachFb();seo(SEO0.t,SEO0.d);
   const fs=document.fullscreenElement||document.webkitFullscreenElement;
   if(fs)(document.exitFullscreen||document.webkitExitFullscreen).call(document);
-  renderRows();
 }
-function goBack(){
-  const fs=document.fullscreenElement||document.webkitFullscreenElement;
-  if(fs){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
-  if(history.state&&history.state.zentaiWatch)history.back();else closeWatch();
-}
-window.addEventListener("popstate",()=>{if(watchOpen)closeWatch()});
+
+window.addEventListener("popstate", (e) => {
+    const state = e.state;
+
+    if (watchOpen) {
+        hideWatch();
+    }
+
+    if (state && state.view === 'watch') {
+        const g = groups.find(x => gkey(x) === state.groupKey);
+        if (g) {
+            const item = state.episodeId ? g.items.find(x => x.id === state.episodeId) : g.items[0];
+            showWatch(g, item, state.noPlay);
+        } else {
+            applyView('home');
+        }
+    } else if (state && state.view) {
+        applyView(state.view);
+    } else {
+        history.replaceState({ view: 'home' }, '', location.href);
+        applyView('home');
+    }
+    
+    if (!state || state.view !== 'search') {
+        $("searchPageInput").value = "";
+    }
+});
 
 /* ---------- video player ---------- */
 let hideT,tapT,lastTap=0,drag=false,curUrl="",hls=null,hlsRetry=0;
@@ -1697,9 +1730,6 @@ function playVideo(url,at){
 
 /* ============ WIRE UP ALL BUTTONS ============ */
 
-// Back
-$("backBtn").onclick=goBack;
-
 // Play/Pause (small + big)
 function doPlayPause(){
   if(V.paused)V.play().catch(()=>{});else V.pause();
@@ -1754,14 +1784,24 @@ speeds.forEach(sp=>{
   sBox.appendChild(b);
 });
 
-// Fullscreen
+// Fullscreen with Landscape Orientation
 function toggleFs(){
   const isFs=document.fullscreenElement||document.webkitFullscreenElement;
-  if(isFs){(document.exitFullscreen||document.webkitExitFullscreen).call(document)}
-  else{
+  if(isFs){
+      (document.exitFullscreen||document.webkitExitFullscreen).call(document);
+      if (screen.orientation && screen.orientation.unlock) {
+          try { screen.orientation.unlock(); } catch(e){}
+      }
+  } else {
     const el=box;
-    if(el.requestFullscreen)el.requestFullscreen().catch(()=>{});
-    else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
+    const req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if(req){
+        Promise.resolve(req.call(el)).then(() => {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(()=>{});
+            }
+        }).catch(()=>{});
+    }
   }
 }
 $("fsBtn").onclick=toggleFs;
@@ -1852,78 +1892,101 @@ $("infoPlay").onclick=()=>{
 let voteState={l:0,d:0,my:"none"};
 function loadVotes(g){
   voteState={l:0,d:0,my:"none"};
-  const v=VOTES[g.vk];
-  if(v)voteState={l:v[0],d:v[1],my:"none"};
-  try{
-    const saved=JSON.parse(localStorage.getItem("zt:votes")||"{}");
-    if(saved[g.vk])voteState.my=saved[g.vk];
-  }catch{}
-  renderVotes();
+  
+  // Get user's choice from local storage ONLY
+  try {
+    const saved = localStorage.getItem("mt_vote_" + g.vk);
+    if (saved === 'like' || saved === 'dislike') voteState.my = saved;
+  } catch {}
+
+  renderVotes(); // Show 0 immediately while DB fetches
+
   if(g.vk){
     fetch("?action=votes&k="+encodeURIComponent(g.vk))
       .then(r=>r.json())
-      .then(d=>{if(d&&d.ok){voteState.l=d.l;voteState.d=d.d;renderVotes()}})
+      .then(d=>{
+        if(d && d.ok){
+            voteState.l = d.l;
+            voteState.d = d.d;
+            // Ensure it shows at least 1 if the user is the one who just voted
+            if(voteState.my === 'like') voteState.l = Math.max(1, voteState.l);
+            if(voteState.my === 'dislike') voteState.d = Math.max(1, voteState.d);
+            renderVotes();
+        }
+      })
       .catch(()=>{});
   }
 }
+
 function renderVotes(){
   $("likeN").textContent=voteState.l;
   $("dislikeN").textContent=voteState.d;
   $("likeBtn").classList.toggle("on",voteState.my==="like");
   $("dislikeBtn").classList.toggle("on",voteState.my==="dislike");
-  
-  // Disable buttons if user already voted
-  const hasVoted = voteState.my !== "none";
-  $("likeBtn").style.pointerEvents = hasVoted ? "none" : "auto";
-  $("dislikeBtn").style.pointerEvents = hasVoted ? "none" : "auto";
-  $("likeBtn").style.opacity = hasVoted && voteState.my !== "like" ? "0.5" : "1";
-  $("dislikeBtn").style.opacity = hasVoted && voteState.my !== "dislike" ? "0.5" : "1";
 }
 
-function castVote(v){
+function castVote(action){
   if(!currentGroup||!currentGroup.vk)return;
-  
-  let saved={};
-  try{saved=JSON.parse(localStorage.getItem("zt:votes")||"{}")}catch{}
-  
-  if(saved[currentGroup.vk]){
-    alert("Aap is video ko pehle hi rate kar chuke hain. Ek device se ek hi vote possible hai.");
-    return;
-  }
-  
-  const prev=voteState.my;
-  const next=v; // strict 1 vote, no toggling off
-  
-  voteState.my=next;
-  if(next==="like")voteState.l++;
-  if(next==="dislike")voteState.d++;
+
+  const prev = voteState.my;
+  const next = (prev === action) ? "none" : action; // Toggle logic
+
+  // Optimistic update
+  if(prev === 'like') voteState.l = Math.max(0, voteState.l - 1);
+  if(prev === 'dislike') voteState.d = Math.max(0, voteState.d - 1);
+
+  if(next === 'like') voteState.l++;
+  if(next === 'dislike') voteState.d++;
+
+  voteState.my = next;
   renderVotes();
-  
-  try{
-    saved[currentGroup.vk]=next;
-    localStorage.setItem("zt:votes",JSON.stringify(saved));
-  }catch{}
-  
-  const fd=new FormData();
-  fd.append("k",currentGroup.vk);fd.append("v",next);fd.append("p",prev);
-  fetch("?action=vote",{method:"POST",body:fd})
-    .then(r=>r.json())
-    .then(d=>{if(d&&d.ok){voteState.l=d.l;voteState.d=d.d;renderVotes()}})
-    .catch(()=>{});
+
+  // Save User's Choice to LocalStorage
+  try {
+    if (next === 'none') localStorage.removeItem("mt_vote_" + currentGroup.vk);
+    else localStorage.setItem("mt_vote_" + currentGroup.vk, next);
+  } catch {}
+
+  // Send to Backend
+  const fd = new FormData();
+  fd.append("k", currentGroup.vk);
+  fd.append("v", next);
+  fd.append("p", prev);
+
+  fetch("?action=vote", { method: "POST", body: fd })
+    .then(r => r.json())
+    .then(d => {
+      if (d && d.ok) {
+        // Sync perfectly with DB
+        voteState.l = d.l;
+        voteState.d = d.d;
+        renderVotes();
+      } else {
+        // Revert on failure
+        loadVotes(currentGroup);
+      }
+    })
+    .catch(() => loadVotes(currentGroup));
 }
+
 $("likeBtn").onclick=()=>castVote("like");
 $("dislikeBtn").onclick=()=>castVote("dislike");
 
 /* ============ COMMENTS ============ */
 function timeAgo(ts){
   if(!ts)return "";
-  const diff=(Date.now()-ts*1000)/1000;
-  if(diff<60)return "abhi";
-  if(diff<3600)return Math.floor(diff/60)+"m";
-  if(diff<86400)return Math.floor(diff/3600)+"h";
-  if(diff<2592000)return Math.floor(diff/86400)+"d";
-  return new Date(ts*1000).toLocaleDateString();
+  // Check if timestamp is in milliseconds (Firebase .sv timestamp)
+  const isMs = ts > 99999999999;
+  const date = isMs ? ts : ts * 1000;
+  const diff = (Date.now() - date) / 1000;
+  
+  if(diff < 60) return "abhi";
+  if(diff < 3600) return Math.floor(diff/60)+"m";
+  if(diff < 86400) return Math.floor(diff/3600)+"h";
+  if(diff < 2592000) return Math.floor(diff/86400)+"d";
+  return new Date(date).toLocaleDateString();
 }
+
 function loadComments(g){
   const list=$("cmList");
   list.innerHTML='<div class="cm-empty">Loading...</div>';
@@ -1949,6 +2012,7 @@ function loadComments(g){
     })
     .catch(()=>{list.innerHTML='<div class="cm-empty">Comments load nahi hue.</div>'});
 }
+
 $("cmPost").onclick=()=>{
   if(!currentGroup||!currentGroup.vk)return;
   const n=$("cmName").value.trim();
@@ -1971,21 +2035,20 @@ $("cmPost").onclick=()=>{
 
 /* ============ SEARCH + FILTER ============ */
 $("sBtn").onclick = () => {
+  $("searchPageInput").value = "";
   setView('search');
 };
 $("search").addEventListener("focus", () => {
   const val = $("search").value;
   $("search").value = "";
-  setView('search');
+  if (currentView !== 'search') {
+      setView('search');
+  }
   $("searchPageInput").value = val;
   render();
 });
 $("searchPageInput").addEventListener("input", render);
-$("searchBackBtn").onclick = () => {
-    setView('home');
-    $("searchPageInput").value = "";
-    render();
-};
+// REMOVED searchBackBtn event listener
 
 document.querySelectorAll(".filter").forEach(btn=>{
   btn.onclick=()=>{
@@ -2001,8 +2064,23 @@ document.querySelectorAll(".filter").forEach(btn=>{
 /* ============ INIT ============ */
 allItems=buildItems();
 buildGroups();
-renderSlider();
-render();
+
+const initState = history.state;
+if (initState && initState.view === 'watch') {
+    const g = groups.find(x => gkey(x) === initState.groupKey);
+    if (g) {
+        const item = initState.episodeId ? g.items.find(x => x.id === initState.episodeId) : g.items[0];
+        showWatch(g, item, initState.noPlay);
+    } else {
+        history.replaceState({ view: 'home' }, '', location.href);
+        applyView('home');
+    }
+} else if (initState && initState.view) {
+    applyView(initState.view);
+} else {
+    history.replaceState({ view: 'home' }, '', location.href);
+    applyView('home');
+}
 </script>
 </body>
 </html>
