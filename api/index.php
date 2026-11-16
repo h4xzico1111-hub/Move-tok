@@ -287,7 +287,7 @@ function clean_txt($s, $max) {
 }  
 
 $__a0 = $_GET['action'] ?? '';  
-if (in_array($__a0, ['votes', 'vote', 'cm', 'cm_add', 'demand_add'], true)) {  
+if (in_array($__a0, ['votes', 'vote', 'cm', 'cm_add'], true)) {  
     header('Content-Type: application/json; charset=utf-8');  
     $isPost = ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST';  
     $host = strtolower(explode(':', $_SERVER['HTTP_HOST'] ?? '')[0]);  
@@ -347,18 +347,6 @@ if (in_array($__a0, ['votes', 'vote', 'cm', 'cm_add', 'demand_add'], true)) {
         echo jEnc($r['ok'] ? ['ok' => true] : ['ok' => false, 'error' => 'Comment post nahi hua.']);  
         exit;  
     }  
-    if ($__a0 === 'demand_add') {
-        if (!$isPost) { echo jEnc(['ok' => false]); exit; }
-        $n = clean_txt($_POST['n'] ?? '', 50);  
-        $type = clean_txt($_POST['type'] ?? 'Anime', 20);  
-        $title = clean_txt($_POST['title'] ?? '', 100);  
-        if ($n === '') { echo jEnc(['ok' => false, 'error' => 'Pehle apna naam likho.']); exit; }  
-        if ($title === '') { echo jEnc(['ok' => false, 'error' => 'Kya dekhna hai wo likho.']); exit; }  
-        
-        $r = fb('POST', 'demands', [], ['n' => $n, 'type' => $type, 'title' => $title, 'ts' => ['.sv' => 'timestamp']]);  
-        echo jEnc($r['ok'] ? ['ok' => true] : ['ok' => false, 'error' => 'Database Error: ' . ($r['err'] ?? 'Unknown')]);  
-        exit;
-    }
 }  
 
 /* ============ PROXY ============ */  
@@ -923,7 +911,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
     <a href="#" onclick="setView('disclaimer');return false;">Disclaimer</a>
     <a href="#" onclick="setView('contact');return false;">Contact Us</a>
     <a href="https://t.me/movetok1" target="_blank">Telegram</a>
-    <a href="#" onclick="setView('demand');return false;">Demand your favourite K-drama and Hentai</a>
 </div>
 
 <nav class="fbar" aria-label="Filter" id="filterNav">  
@@ -964,24 +951,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
 <!-- DYNAMIC PAGE CONTENT -->
 <section id="pageContent" class="page-content">
     <div id="pageText"></div>
-</section>
-
-<!-- DEMAND PAGE -->
-<section id="demandPage" style="display:none; max-width:800px; margin:20px auto; padding:24px; background:#fff; border-radius:20px; border:1px solid var(--stroke); box-shadow:var(--shadow); min-height:60vh;">
-    <h1 style="font-size:26px; margin-top:0; color:var(--text); margin-bottom:20px;">Demand your favourite K-drama and Hentai</h1>
-    <p style="line-height:1.7; color:var(--muted); margin-bottom:16px; font-size:15px;">Agar aap koi naya Anime, Drama, Hentai ya Movie dekhna chahte hain jo website par nahi hai, toh yahan demand karein. Hum use jald hi add karne ki koshish karenge.</p>
-    <div class="cm-form">
-        <input id="dmName" type="text" maxlength="50" placeholder="Apna naam likho">
-        <select id="dmType" style="width:100%; padding:12px 14px; border-radius:14px; border:1px solid var(--stroke); background:#fff; color:var(--text); font-size:15px; font-weight:600; outline:none; -webkit-appearance:none; appearance:none; background-image:url('data:image/svg+xml;utf8,<svg fill=\"black\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg>'); background-repeat:no-repeat; background-position-x:98%; background-position-y:center;">
-            <option value="Anime">Anime</option>
-            <option value="Drama">K-Drama</option>
-            <option value="Hentai">Hentai</option>
-            <option value="Movie">Movie</option>
-        </select>
-        <textarea id="dmTitle" maxlength="100" rows="2" placeholder="Kaun sa anime/drama/hentai dekhna hai?"></textarea>
-        <div id="dmErr" class="cm-err"></div>
-        <button id="dmPost" class="hbtn play" type="button">Submit Demand</button>
-    </div>
 </section>
 
 <!-- SEARCH PAGE -->
@@ -1082,7 +1051,6 @@ function applyView(view) {
     const mainC = $("mainContent");
     const pageC = $("pageContent");
     const searchP = $("searchPage");
-    const demandP = $("demandPage");
     const sBox = document.querySelector(".sbox");
     const filterNav = $("filterNav");
     const menuBtn = $("menuBtn");
@@ -1090,7 +1058,6 @@ function applyView(view) {
     mainC.style.display = "none";
     pageC.style.display = "none";
     searchP.style.display = "none";
-    demandP.style.display = "none";
     filterNav.style.display = "none";
     
     // Reset Header Layout
@@ -1117,11 +1084,6 @@ function applyView(view) {
         menuBtn.style.marginLeft = "auto";
         $("searchPageInput").focus();
         render();
-        window.scrollTo(0, 0);
-    } else if (view === 'demand') {
-        demandP.style.display = "block";
-        sBox.style.display = "none";
-        menuBtn.style.marginLeft = "auto";
         window.scrollTo(0, 0);
     } else {
         pageC.style.display = "block";
@@ -1972,31 +1934,6 @@ $("cmPost").onclick=()=>{
       btn.disabled=false;
       if(d&&d.ok){$("cmText").value="";loadComments(currentGroup)}
       else err.textContent=(d&&d.error)||"Comment post nahi hua.";
-    })
-    .catch(()=>{btn.disabled=false;err.textContent="Net error. Try again."});
-};
-
-/* ============ DEMAND FORM ============ */
-$("dmPost").onclick=()=>{
-  const n=$("dmName").value.trim();
-  const type=$("dmType").value;
-  const title=$("dmTitle").value.trim();
-  const err=$("dmErr");err.textContent="";
-  if(!n){err.textContent="Pehle apna naam likho.";return}
-  if(!title){err.textContent="Kya dekhna hai wo likho.";return}
-  const btn=$("dmPost");btn.disabled=true;
-  const fd=new FormData();
-  fd.append("n",n);fd.append("type",type);fd.append("title",title);
-  fetch("?action=demand_add",{method:"POST",body:fd})
-    .then(r=>r.json())
-    .then(d=>{
-      btn.disabled=false;
-      if(d&&d.ok){
-          $("dmTitle").value="";
-          alert("Aapki demand successfully submit ho gayi hai! Hum jald hi ise add karenge.");
-          setView('home');
-      }
-      else err.textContent=(d&&d.error)||"Demand submit nahi hui.";
     })
     .catch(()=>{btn.disabled=false;err.textContent="Net error. Try again."});
 };
