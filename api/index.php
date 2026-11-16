@@ -773,17 +773,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
 .opt.active{background:#fff !important;color:#000 !important;border-color:#fff !important;}
 .verr{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:rgba(0,0,0,0.9) !important;color:#fff;font-weight:700}
 
-/* ---------- download modal ---------- */
-.dl-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.88);padding:20px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.dl-content{background:#1a1a1a;border:1px solid #444;border-radius:20px;padding:22px;max-width:400px;width:100%;color:#fff;box-shadow:0 24px 60px rgba(0,0,0,.7)}
-.dl-content h3{margin:0 0 4px;font-size:18px;font-weight:900;color:#fff}
-.dl-content p{margin:0 0 14px;color:#aaa;font-size:12.5px;font-weight:700}
-.dl-content .opts{padding:0;gap:8px;margin-bottom:18px;display:flex;flex-wrap:wrap}
-.dl-content .opt{flex:1 1 auto;min-width:70px;text-align:center;padding:11px 12px;font-size:13px;cursor:pointer}
-.dl-actions{display:flex;gap:10px}
-.dl-actions .hbtn{flex:1;padding:12px 16px;font-size:14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3)}
-.dl-actions #dlStart{background:#fff;color:#000;border-color:#fff}
-
 /* ---------- details ---------- */
 .details{position:relative;padding:20px 16px 44px;overflow:hidden;min-height:60vh}
 .details::before{content:"";position:absolute;inset:-40px;background-image:var(--bg-image);background-size:cover;background-position:center;filter:blur(60px) saturate(1.2) brightness(.9);opacity:.3;pointer-events:none}
@@ -898,7 +887,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol>    
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></symbol>    
   <symbol id="i-playlist" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></symbol>    
-  <symbol id="i-down" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
 </svg>  
 <header>    
   <img class="logo" src="https://i.ibb.co/d4hNqPZX/move-tok-logo-black-transparent.png" alt="Move Tok">    
@@ -1000,7 +988,6 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
         <div class="time"><span id="cur">0:00</span> / <span id="tot">0:00</span></div>    
         <div class="sp"></div>    
         <button id="muteBtn" class="ctrl-btn" aria-label="Mute"><svg class="ic"><use id="muteIc" href="#i-vol"/></svg></button>    
-        <button id="dlBtn" class="ctrl-btn" aria-label="Download"><svg class="ic"><use href="#i-down"/></svg></button>    
         <button id="setBtn" class="ctrl-btn" aria-label="Settings"><svg class="ic"><use href="#i-gear"/></svg></button>    
         <button id="fsBtn" class="ctrl-btn" aria-label="Fullscreen"><svg class="ic"><use id="fsIc" href="#i-fs"/></svg></button>    
       </div>    
@@ -1009,18 +996,7 @@ video{width:100%;height:100%;object-fit:contain;background:transparent;display:b
       <strong>Quality</strong><div id="qOpts" class="opts"></div>    
       <strong>Speed</strong><div id="sOpts" class="opts"></div>    
     </div>    
-    <div id="verr" class="verr" hidden></div>
-    <div id="dlModal" class="dl-modal" hidden>
-      <div class="dl-content">
-        <h3>Download Video</h3>
-        <p>Quality select karo, phir Download dabao</p>
-        <div id="dlQualities" class="opts"></div>
-        <div class="dl-actions">
-          <button id="dlCancel" class="hbtn info" type="button">Cancel</button>
-          <button id="dlStart" class="hbtn play" type="button">Download</button>
-        </div>
-      </div>
-    </div>
+    <div id="verr" class="verr" hidden></div>    
   </div>    
 
   <div class="details" id="details">    
@@ -1391,7 +1367,7 @@ function renderRows(){
   const lr=$("latestRow");lr.replaceChildren();
   const now=Date.now(),cand=[];
   groups.forEach(g=>{
-    if(currentView==='home' && isHentai(g))return;
+    if(currentView==='home' && isHentai(g))return; // Exclude Hentai from Home
     if(currentView==='hentai' && !isHentai(g))return;
     
     if(!g.ts||now-g.ts>=LATEST_MS)return;
@@ -1407,7 +1383,7 @@ function renderRows(){
 function render(){
   if (currentView === 'search') {
       const q=$("searchPageInput").value.trim();
-      const base = groups;
+      const base = groups; // ALL groups included for search
       let list = [], sugg = [];
       if(q) {
           const r = searchGroups(q, base);
@@ -1432,7 +1408,7 @@ function render(){
       const q=$("search").value.trim();
       const base=groups.filter(g=>{
           if (currentView === 'hentai') return isHentai(g);
-          if (currentFilter === 'all') return !isHentai(g);
+          if (currentFilter === 'all') return !isHentai(g); // Exclude Hentai from Home "All"
           return g.type === currentFilter;
       });
       let list=base,sugg=[];
@@ -1598,7 +1574,6 @@ function blkLoad(item){
     .then(()=>{if(currentEpisode===item)loadEpisode(true)});
 }
 function loadEpisode(noBlk){
-  closeDlModal();
   updateLabel();
   if(infoMode){stopVideo();closeMenu();return}
   const qBox=$("qOpts");qBox.replaceChildren();qBox.dataset.h="";closeMenu();
@@ -1622,56 +1597,8 @@ function loadEpisode(noBlk){
   holdPlay=false;
 }
 function markQuality(){document.querySelectorAll("#qOpts .opt").forEach(b=>b.classList.toggle("active",b.textContent===currentQuality))}
-
-/* ---------- download modal ---------- */
-let dlSelected = "";
-function openDlModal(){
-  if(!currentEpisode)return;
-  const q = getQualities(currentEpisode);
-  const names = Object.keys(q).filter(n=>n!=="Auto").sort((a,b)=>(parseInt(b)||0)-(parseInt(a)||0));
-  if(!names.length){ showErr("Download link available nahi hai."); return; }
-  const dlQ = $("dlQualities");
-  dlQ.replaceChildren();
-  dlSelected = names[0];
-  names.forEach(n=>{
-    const b = document.createElement("button");
-    b.className = "opt"+(n===dlSelected?" active":"");
-    b.textContent = n;
-    b.type = "button";
-    b.onclick = () => {
-      dlSelected = n;
-      dlQ.querySelectorAll(".opt").forEach(x=>x.classList.toggle("active", x===b));
-    };
-    dlQ.appendChild(b);
-  });
-  $("dlModal").hidden = false;
-  showUI();
-}
-function closeDlModal(){ $("dlModal").hidden = true; }
-function startDownload(){
-  if(!currentEpisode || !dlSelected) return;
-  const q = getQualities(currentEpisode);
-  const url = q[dlSelected];
-  if(!url) return;
-  const baseName = (currentGroup ? currentGroup.title.replace(/[\\/:*?"<>|]/g,"_") : "video")
-    + (currentGroup && currentGroup.type!=="Movie" && currentEpisode ? " S"+currentEpisode.season+"E"+currentEpisode.episode : "");
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = baseName + " " + dlSelected + ".mp4";
-  a.target = "_blank";
-  a.rel = "noopener noreferrer";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  closeDlModal();
-}
-$("dlBtn").onclick = openDlModal;
-$("dlCancel").onclick = closeDlModal;
-$("dlStart").onclick = startDownload;
-$("dlModal").addEventListener("click", e => { if(e.target === $("dlModal")) closeDlModal(); });
-
 function hideWatch(){
-  closeDlModal();stopVideo();infoMode=false;$("watch").classList.remove("info-mode");$("watch").style.display="none";closeMenu();
+  stopVideo();infoMode=false;$("watch").classList.remove("info-mode");$("watch").style.display="none";closeMenu();
   document.body.style.overflow="";currentGroup=null;currentEpisode=null;currentQuality="";watchOpen=false;detachFb();seo(SEO0.t,SEO0.d);
   const fs=document.fullscreenElement||document.webkitFullscreenElement;
   if(fs)(document.exitFullscreen||document.webkitExitFullscreen).call(document);
@@ -1709,7 +1636,7 @@ let hideT,tapT,lastTap=0,drag=false,curUrl="",hls=null,hlsRetry=0;
 
 function showUI(){
   box.classList.remove("idle");clearTimeout(hideT);
-  if(!V.paused)hideT=setTimeout(()=>{if($("menu").classList.contains("open")||!$("dlModal").hidden){showUI();return}box.classList.add("idle")},2500);
+  if(!V.paused)hideT=setTimeout(()=>{if($("menu").classList.contains("open")){showUI();return}box.classList.add("idle")},2500);
 }
 function closeMenu(){$("menu").classList.remove("open")}
 function showErr(msg){$("verr").textContent=msg;$("verr").hidden=false;box.classList.remove("loading")}
@@ -1761,206 +1688,303 @@ function playVideo(url,at){
         maxBufferHole:0.5,
         manifestLoadingMaxRetry:4,
         manifestLoadingRetryDelay:1000,
-        manifestLoadingMaxRetryTimeout:8000
+        manifestLoadingMaxRetryTimeout:10000,
+        fragLoadingMaxRetry:6,
+        fragLoadingRetryDelay:1000,
+        fragLoadingMaxRetryTimeout:12000,
+        levelLoadingMaxRetry:4,
+        levelLoadingRetryDelay:1000
       });
       hls.loadSource(s);
       hls.attachMedia(V);
-      hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-        hlsMenu();
-        if(pendingSeek>1){try{V.currentTime=pendingSeek}catch(e){}}
-        if(!holdPlay)V.play().catch(()=>{});
-      });
-      hls.on(Hls.Events.ERROR,(e,d)=>{
-        if(!d.fatal)return;
+      hls.on(Hls.Events.MANIFEST_PARSED,()=>{hlsMenu();if(!holdPlay)V.play().catch(()=>{})});
+      hls.on(Hls.Events.ERROR,(ev,d)=>{
+        if(!d||!d.fatal)return;
         if(d.type===Hls.ErrorTypes.NETWORK_ERROR){
-          if(hlsRetry<2){hlsRetry++;setTimeout(()=>{try{hls.startLoad()}catch(e){}},1000);return}
-        }else if(d.type===Hls.ErrorTypes.MEDIA_ERROR){
-          try{hls.recoverMediaError()}catch(e){}return;
+          if(hlsRetry<5){hlsRetry++;hls.startLoad();return}
+          showErr("Network failed. Connection check karo.");return;
         }
-        showErr("Video load failed. Try another quality.");
+        if(d.type===Hls.ErrorTypes.MEDIA_ERROR){hls.recoverMediaError();return}
+        destroyHls();
+        showErr("Video load nahi ho paya (HLS). Net check karo.");
       });
-    }else if(V.canPlayType("application/vnd.apple.mpegurl")){
-      V.src=s;
-      if(pendingSeek>1){const f=()=>{try{V.currentTime=pendingSeek}catch(e){}};V.addEventListener("loadedmetadata",f,{once:true})}
-      if(!holdPlay)V.play().catch(()=>{});
-    }else showErr("HLS not supported in this browser.");
-  }else{
-    V.src=s;
-    if(pendingSeek>1){const f=()=>{try{V.currentTime=pendingSeek}catch(e){}};V.addEventListener("loadedmetadata",f,{once:true})}
-    if(!holdPlay)V.play().catch(()=>{});
+      return;
+    }
+    if(V.canPlayType("application/vnd.apple.mpegurl")){
+      V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});return;
+    }
+    showErr("Is browser me HLS (m3u8) support nahi hai.");return;
   }
-  showUI();
+  V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});
 }
 
-/* progress bar drag */
-let progDrag=false;
-function progSeek(e){
-  const r=$("prog").getBoundingClientRect();
-  const x=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));
-  if(V.duration)V.currentTime=x*V.duration;
-  $("bar").style.width=(x*100)+"%";
+/* ============ WIRE UP ALL BUTTONS ============ */
+
+// Play/Pause (small + big)
+function doPlayPause(){
+  if(V.paused)V.play().catch(()=>{});else V.pause();
 }
-$("prog").addEventListener("pointerdown",e=>{progDrag=true;try{$("prog").setPointerCapture(e.pointerId)}catch(_){}progSeek(e);showUI()});
-$("prog").addEventListener("pointermove",e=>{if(progDrag)progSeek(e)});
-$("prog").addEventListener("pointerup",()=>{progDrag=false});
-$("prog").addEventListener("pointercancel",()=>{progDrag=false});
+$("playBtn").onclick=doPlayPause;
+$("big").onclick=doPlayPause;
 
-/* player events */
-V.addEventListener("loadedmetadata",()=>{$("tot").textContent=fmt(V.duration)});
-V.addEventListener("timeupdate",()=>{
-  $("cur").textContent=fmt(V.currentTime);
-  if(V.duration&&!progDrag)$("bar").style.width=(V.currentTime/V.duration*100)+"%";
-  if(currentEpisode&&V.duration&&Date.now()-lastSave>3000){
-    store.set("zt:"+currentEpisode.id,Math.floor(V.currentTime));
-    store.set("ztd:"+currentEpisode.id,Math.floor(V.duration));
-    lastSave=Date.now();
-  }
+// Rewind / Forward 10s
+$("rew").onclick=()=>{V.currentTime=Math.max(0,V.currentTime-10);showUI()};
+$("fwd").onclick=()=>{V.currentTime=Math.min(V.duration||0,V.currentTime+10);showUI()};
+
+// Next episode
+$("nextBtn").onclick=()=>{const n=nextItem();if(n)selectEpisode(n)};
+
+// Mute
+function updateMute(){
+  setIc($("muteIc"),V.muted||V.volume===0?"i-mute":"i-vol");
+}
+$("muteBtn").onclick=()=>{
+  V.muted=!V.muted;
+  if(!V.muted&&V.volume===0)V.volume=1;
+  updateMute();
+};
+
+// Settings menu
+$("setBtn").onclick=(e)=>{
+  e.stopPropagation();
+  const m=$("menu");
+  m.classList.toggle("open");
+};
+
+// Click outside closes menu
+document.addEventListener("click",e=>{
+  const m=$("menu");
+  if(!m||!m.classList.contains("open"))return;
+  if(m.contains(e.target))return;
+  if(e.target===$("setBtn")||$("setBtn").contains(e.target))return;
+  closeMenu();
 });
-V.addEventListener("progress",()=>{
-  if(V.buffered.length&&V.duration){
-    const end=V.buffered.end(V.buffered.length-1);
-    $("buf").style.width=(end/V.duration*100)+"%";
-  }
-});
-V.addEventListener("play",()=>{setIc($("playIc"),"i-pause");setIc($("bigIc"),"i-pause");box.classList.remove("loading");showUI()});
-V.addEventListener("pause",()=>{setIc($("playIc"),"i-play");setIc($("bigIc"),"i-play");showUI()});
-V.addEventListener("waiting",()=>box.classList.add("loading"));
-V.addEventListener("playing",()=>{box.classList.remove("loading");box.classList.remove("idle")});
-V.addEventListener("canplay",()=>box.classList.remove("loading"));
-V.addEventListener("ended",()=>{const nx=nextItem();if(nx)selectEpisode(nx);else showUI()});
-V.addEventListener("error",()=>{if(curUrl)showErr("Video play nahi ho paaya. Doosri quality try karo.")});
 
-/* center buttons */
-$("big").onclick=()=>{if(V.paused)V.play().catch(()=>{});else V.pause()};
-$("playBtn").onclick=()=>{if(V.paused)V.play().catch(()=>{});else V.pause()};
-$("rew").onclick=()=>{if(V.duration)V.currentTime=Math.max(0,V.currentTime-10)};
-$("fwd").onclick=()=>{if(V.duration)V.currentTime=Math.min(V.duration,V.currentTime+10)};
-$("nextBtn").onclick=()=>{const nx=nextItem();if(nx)selectEpisode(nx)};
-$("muteBtn").onclick=()=>{V.muted=!V.muted;setIc($("muteIc"),V.muted?"i-mute":"i-vol")};
-$("infoPlay").onclick=()=>{leaveInfo();loadEpisode()};
-
-/* settings */
-const speeds=[0.5,0.75,1,1.25,1.5,2];
+// Speed options
+const speeds=[0.5,0.75,1,1.25,1.5,1.75,2];
 const sBox=$("sOpts");
 speeds.forEach(sp=>{
-  const b=document.createElement("button");b.className="opt"+(sp===1?" active":"");b.textContent=sp+"x";
-  b.onclick=()=>{V.playbackRate=sp;sBox.querySelectorAll(".opt").forEach(x=>x.classList.toggle("active",x===b))};
+  const b=document.createElement("button");
+  b.className="opt";b.textContent=sp+"x";b.dataset.speed=sp;
+  if(sp===1)b.classList.add("active");
+  b.onclick=()=>{
+    V.playbackRate=sp;
+    document.querySelectorAll("#sOpts .opt").forEach(x=>x.classList.toggle("active",x===b));
+  };
   sBox.appendChild(b);
 });
 
-/* menus & fullscreen */
-$("setBtn").onclick=()=>{$("menu").classList.toggle("open");showUI()};
-document.addEventListener("click",e=>{if(!$("menu").contains(e.target)&&e.target!==$("setBtn")&&!$("setBtn").contains(e.target))closeMenu()});
+// Fullscreen with Landscape Orientation
 function toggleFs(){
-  const b=$("vbox");
-  if(document.fullscreenElement||document.webkitFullscreenElement){
-    (document.exitFullscreen||document.webkitExitFullscreen).call(document);
-  }else{
-    (b.requestFullscreen||b.webkitRequestFullscreen||b.msRequestFullscreen).call(b);
+  const isFs=document.fullscreenElement||document.webkitFullscreenElement;
+  if(isFs){
+      (document.exitFullscreen||document.webkitExitFullscreen).call(document);
+      if (screen.orientation && screen.orientation.unlock) {
+          try { screen.orientation.unlock(); } catch(e){}
+      }
+  } else {
+    const el=box;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if(req){
+        Promise.resolve(req.call(el)).then(() => {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(()=>{});
+            }
+        }).catch(()=>{});
+    }
   }
 }
 $("fsBtn").onclick=toggleFs;
-document.addEventListener("fullscreenchange",()=>{setIc($("fsIc"),document.fullscreenElement?"i-fsx":"i-fs")});
-document.addEventListener("webkitfullscreenchange",()=>{setIc($("fsIc"),document.webkitFullscreenElement?"i-fsx":"i-fs")});
+document.addEventListener("fullscreenchange",()=>setIc($("fsIc"),document.fullscreenElement?"i-fsx":"i-fs"));
+document.addEventListener("webkitfullscreenchange",()=>setIc($("fsIc"),document.webkitFullscreenElement?"i-fsx":"i-fs"));
 
-/* keyboard */
-document.addEventListener("keydown",e=>{
-  if(!watchOpen)return;
-  const t=e.target.tagName;
-  if(t==="INPUT"||t==="TEXTAREA")return;
-  if(e.key===" "||e.key==="k"){e.preventDefault();V.paused?V.play().catch(()=>{}):V.pause()}
-  else if(e.key==="ArrowLeft"&&V.duration)V.currentTime=Math.max(0,V.currentTime-10);
-  else if(e.key==="ArrowRight"&&V.duration)V.currentTime=Math.min(V.duration,V.currentTime+10);
-  else if(e.key==="m"){V.muted=!V.muted;setIc($("muteIc"),V.muted?"i-mute":"i-vol")}
-  else if(e.key==="f")toggleFs();
-  else if(e.key==="Escape"){
-    if(!$("dlModal").hidden)closeDlModal();
-    else if(watchOpen&&!document.fullscreenElement&&!document.webkitFullscreenElement)hideWatch();
+// Progress bar
+const prog=$("prog");
+function seekFromEvent(e){
+  if(!V.duration)return;
+  const r=prog.getBoundingClientRect();
+  const x=(e.clientX??e.touches[0].clientX)-r.left;
+  const pct=Math.max(0,Math.min(1,x/r.width));
+  V.currentTime=pct*V.duration;
+}
+prog.addEventListener("pointerdown",e=>{
+  drag=true;
+  try{prog.setPointerCapture(e.pointerId)}catch{}
+  seekFromEvent(e);
+});
+prog.addEventListener("pointermove",e=>{if(drag)seekFromEvent(e)});
+prog.addEventListener("pointerup",e=>{
+  drag=false;
+  try{prog.releasePointerCapture(e.pointerId)}catch{}
+});
+
+// Video events
+V.addEventListener("loadedmetadata",()=>{
+  $("tot").textContent=fmt(V.duration);
+  if(pendingSeek>0){try{V.currentTime=pendingSeek}catch{};pendingSeek=0}
+  box.classList.remove("loading");
+});
+V.addEventListener("timeupdate",()=>{
+  const dur=V.duration||0;
+  $("cur").textContent=fmt(V.currentTime);
+  if(dur){
+    $("bar").style.width=(V.currentTime/dur*100)+"%";
+    if(currentEpisode&&currentGroup&&Date.now()-lastSave>5000&&V.currentTime>5){
+      lastSave=Date.now();
+      store.set("zt:"+currentEpisode.id,V.currentTime);
+      store.set("ztd:"+currentEpisode.id,dur);
+      pushRecent(currentGroup,currentEpisode);
+    }
   }
 });
-
-/* tap-to-toggle controls */
-box.addEventListener("pointerdown",e=>{
-  if(e.target.closest("button")||e.target.closest(".prog")||e.target.closest(".menu")||e.target.closest(".dl-modal"))return;
-  const now=Date.now();
-  if(now-lastTap<300){toggleFs();lastTap=0;return}
-  lastTap=now;clearTimeout(tapT);
-  tapT=setTimeout(()=>{if(box.classList.contains("idle"))showUI();else box.classList.add("idle")},300);
+V.addEventListener("progress",()=>{
+  const dur=V.duration||0;if(!dur)return;
+  let end=0;
+  for(let i=0;i<V.buffered.length;i++){
+    if(V.buffered.start(i)<=V.currentTime+0.5)end=Math.max(end,V.buffered.end(i));
+  }
+  $("buf").style.width=(end/dur*100)+"%";
 });
-box.addEventListener("pointermove",showUI,{passive:true});
-box.addEventListener("pointerleave",()=>{if(!V.paused)box.classList.add("idle")});
+V.addEventListener("play",()=>{
+  setIc($("playIc"),"i-pause");setIc($("bigIc"),"i-pause");showUI();
+});
+V.addEventListener("pause",()=>{
+  setIc($("playIc"),"i-play");setIc($("bigIc"),"i-play");
+  box.classList.remove("idle");clearTimeout(hideT);
+});
+V.addEventListener("waiting",()=>box.classList.add("loading"));
+V.addEventListener("playing",()=>box.classList.remove("loading"));
+V.addEventListener("canplay",()=>box.classList.remove("loading"));
+V.addEventListener("ended",()=>{const n=nextItem();if(n)selectEpisode(n)});
+V.addEventListener("error",()=>{
+  if(curUrl)showErr("Video load nahi hua. Net check karo.");
+  box.classList.remove("loading");
+});
 
-/* filters */
-document.querySelectorAll(".filter").forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    currentFilter=b.dataset.filter;
+// Tap for UI on mobile
+box.addEventListener("click",e=>{
+  if(e.target.closest("button")||e.target.closest(".prog"))return;
+  const now=Date.now();
+  if(now-lastTap<300){doPlayPause();lastTap=0;return}
+  lastTap=now;
+  if(box.classList.contains("idle"))showUI();
+  else if(!V.paused)box.classList.add("idle");
+});
+
+// Info play button
+$("infoPlay").onclick=()=>{
+  leaveInfo();
+  if(currentEpisode)loadEpisode();
+  else if(currentGroup&&currentGroup.items[0])selectEpisode(currentGroup.items[0]);
+};
+
+/* ============ COMMENTS ============ */
+function timeAgo(ts){
+  if(!ts)return "";
+  const isMs = ts > 99999999999;
+  const date = isMs ? ts : ts * 1000;
+  const diff = (Date.now() - date) / 1000;
+  
+  if(diff < 60) return "abhi";
+  if(diff < 3600) return Math.floor(diff/60)+"m";
+  if(diff < 86400) return Math.floor(diff/3600)+"h";
+  if(diff < 2592000) return Math.floor(diff/86400)+"d";
+  return new Date(date).toLocaleDateString();
+}
+
+function loadComments(g){
+  const list=$("cmList");
+  list.innerHTML='<div class="cm-empty">Loading...</div>';
+  $("cmCount").textContent="0";
+  if(!g.vk)return;
+  fetch("?action=cm&k="+encodeURIComponent(g.vk))
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d||!d.ok){list.innerHTML='<div class="cm-empty">Comments load nahi hue.</div>';return}
+      const items=d.items||[];
+      list.replaceChildren();
+      $("cmCount").textContent=items.length;
+      if(!items.length){list.innerHTML='<div class="cm-empty">Abhi koi comment nahi. Pehla comment aap karo!</div>';return}
+      items.forEach(c=>{
+        const el=document.createElement("div");el.className="cm-item";
+        const top=document.createElement("div");top.className="cm-top";
+        const b=document.createElement("b");b.textContent=c.n;
+        const s=document.createElement("span");s.textContent=timeAgo(c.ts);
+        top.append(b,s);
+        const t=document.createElement("p");t.className="cm-text";t.textContent=c.t;
+        el.append(top,t);list.appendChild(el);
+      });
+    })
+    .catch(()=>{list.innerHTML='<div class="cm-empty">Comments load nahi hue.</div>'});
+}
+
+$("cmPost").onclick=()=>{
+  if(!currentGroup||!currentGroup.vk)return;
+  const n=$("cmName").value.trim();
+  const t=$("cmText").value.trim();
+  const err=$("cmErr");err.textContent="";
+  if(!n){err.textContent="Pehle apna naam likho.";return}
+  if(!t){err.textContent="Comment likho.";return}
+  const btn=$("cmPost");btn.disabled=true;
+  const fd=new FormData();
+  fd.append("k",currentGroup.vk);fd.append("n",n);fd.append("t",t);
+  fetch("?action=cm_add",{method:"POST",body:fd})
+    .then(r=>r.json())
+    .then(d=>{
+      btn.disabled=false;
+      if(d&&d.ok){$("cmText").value="";loadComments(currentGroup)}
+      else err.textContent=(d&&d.error)||"Comment post nahi hua.";
+    })
+    .catch(()=>{btn.disabled=false;err.textContent="Net error. Try again."});
+};
+
+/* ============ SEARCH + FILTER ============ */
+$("sBtn").onclick = () => {
+  $("searchPageInput").value = "";
+  setView('search');
+};
+$("search").addEventListener("focus", () => {
+  const val = $("search").value;
+  $("search").value = "";
+  if (currentView !== 'search') {
+      setView('search');
+  }
+  $("searchPageInput").value = val;
+  render();
+});
+$("searchPageInput").addEventListener("input", render);
+
+document.querySelectorAll(".filter").forEach(btn=>{
+  btn.onclick=()=>{
+    if (currentView !== 'home') {
+        setView('home');
+    }
+    document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("active",b===btn));
+    currentFilter=btn.dataset.filter;
     render();
   };
 });
 
-/* search */
-$("sBtn").onclick=()=>{
-  const h=document.querySelector("header");
-  if(h.classList.contains("s-open")){h.classList.remove("s-open");$("search").value="";render()}
-  else{h.classList.add("s-open");$("search").focus()}
-};
-let sT;
-$("search").addEventListener("input",()=>{clearTimeout(sT);sT=setTimeout(render,200)});
-let spT;
-$("searchPageInput").addEventListener("input",()=>{clearTimeout(spT);spT=setTimeout(render,200)});
-
-/* save on unload */
-window.addEventListener("beforeunload",()=>{
-  if(currentEpisode&&V.duration){
-    store.set("zt:"+currentEpisode.id,Math.floor(V.currentTime));
-    store.set("ztd:"+currentEpisode.id,Math.floor(V.duration));
-  }
-});
-
-/* comments */
-async function loadComments(g){
-  $("cmList").innerHTML="";$("cmCount").textContent="0";$("cmErr").textContent="";
-  try{
-    const r=await fetch("?action=cm&k="+encodeURIComponent(g.vk||""));
-    const d=await r.json();
-    if(d.ok&&Array.isArray(d.items)){
-      $("cmCount").textContent=d.items.length;
-      if(!d.items.length){$("cmList").innerHTML='<div class="cm-empty">Pehla comment tumhari taraf se 😎</div>';return}
-      d.items.forEach(c=>{
-        const el=document.createElement("div");el.className="cm-item";
-        el.innerHTML='<div class="cm-top"><b></b><span></span></div><p class="cm-text"></p>';
-        el.querySelector("b").textContent=c.n||"User";
-        el.querySelector("span").textContent=c.ts?new Date(c.ts*1000).toLocaleDateString():"";
-        el.querySelector(".cm-text").textContent=c.t||"";
-        $("cmList").appendChild(el);
-      });
-    }
-  }catch(e){}
-}
-$("cmPost").onclick=async()=>{
-  const n=$("cmName").value.trim(),t=$("cmText").value.trim();
-  if(!currentGroup||!currentGroup.vk)return;
-  if(!n){$("cmErr").textContent="Pehle naam likho.";return}
-  if(!t){$("cmErr").textContent="Comment likho.";return}
-  $("cmErr").textContent="";
-  $("cmPost").disabled=true;
-  try{
-    const fd=new FormData();fd.append("n",n);fd.append("t",t);fd.append("k",currentGroup.vk);
-    const r=await fetch("?action=cm_add",{method:"POST",body:fd});
-    const d=await r.json();
-    if(d.ok){$("cmText").value="";loadComments(currentGroup)}
-    else $("cmErr").textContent=d.error||"Comment post nahi hua.";
-  }catch(e){$("cmErr").textContent="Network error."}
-  $("cmPost").disabled=false;
-};
-
-/* init */
+/* ============ INIT ============ */
 allItems=buildItems();
 buildGroups();
-history.replaceState({view:'home'},'',location.href);
-applyView('home');
+
+const initState = history.state;
+if (initState && initState.view === 'watch') {
+    const g = groups.find(x => gkey(x) === initState.groupKey);
+    if (g) {
+        const item = initState.episodeId ? g.items.find(x => x.id === initState.episodeId) : g.items[0];
+        showWatch(g, item, initState.noPlay);
+    } else {
+        history.replaceState({ view: 'home' }, '', location.href);
+        applyView('home');
+    }
+} else if (initState && initState.view) {
+    applyView(initState.view);
+} else {
+    history.replaceState({ view: 'home' }, '', location.href);
+    applyView('home');
+}
 </script>
 </body>
 </html>
