@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-14T12:21:19.760Z",
+  "updated_at": "2026-11-18T11:44:58.104Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -390,6 +390,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-14T12:21:19.751Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "super-30-hindi-dbd",
+      "slug": "super-30-hindi-dbd",
+      "title": "SUPER 30 HINDI DBD",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/6/3/3/3/0/463330-super-30-0-600-0-900-crop.jpg?v=9185a5ef5d",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-18T11:44:58.092Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "SUPER 30 HINDI DBD",
+              "thumbnail": "",
+              "url": "https://rumble.com/hls-vod/vwI5TIy6_oQ/playlist.m3u8?esp=hd",
+              "quality": "Original",
+              "duration": "",
+              "format": "m3u8",
+              "added_at": "2026-11-18T11:44:58.097Z"
             }
           ]
         }
