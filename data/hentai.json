@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-15T00:30:11.859Z",
+  "updated_at": "2026-11-19T07:43:53.479Z",
   "anime": [
     {
       "id": "overflow-hindi",
@@ -236,6 +236,39 @@
               "duration": "",
               "format": "m3u8",
               "added_at": "2026-11-15T00:30:11.843Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "german-hentai",
+      "slug": "german-hentai",
+      "title": "German Hentai",
+      "poster": "https://thumb-cdn77.xnxx-cdn.com/e94036b8-f827-4694-b5ed-4e9d85ec66b4/0/xn_22_t.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "hentai",
+      "popularity": 0,
+      "added_at": "2026-11-19T07:43:53.463Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://rumble.com/hls-vod/yFqP2WeIgSc/playlist.m3u8?esp=hd",
+              "quality": "Auto",
+              "duration": "",
+              "format": "m3u8",
+              "added_at": "2026-11-19T07:43:53.468Z"
             }
           ]
         }
