@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T04:43:54.555Z",
+  "updated_at": "2026-11-22T04:45:19.824Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -852,6 +852,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T04:43:54.532Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bullah-2026-720p-hdtvrip-punjabi",
+      "slug": "bullah-2026-720p-hdtvrip-punjabi",
+      "title": "Bullah.2026.720p.HDTVRip.Punjabi",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYjMxN2E2MDEtOTFiMi00NzJiLTgzNDQtM2VmOWFiYjgxMjA2XkEyXkFqcGc@._V1_.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T04:45:19.814Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Bullah.2026.720p.HDTVRip.Punjabi",
+              "thumbnail": "",
+              "url": "https://seed167b.bitchute.com/0VVyOZY9dPcp/YkBHw2xbDzK4.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T04:45:19.814Z"
             }
           ]
         }
