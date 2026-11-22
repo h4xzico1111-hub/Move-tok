@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T03:39:48.561Z",
+  "updated_at": "2026-11-22T03:47:55.009Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -456,6 +456,39 @@
               "duration": "",
               "format": "m3u8",
               "added_at": "2026-11-20T07:51:17.919Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-debt-collector-hindi-dubbed-full-hd-movie",
+      "slug": "the-debt-collector-hindi-dubbed-full-hd-movie",
+      "title": "The Debt Collector Hindi Dubbed Full HD Movie 🍿",
+      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfkfE-kqtgGxhLB2CUaJgRex0sk3gq37NbdlrRhCYpBadMT8E4dZjRXB0&s=10",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T03:47:55.000Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "The Debt Collector Hindi Dubbed Full HD Movie 🍿",
+              "thumbnail": "",
+              "url": "https://zggg98sgwbg1gh.bitchute.com/neKe8kkuMxZd/HsUP9VFitilE.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T03:47:55.005Z"
             }
           ]
         }
