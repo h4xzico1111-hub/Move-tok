@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T04:40:39.511Z",
+  "updated_at": "2026-11-22T04:42:02.197Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -786,6 +786,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T04:40:39.497Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "baadshaho-2017-hindi",
+      "slug": "baadshaho-2017-hindi",
+      "title": "Baadshaho 2017.Hindi.",
+      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOsPhzhpwNtsM6krEj7pG0mAib-tDAC0ctKon7CsNZUz8u6K0_jcBtknTE&s=10",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T04:42:02.187Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Baadshaho 2017.Hindi.",
+              "thumbnail": "",
+              "url": "https://seed167b.bitchute.com/0VVyOZY9dPcp/GC0asVXmRHJH.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T04:42:02.192Z"
             }
           ]
         }
