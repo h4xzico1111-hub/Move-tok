@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T04:29:49.854Z",
+  "updated_at": "2026-11-22T04:32:10.866Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -654,6 +654,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T04:29:49.849Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kodi-2016-south-indian-movie-hindi-dubbed",
+      "slug": "kodi-2016-south-indian-movie-hindi-dubbed",
+      "title": "Kodi (2016) South Indian Movie (Hindi Dubbed)",
+      "poster": "https://c.saavncdn.com/718/Kodi-Malayalam-2016-20250307181322-500x500.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T04:32:10.846Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Kodi (2016) South Indian Movie (Hindi Dubbed)",
+              "thumbnail": "",
+              "url": "https://seed307.bitchute.com/u78NJOlll6Oq/kVzScOk99HlY.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T04:32:10.851Z"
             }
           ]
         }
