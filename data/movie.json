@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T03:55:35.210Z",
+  "updated_at": "2026-11-22T04:25:52.996Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -588,6 +588,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T03:55:35.207Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ghost-mansion-hindi-dubbed-full-hd-movie",
+      "slug": "ghost-mansion-hindi-dubbed-full-hd-movie",
+      "title": "Ghost Mansion Hindi Dubbed Full HD Movie 🍿",
+      "poster": "https://m.media-amazon.com/images/S/pv-target-images/75580a1aa16b5111c81906d54ef41142fff019cad195222c69ee7cac2b50c6e5.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T04:25:52.986Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Ghost Mansion Hindi Dubbed Full HD Movie 🍿",
+              "thumbnail": "",
+              "url": "https://seed128.bitchute.com/neKe8kkuMxZd/txhCS2srBpVA.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T04:25:52.991Z"
             }
           ]
         }
