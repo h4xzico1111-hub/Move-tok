@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T03:47:55.009Z",
+  "updated_at": "2026-11-22T03:50:43.922Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -489,6 +489,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T03:47:55.005Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ghost-rider-part-1-hindi-dubbed-full-hd-movie",
+      "slug": "ghost-rider-part-1-hindi-dubbed-full-hd-movie",
+      "title": "Ghost Rider Part 1 Hindi Dubbed Full HD Movie 🍿",
+      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu95qBl6w3Rht6C1d5UzoD4dhBojris55suhNUOhGx32ij61FH04sITyQ&s=10",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T03:50:43.913Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Ghost Rider Part 1 Hindi Dubbed Full HD Movie 🍿",
+              "thumbnail": "",
+              "url": "https://seed167b.bitchute.com/neKe8kkuMxZd/dOE4gYBoL2Um.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T03:50:43.918Z"
             }
           ]
         }
