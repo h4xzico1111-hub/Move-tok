@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T03:33:00.108Z",
+  "updated_at": "2026-11-22T03:35:24.264Z",
   "anime": [
     {
       "id": "our-sticky-love-episode-1-hindi-dubbed-full-latest-k-drama",
@@ -626,6 +626,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T03:33:00.104Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "make-me-tingle-episode-1-hindi-dubbed-full-latest-k-drama",
+      "slug": "make-me-tingle-episode-1-hindi-dubbed-full-latest-k-drama",
+      "title": "Make me tingle Episode 1 Hindi dubbed full latest K-drama",
+      "poster": "https://i.ibb.co/WWGNYK2Q/images-1.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "anime",
+      "popularity": 0,
+      "added_at": "2026-11-22T03:35:24.256Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://seed122.bitchute.com/vN1ZdtiarJGS/WRS3TKJNZDEx.mp4",
+              "quality": "360p",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T03:35:24.261Z"
             }
           ]
         }
