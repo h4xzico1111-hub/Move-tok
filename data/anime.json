@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-14T03:32:41.026Z",
+  "updated_at": "2026-11-22T03:31:17.168Z",
   "anime": [
     {
       "id": "our-sticky-love-episode-1-hindi-dubbed-full-latest-k-drama",
@@ -573,6 +573,39 @@
               "duration": "",
               "format": "m3u8",
               "added_at": "2026-11-14T03:32:41.020Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dead-end-job-ep-1-hindi-dubbed-full-latest-k-drama",
+      "slug": "dead-end-job-ep-1-hindi-dubbed-full-latest-k-drama",
+      "title": "Dead End Job Ep 1 Hindi dubbed full latest K-drama",
+      "poster": "https://i.ibb.co/k2QWDLBL/images.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "ongoing",
+      "featured": false,
+      "category": "anime",
+      "popularity": 0,
+      "added_at": "2026-11-22T03:31:17.152Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Episode 1",
+              "thumbnail": "",
+              "url": "https://zb10-7gsop1v78b.bitchute.com/vN1ZdtiarJGS/Mqz4MYODrRMK.mp4",
+              "quality": "360p",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T03:31:17.164Z"
             }
           ]
         }
