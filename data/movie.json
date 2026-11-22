@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T04:32:10.866Z",
+  "updated_at": "2026-11-22T04:34:44.330Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -687,6 +687,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T04:32:10.851Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "detective-ujjwalan-2025-hindi-hq-studio-dub-ds4k-web-dl-4k-1080p",
+      "slug": "detective-ujjwalan-2025-hindi-hq-studio-dub-ds4k-web-dl-4k-1080p",
+      "title": "Detective Ujjwalan (2025) [Hindi – HQ/Studio Dub] DS4K WEB-DL 4K 1080p",
+      "poster": "https://m.media-amazon.com/images/M/MV5BOTQxYjI5ZTYtNWJmMy00Mjk4LTk0NTYtNmRjOGFlYTM5YzVkXkEyXkFqcGc@._V1_.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T04:34:44.316Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Detective Ujjwalan (2025) [Hindi – HQ/Studio Dub] DS4K WEB-DL 4K 1080p",
+              "thumbnail": "",
+              "url": "https://seed125b.bitchute.com/u78NJOlll6Oq/9bL0SKQ52XUF.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T04:34:44.317Z"
             }
           ]
         }
