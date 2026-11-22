@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T04:52:03.578Z",
+  "updated_at": "2026-11-22T04:53:43.739Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -984,6 +984,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T04:52:03.573Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daddy-cool-munde-fool",
+      "slug": "daddy-cool-munde-fool",
+      "title": "Daddy Cool Munde Fool",
+      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3UXZot7aPbkvAfctt2co408HuutQ2hTf5gWJ5h9nHRw&s=10",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T04:53:43.719Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Daddy Cool Munde Fool",
+              "thumbnail": "",
+              "url": "https://seed122.bitchute.com/0VVyOZY9dPcp/U0ndex6ltl3g.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T04:53:43.722Z"
             }
           ]
         }
