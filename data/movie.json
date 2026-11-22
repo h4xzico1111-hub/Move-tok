@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T04:38:41.007Z",
+  "updated_at": "2026-11-22T04:40:39.511Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -753,6 +753,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T04:38:41.003Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "baaghi-2-2018-hindi-720p",
+      "slug": "baaghi-2-2018-hindi-720p",
+      "title": "Baaghi 2 - 2018 Hindi 720p",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNThlYzE4M2MtZjMyNy00ZTMxLWI0ODgtNDEzMzljMGJlZDg0XkEyXkFqcGc@._V1_.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T04:40:39.494Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Baaghi 2 - 2018 Hindi 720p",
+              "thumbnail": "",
+              "url": "https://seed125b.bitchute.com/0VVyOZY9dPcp/94grBSZlyVoA.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T04:40:39.497Z"
             }
           ]
         }
