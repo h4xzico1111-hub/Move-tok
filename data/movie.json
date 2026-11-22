@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T03:50:43.922Z",
+  "updated_at": "2026-11-22T03:53:44.184Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -522,6 +522,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T03:50:43.918Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "protector-full-movie-hd-hindi-dubbed",
+      "slug": "protector-full-movie-hd-hindi-dubbed",
+      "title": "Protector Full Movie HD Hindi Dubbed",
+      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMClA7tY5tQS4Np3OuQNFOFYRO8fKEpLAqOD7oZPpJ1hl9jrPRIkig10wM&s=10",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T03:53:44.175Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Protector Full Movie HD Hindi Dubbed",
+              "thumbnail": "",
+              "url": "https://seed307.bitchute.com/neKe8kkuMxZd/42d8Vx229WTG.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T03:53:44.180Z"
             }
           ]
         }
