@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T04:45:19.824Z",
+  "updated_at": "2026-11-22T04:47:09.553Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -885,6 +885,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T04:45:19.814Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vadh-2-2025-720p",
+      "slug": "vadh-2-2025-720p",
+      "title": "Vadh.2.2025.720p",
+      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYmJDqRSqSjJdIxyvNt7GxDuo36tQvTqR5CyNzz-Eob4Zj8D-38ly_F24&s=10",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T04:47:09.544Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Vadh.2.2025.720p",
+              "thumbnail": "",
+              "url": "https://seed307.bitchute.com/0VVyOZY9dPcp/sV3urI0nBx9j.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T04:47:09.549Z"
             }
           ]
         }
