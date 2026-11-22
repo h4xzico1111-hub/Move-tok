@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T03:53:44.184Z",
+  "updated_at": "2026-11-22T03:55:35.210Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -555,6 +555,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T03:53:44.180Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "extinction-hindi-dubbed-full-movie-hd",
+      "slug": "extinction-hindi-dubbed-full-movie-hd",
+      "title": "Extinction Hindi Dubbed Full Movie HD",
+      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQamSU1MVR4gJN9ucbVwx2Yeiw6OpPwXQaFD8-OlCS4HlcwOeYN4AayH-8&s=10",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T03:55:35.201Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Extinction Hindi Dubbed Full Movie HD",
+              "thumbnail": "",
+              "url": "https://seed163.bitchute.com/neKe8kkuMxZd/iWNyg3rbQlFR.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T03:55:35.207Z"
             }
           ]
         }
