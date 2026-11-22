@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-11-22T04:53:43.739Z",
+  "updated_at": "2026-11-22T05:00:16.249Z",
   "anime": [
     {
       "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
@@ -1017,6 +1017,39 @@
               "duration": "",
               "format": "mp4",
               "added_at": "2026-11-22T04:53:43.722Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dabangg-3-2019-hindi-720p",
+      "slug": "dabangg-3-2019-hindi-720p",
+      "title": "Dabangg 3 2019 Hindi 720p",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMWNmZmQyOTktZjdmOC00NDFmLTk0ZDktZjg4N2Y1NTE2MWQ3XkEyXkFqcGc@._V1_.jpg",
+      "banner": "",
+      "description": "",
+      "genres": [],
+      "release_year": 2026,
+      "status": "completed",
+      "featured": false,
+      "category": "movie",
+      "popularity": 0,
+      "added_at": "2026-11-22T05:00:16.234Z",
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Movie",
+          "episodes": [
+            {
+              "number": 1,
+              "title": "Dabangg 3 2019 Hindi 720p",
+              "thumbnail": "",
+              "url": "https://seed132.bitchute.com/0VVyOZY9dPcp/aHXZFxxSPChh.mp4",
+              "quality": "Original",
+              "duration": "",
+              "format": "mp4",
+              "added_at": "2026-11-22T05:00:16.244Z"
             }
           ]
         }
