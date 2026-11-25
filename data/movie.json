@@ -1,1059 +1,1026 @@
 {
-  "version": 1,
-  "updated_at": "2026-11-22T05:00:16.249Z",
-  "anime": [
-    {
-      "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
-      "slug": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
-      "title": "A Savannah Haunting (2021) Hindi Dubbed | Hollywood Horror Movie | Supernatural Thriller 2026-10-2..",
-      "poster": "https://m.media-amazon.com/images/M/MV5BM2EzOWRjODItMzY1NC00MzViLWI3ZWItZDY5ZDFlYWQ0MmZiXkEyXkFqcGc@._V1_.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-06T13:52:58.744Z",
-      "seasons": [
+    "version": 1,
+    "updated_at": "2026-11-25T21:34:11+00:00",
+    "anime": [
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "A Savannah Haunting (2021) Hindi Dubbed | Hollywood Horror Movie | Supernatural Thriller 2026-10-2..",
-              "thumbnail": "",
-              "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4",
-              "quality": "1080p",
-              "duration": "",
-              "sources": [
+            "id": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
+            "slug": "a-savannah-haunting-2021-hindi-dubbed-hollywood-horror-movie-supernatural-thriller-2026-10-2",
+            "title": "A Savannah Haunting (2021) Hindi Dubbed | Hollywood Horror Movie | Supernatural Thriller 2026-10-2..",
+            "poster": "https://m.media-amazon.com/images/M/MV5BM2EzOWRjODItMzY1NC00MzViLWI3ZWItZDY5ZDFlYWQ0MmZiXkEyXkFqcGc@._V1_.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-06T13:52:58.744Z",
+            "seasons": [
                 {
-                  "quality": "1080p",
-                  "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4"
-                },
-                {
-                  "quality": "720p",
-                  "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4"
-                },
-                {
-                  "quality": "480p",
-                  "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4"
-                },
-                {
-                  "quality": "360p",
-                  "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4"
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "A Savannah Haunting (2021) Hindi Dubbed | Hollywood Horror Movie | Supernatural Thriller 2026-10-2..",
+                            "thumbnail": "",
+                            "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4",
+                            "quality": "1080p",
+                            "duration": "",
+                            "sources": [
+                                {
+                                    "quality": "1080p",
+                                    "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4"
+                                },
+                                {
+                                    "quality": "720p",
+                                    "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4"
+                                },
+                                {
+                                    "quality": "480p",
+                                    "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4"
+                                },
+                                {
+                                    "quality": "360p",
+                                    "url": "https://seed1sjt3.bitchute.com/t23LPy4RbVpc/bOYNJ-dADak.mp4"
+                                }
+                            ],
+                            "added_at": "2026-11-06T13:52:58.749Z"
+                        }
+                    ]
                 }
-              ],
-              "added_at": "2026-11-06T13:52:58.749Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "mango-pachacha-2026-full-hd-movie-hindi-dubbed",
-      "slug": "mango-pachacha-2026-full-hd-movie-hindi-dubbed",
-      "title": "Mango Pachacha 2026 Full HD Movie Hindi Dubbed",
-      "poster": "https://m.media-amazon.com/images/M/MV5BZjI4NGU3ZjQtYzNhOS00N2FiLWJmNjgtMWNkNWI3NTEwMWI4XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-06T13:56:10.120Z",
-      "seasons": [
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Mango Pachacha 2026 Full HD Movie Hindi Dubbed",
-              "thumbnail": "",
-              "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4",
-              "quality": "1080p",
-              "duration": "",
-              "sources": [
+            "id": "mango-pachacha-2026-full-hd-movie-hindi-dubbed",
+            "slug": "mango-pachacha-2026-full-hd-movie-hindi-dubbed",
+            "title": "Mango Pachacha 2026 Full HD Movie Hindi Dubbed",
+            "poster": "https://m.media-amazon.com/images/M/MV5BZjI4NGU3ZjQtYzNhOS00N2FiLWJmNjgtMWNkNWI3NTEwMWI4XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-06T13:56:10.120Z",
+            "seasons": [
                 {
-                  "quality": "1080p",
-                  "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4"
-                },
-                {
-                  "quality": "720p",
-                  "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4"
-                },
-                {
-                  "quality": "480p",
-                  "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4"
-                },
-                {
-                  "quality": "360p",
-                  "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4"
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Mango Pachacha 2026 Full HD Movie Hindi Dubbed",
+                            "thumbnail": "",
+                            "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4",
+                            "quality": "1080p",
+                            "duration": "",
+                            "sources": [
+                                {
+                                    "quality": "1080p",
+                                    "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4"
+                                },
+                                {
+                                    "quality": "720p",
+                                    "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4"
+                                },
+                                {
+                                    "quality": "480p",
+                                    "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4"
+                                },
+                                {
+                                    "quality": "360p",
+                                    "url": "https://seed167b.bitchute.com/0foZlNB0anZi/sfFBHEKWTkV9.mp4"
+                                }
+                            ],
+                            "added_at": "2026-11-06T13:56:10.129Z"
+                        }
+                    ]
                 }
-              ],
-              "added_at": "2026-11-06T13:56:10.129Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "city-hunter-hindi-dubbed-full-hd-movie",
-      "slug": "city-hunter-hindi-dubbed-full-hd-movie",
-      "title": "City Hunter Hindi Dubbed Full HD Movie",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1u59N7xo-WIOCxXeE-tLoXgSx3EWrT0GirlnT67TYvqm7fXoYM5WspGIG&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-06T14:31:07.078Z",
-      "seasons": [
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "City Hunter Hindi Dubbed Full HD Movie",
-              "thumbnail": "",
-              "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4",
-              "quality": "1080p",
-              "duration": "",
-              "sources": [
+            "id": "city-hunter-hindi-dubbed-full-hd-movie",
+            "slug": "city-hunter-hindi-dubbed-full-hd-movie",
+            "title": "City Hunter Hindi Dubbed Full HD Movie",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1u59N7xo-WIOCxXeE-tLoXgSx3EWrT0GirlnT67TYvqm7fXoYM5WspGIG&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-06T14:31:07.078Z",
+            "seasons": [
                 {
-                  "quality": "1080p",
-                  "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4"
-                },
-                {
-                  "quality": "720p",
-                  "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4"
-                },
-                {
-                  "quality": "480p",
-                  "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4"
-                },
-                {
-                  "quality": "360p",
-                  "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4"
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "City Hunter Hindi Dubbed Full HD Movie",
+                            "thumbnail": "",
+                            "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4",
+                            "quality": "1080p",
+                            "duration": "",
+                            "sources": [
+                                {
+                                    "quality": "1080p",
+                                    "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4"
+                                },
+                                {
+                                    "quality": "720p",
+                                    "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4"
+                                },
+                                {
+                                    "quality": "480p",
+                                    "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4"
+                                },
+                                {
+                                    "quality": "360p",
+                                    "url": "https://seed305.bitchute.com/neKe8kkuMxZd/Jw0SpQChADvj.mp4"
+                                }
+                            ],
+                            "added_at": "2026-11-06T14:31:07.083Z"
+                        }
+                    ]
                 }
-              ],
-              "added_at": "2026-11-06T14:31:07.083Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "salmokji-whispering-water-2026-hindi-dubbed-k-movie",
-      "slug": "salmokji-whispering-water-2026-hindi-dubbed-k-movie",
-      "title": "Salmokji: Whispering Water (2026) Hindi Dubbed K-Movie",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg0Aou6-12JHxO5FzN3ubsOh1YUqlKKR-VW2Nam-lg4w&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-06T14:34:21.413Z",
-      "seasons": [
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Salmokji: Whispering Water (2026) Hindi Dubbed K-Movie",
-              "thumbnail": "",
-              "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4",
-              "quality": "1080p",
-              "duration": "",
-              "sources": [
+            "id": "salmokji-whispering-water-2026-hindi-dubbed-k-movie",
+            "slug": "salmokji-whispering-water-2026-hindi-dubbed-k-movie",
+            "title": "Salmokji: Whispering Water (2026) Hindi Dubbed K-Movie",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTg0Aou6-12JHxO5FzN3ubsOh1YUqlKKR-VW2Nam-lg4w&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-06T14:34:21.413Z",
+            "seasons": [
                 {
-                  "quality": "1080p",
-                  "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4"
-                },
-                {
-                  "quality": "720p",
-                  "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4"
-                },
-                {
-                  "quality": "480p",
-                  "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4"
-                },
-                {
-                  "quality": "360p",
-                  "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4"
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Salmokji: Whispering Water (2026) Hindi Dubbed K-Movie",
+                            "thumbnail": "",
+                            "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4",
+                            "quality": "1080p",
+                            "duration": "",
+                            "sources": [
+                                {
+                                    "quality": "1080p",
+                                    "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4"
+                                },
+                                {
+                                    "quality": "720p",
+                                    "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4"
+                                },
+                                {
+                                    "quality": "480p",
+                                    "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4"
+                                },
+                                {
+                                    "quality": "360p",
+                                    "url": "https://seed125b.bitchute.com/neKe8kkuMxZd/yhBbV2shsZ7V.mp4"
+                                }
+                            ],
+                            "added_at": "2026-11-06T14:34:21.418Z"
+                        }
+                    ]
                 }
-              ],
-              "added_at": "2026-11-06T14:34:21.418Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ramayana-rise-of-a-legend-2026-bollywood-hindi-movie-hqcam",
-      "slug": "ramayana-rise-of-a-legend-2026-bollywood-hindi-movie-hqcam",
-      "title": "Ramayana - Rise of a Legend (2026) Bollywood Hindi Movie HQCam",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYWE4NWVmZjItN2Y0ZC00YmMzLThhNWEtM2VkZjA3MmFlNjdmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-06T22:01:02.376Z",
-      "seasons": [
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Ramayana - Rise of a Legend (2026) Bollywood Hindi Movie HQCam",
-              "thumbnail": "",
-              "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4",
-              "quality": "1080p",
-              "duration": "",
-              "format": "mp4",
-              "sources": [
+            "id": "ramayana-rise-of-a-legend-2026-bollywood-hindi-movie-hqcam",
+            "slug": "ramayana-rise-of-a-legend-2026-bollywood-hindi-movie-hqcam",
+            "title": "Ramayana - Rise of a Legend (2026) Bollywood Hindi Movie HQCam",
+            "poster": "https://m.media-amazon.com/images/M/MV5BYWE4NWVmZjItN2Y0ZC00YmMzLThhNWEtM2VkZjA3MmFlNjdmXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-06T22:01:02.376Z",
+            "seasons": [
                 {
-                  "quality": "1080p",
-                  "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
-                },
-                {
-                  "quality": "720p",
-                  "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
-                },
-                {
-                  "quality": "480p",
-                  "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
-                },
-                {
-                  "quality": "360p",
-                  "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Ramayana - Rise of a Legend (2026) Bollywood Hindi Movie HQCam",
+                            "thumbnail": "",
+                            "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4",
+                            "quality": "1080p",
+                            "duration": "",
+                            "format": "mp4",
+                            "sources": [
+                                {
+                                    "quality": "1080p",
+                                    "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
+                                },
+                                {
+                                    "quality": "720p",
+                                    "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
+                                },
+                                {
+                                    "quality": "480p",
+                                    "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
+                                },
+                                {
+                                    "quality": "360p",
+                                    "url": "https://seed126b.bitchute.com/rdKTQ7qzoTrh/69BQMvtZB19K.mp4"
+                                }
+                            ],
+                            "added_at": "2026-11-06T22:01:02.402Z"
+                        }
+                    ]
                 }
-              ],
-              "added_at": "2026-11-06T22:01:02.402Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "raid2-hindi-bollywood-movie",
-      "slug": "raid2-hindi-bollywood-movie",
-      "title": "RAID2 Hindi Bollywood Movie",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSF0pnBTlReO4RsE_2D5HaIiIsqZTHYm7k5NA3LpkP2cA&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-08T08:56:55.551Z",
-      "seasons": [
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "RAID2 Hindi Bollywood Movie",
-              "thumbnail": "",
-              "url": "https://rumble.com/hls-vod/8XVJxWQcafY/playlist.m3u8",
-              "quality": "Original",
-              "duration": "",
-              "format": "m3u8",
-              "added_at": "2026-11-08T08:56:55.556Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "badnaam-2025-full-movie-in-punjabi-hd",
-      "slug": "badnaam-2025-full-movie-in-punjabi-hd",
-      "title": "Badnaam (2025) Full Movie in Punjabi | HD",
-      "poster": "https://in.bmscdn.com/events/moviecard/ET00424106.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-09T03:43:27.898Z",
-      "seasons": [
-        {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Badnaam (2025) Full Movie in Punjabi | HD",
-              "thumbnail": "",
-              "url": "https://hugh.cdn.rumble.cloud/video/fww1/2b/s8/2/e/D/D/t/eDDty.caa.mp4",
-              "quality": "720p",
-              "duration": "",
-              "format": "mp4",
-              "sources": [
+            "id": "raid2-hindi-bollywood-movie",
+            "slug": "raid2-hindi-bollywood-movie",
+            "title": "RAID2 Hindi Bollywood Movie",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSF0pnBTlReO4RsE_2D5HaIiIsqZTHYm7k5NA3LpkP2cA&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-08T08:56:55.551Z",
+            "seasons": [
                 {
-                  "quality": "720p",
-                  "url": "https://hugh.cdn.rumble.cloud/video/fww1/2b/s8/2/e/D/D/t/eDDty.caa.mp4"
-                },
-                {
-                  "quality": "480p",
-                  "url": "https://hugh.cdn.rumble.cloud/video/fww1/2b/s8/2/e/D/D/t/eDDty.oaa.mp4"
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "RAID2 Hindi Bollywood Movie",
+                            "thumbnail": "",
+                            "url": "https://rumble.com/hls-vod/8XVJxWQcafY/playlist.m3u8",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "m3u8",
+                            "added_at": "2026-11-08T08:56:55.556Z"
+                        }
+                    ]
                 }
-              ],
-              "added_at": "2026-11-09T03:43:27.902Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "dilwale-dulhania-le-jayenge",
-      "slug": "dilwale-dulhania-le-jayenge",
-      "title": "Dilwale dulhania Le jayenge",
-      "poster": "https://imgs.search.brave.com/XLAUirmlSzzaxfTu2tYWaAL3eybLF2-OhPN02GgCIgA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMuZGlnaXQuaW4v/T1RUL3YyL2ltYWdl/cy9kaWx3YWxlLWR1/bGhhbmlhLWxlLWph/eWVuZ2UtMTA5Njg2/anBnP3RyPXctNjAw",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-13T05:52:12.234Z",
-      "seasons": [
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Dilwale dulhania Le jayenge",
-              "thumbnail": "",
-              "url": "https://archive.org/download/dilwale-dulhania-le-jayenge/Dilwale%20Dulhania%20Le%20Jayenge.mp4",
-              "quality": "1080p",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-13T05:52:12.247Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "lagaan-2001-hindi-dvdrip-xvi-d-m-su-b-x-rg",
-      "slug": "lagaan-2001-hindi-dvdrip-xvi-d-m-su-b-x-rg",
-      "title": "Lagaan 2001 Hindi DVDRip Xvi D M Su B X RG",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT53_yLaBw2sj6Jzxrmtz8UPfb2PQuixjea9QYSLwh59g&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-14T12:21:19.745Z",
-      "seasons": [
+            "id": "badnaam-2025-full-movie-in-punjabi-hd",
+            "slug": "badnaam-2025-full-movie-in-punjabi-hd",
+            "title": "Badnaam (2025) Full Movie in Punjabi | HD",
+            "poster": "https://in.bmscdn.com/events/moviecard/ET00424106.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-09T03:43:27.898Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Badnaam (2025) Full Movie in Punjabi | HD",
+                            "thumbnail": "",
+                            "url": "https://hugh.cdn.rumble.cloud/video/fww1/2b/s8/2/e/D/D/t/eDDty.caa.mp4",
+                            "quality": "720p",
+                            "duration": "",
+                            "format": "mp4",
+                            "sources": [
+                                {
+                                    "quality": "720p",
+                                    "url": "https://hugh.cdn.rumble.cloud/video/fww1/2b/s8/2/e/D/D/t/eDDty.caa.mp4"
+                                },
+                                {
+                                    "quality": "480p",
+                                    "url": "https://hugh.cdn.rumble.cloud/video/fww1/2b/s8/2/e/D/D/t/eDDty.oaa.mp4"
+                                }
+                            ],
+                            "added_at": "2026-11-09T03:43:27.902Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Lagaan 2001 Hindi DVDRip Xvi D M Su B X RG",
-              "thumbnail": "",
-              "url": "https://archive.org/download/lagaan-2001-hindi-dvdrip-xvi-d-m-su-b-x-rg/Lagaan%202001%20Hindi%20DVDRip%20XviD%20M-SuB%20xRG.mp4",
-              "quality": "480p",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-14T12:21:19.751Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "super-30-hindi-dbd",
-      "slug": "super-30-hindi-dbd",
-      "title": "SUPER 30 HINDI DBD",
-      "poster": "https://a.ltrbxd.com/resized/film-poster/4/6/3/3/3/0/463330-super-30-0-600-0-900-crop.jpg?v=9185a5ef5d",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-18T11:44:58.092Z",
-      "seasons": [
+            "id": "dilwale-dulhania-le-jayenge",
+            "slug": "dilwale-dulhania-le-jayenge",
+            "title": "Dilwale dulhania Le jayenge",
+            "poster": "https://imgs.search.brave.com/XLAUirmlSzzaxfTu2tYWaAL3eybLF2-OhPN02GgCIgA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMuZGlnaXQuaW4v/T1RUL3YyL2ltYWdl/cy9kaWx3YWxlLWR1/bGhhbmlhLWxlLWph/eWVuZ2UtMTA5Njg2/anBnP3RyPXctNjAw",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-13T05:52:12.234Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Dilwale dulhania Le jayenge",
+                            "thumbnail": "",
+                            "url": "https://archive.org/download/dilwale-dulhania-le-jayenge/Dilwale%20Dulhania%20Le%20Jayenge.mp4",
+                            "quality": "1080p",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-13T05:52:12.247Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "SUPER 30 HINDI DBD",
-              "thumbnail": "",
-              "url": "https://rumble.com/hls-vod/vwI5TIy6_oQ/playlist.m3u8?esp=hd",
-              "quality": "Original",
-              "duration": "",
-              "format": "m3u8",
-              "added_at": "2026-11-18T11:44:58.097Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "the-odyssey-2026-hindi-english-dual-audio-hollywood-movie-imax-bluray-hd-esub",
-      "slug": "the-odyssey-2026-hindi-english-dual-audio-hollywood-movie-imax-bluray-hd-esub",
-      "title": "The Odyssey (2026) (Hindi + English) Dual Audio Hollywood Movie IMAX BluRay HD ESub",
-      "poster": "https://i.ibb.co/wrWnzPVy/photo-the-odyssey-2026-hindi-english-dual-audio-hollywood-movie-imax-bluray-hd-esub.png",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-20T07:51:17.912Z",
-      "seasons": [
+            "id": "lagaan-2001-hindi-dvdrip-xvi-d-m-su-b-x-rg",
+            "slug": "lagaan-2001-hindi-dvdrip-xvi-d-m-su-b-x-rg",
+            "title": "Lagaan 2001 Hindi DVDRip Xvi D M Su B X RG",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT53_yLaBw2sj6Jzxrmtz8UPfb2PQuixjea9QYSLwh59g&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-14T12:21:19.745Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Lagaan 2001 Hindi DVDRip Xvi D M Su B X RG",
+                            "thumbnail": "",
+                            "url": "https://archive.org/download/lagaan-2001-hindi-dvdrip-xvi-d-m-su-b-x-rg/Lagaan%202001%20Hindi%20DVDRip%20XviD%20M-SuB%20xRG.mp4",
+                            "quality": "480p",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-14T12:21:19.751Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "The Odyssey (2026) (Hindi + English) Dual Audio Hollywood Movie IMAX BluRay HD ESub",
-              "thumbnail": "",
-              "url": "https://rumble.com/hls-vod/vwI5TIy6_oQ/playlist.m3u8?esp=hd",
-              "quality": "Original",
-              "duration": "",
-              "format": "m3u8",
-              "added_at": "2026-11-20T07:51:17.919Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "the-debt-collector-hindi-dubbed-full-hd-movie",
-      "slug": "the-debt-collector-hindi-dubbed-full-hd-movie",
-      "title": "The Debt Collector Hindi Dubbed Full HD Movie 🍿",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfkfE-kqtgGxhLB2CUaJgRex0sk3gq37NbdlrRhCYpBadMT8E4dZjRXB0&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T03:47:55.000Z",
-      "seasons": [
+            "id": "super-30-hindi-dbd",
+            "slug": "super-30-hindi-dbd",
+            "title": "SUPER 30 HINDI DBD",
+            "poster": "https://a.ltrbxd.com/resized/film-poster/4/6/3/3/3/0/463330-super-30-0-600-0-900-crop.jpg?v=9185a5ef5d",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-18T11:44:58.092Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "SUPER 30 HINDI DBD",
+                            "thumbnail": "",
+                            "url": "https://rumble.com/hls-vod/vwI5TIy6_oQ/playlist.m3u8?esp=hd",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "m3u8",
+                            "added_at": "2026-11-18T11:44:58.097Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "The Debt Collector Hindi Dubbed Full HD Movie 🍿",
-              "thumbnail": "",
-              "url": "https://zggg98sgwbg1gh.bitchute.com/neKe8kkuMxZd/HsUP9VFitilE.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T03:47:55.005Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ghost-rider-part-1-hindi-dubbed-full-hd-movie",
-      "slug": "ghost-rider-part-1-hindi-dubbed-full-hd-movie",
-      "title": "Ghost Rider Part 1 Hindi Dubbed Full HD Movie 🍿",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu95qBl6w3Rht6C1d5UzoD4dhBojris55suhNUOhGx32ij61FH04sITyQ&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T03:50:43.913Z",
-      "seasons": [
+            "id": "the-debt-collector-hindi-dubbed-full-hd-movie",
+            "slug": "the-debt-collector-hindi-dubbed-full-hd-movie",
+            "title": "The Debt Collector Hindi Dubbed Full HD Movie 🍿",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfkfE-kqtgGxhLB2CUaJgRex0sk3gq37NbdlrRhCYpBadMT8E4dZjRXB0&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T03:47:55.000Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "The Debt Collector Hindi Dubbed Full HD Movie 🍿",
+                            "thumbnail": "",
+                            "url": "https://zggg98sgwbg1gh.bitchute.com/neKe8kkuMxZd/HsUP9VFitilE.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T03:47:55.005Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Ghost Rider Part 1 Hindi Dubbed Full HD Movie 🍿",
-              "thumbnail": "",
-              "url": "https://seed167b.bitchute.com/neKe8kkuMxZd/dOE4gYBoL2Um.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T03:50:43.918Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "protector-full-movie-hd-hindi-dubbed",
-      "slug": "protector-full-movie-hd-hindi-dubbed",
-      "title": "Protector Full Movie HD Hindi Dubbed",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMClA7tY5tQS4Np3OuQNFOFYRO8fKEpLAqOD7oZPpJ1hl9jrPRIkig10wM&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T03:53:44.175Z",
-      "seasons": [
+            "id": "ghost-rider-part-1-hindi-dubbed-full-hd-movie",
+            "slug": "ghost-rider-part-1-hindi-dubbed-full-hd-movie",
+            "title": "Ghost Rider Part 1 Hindi Dubbed Full HD Movie 🍿",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu95qBl6w3Rht6C1d5UzoD4dhBojris55suhNUOhGx32ij61FH04sITyQ&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T03:50:43.913Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Ghost Rider Part 1 Hindi Dubbed Full HD Movie 🍿",
+                            "thumbnail": "",
+                            "url": "https://seed167b.bitchute.com/neKe8kkuMxZd/dOE4gYBoL2Um.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T03:50:43.918Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Protector Full Movie HD Hindi Dubbed",
-              "thumbnail": "",
-              "url": "https://seed307.bitchute.com/neKe8kkuMxZd/42d8Vx229WTG.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T03:53:44.180Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "extinction-hindi-dubbed-full-movie-hd",
-      "slug": "extinction-hindi-dubbed-full-movie-hd",
-      "title": "Extinction Hindi Dubbed Full Movie HD",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQamSU1MVR4gJN9ucbVwx2Yeiw6OpPwXQaFD8-OlCS4HlcwOeYN4AayH-8&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T03:55:35.201Z",
-      "seasons": [
+            "id": "protector-full-movie-hd-hindi-dubbed",
+            "slug": "protector-full-movie-hd-hindi-dubbed",
+            "title": "Protector Full Movie HD Hindi Dubbed",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMClA7tY5tQS4Np3OuQNFOFYRO8fKEpLAqOD7oZPpJ1hl9jrPRIkig10wM&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T03:53:44.175Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Protector Full Movie HD Hindi Dubbed",
+                            "thumbnail": "",
+                            "url": "https://seed307.bitchute.com/neKe8kkuMxZd/42d8Vx229WTG.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T03:53:44.180Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Extinction Hindi Dubbed Full Movie HD",
-              "thumbnail": "",
-              "url": "https://seed163.bitchute.com/neKe8kkuMxZd/iWNyg3rbQlFR.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T03:55:35.207Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ghost-mansion-hindi-dubbed-full-hd-movie",
-      "slug": "ghost-mansion-hindi-dubbed-full-hd-movie",
-      "title": "Ghost Mansion Hindi Dubbed Full HD Movie 🍿",
-      "poster": "https://m.media-amazon.com/images/S/pv-target-images/75580a1aa16b5111c81906d54ef41142fff019cad195222c69ee7cac2b50c6e5.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:25:52.986Z",
-      "seasons": [
+            "id": "extinction-hindi-dubbed-full-movie-hd",
+            "slug": "extinction-hindi-dubbed-full-movie-hd",
+            "title": "Extinction Hindi Dubbed Full Movie HD",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQamSU1MVR4gJN9ucbVwx2Yeiw6OpPwXQaFD8-OlCS4HlcwOeYN4AayH-8&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T03:55:35.201Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Extinction Hindi Dubbed Full Movie HD",
+                            "thumbnail": "",
+                            "url": "https://seed163.bitchute.com/neKe8kkuMxZd/iWNyg3rbQlFR.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T03:55:35.207Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Ghost Mansion Hindi Dubbed Full HD Movie 🍿",
-              "thumbnail": "",
-              "url": "https://seed128.bitchute.com/neKe8kkuMxZd/txhCS2srBpVA.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:25:52.991Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "nadikar-2025-dual-audio-hindi-malayalam-1080p",
-      "slug": "nadikar-2025-dual-audio-hindi-malayalam-1080p",
-      "title": "Nadikar (2025) Dual Audio [Hindi + Malayalam] 1080p",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Hb5zNMsyjz8GjgWrrXYrQaRbTGudFmS8Q8AYBvujOZhcgtb7XIRf6yGh&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:29:49.844Z",
-      "seasons": [
+            "id": "ghost-mansion-hindi-dubbed-full-hd-movie",
+            "slug": "ghost-mansion-hindi-dubbed-full-hd-movie",
+            "title": "Ghost Mansion Hindi Dubbed Full HD Movie 🍿",
+            "poster": "https://m.media-amazon.com/images/S/pv-target-images/75580a1aa16b5111c81906d54ef41142fff019cad195222c69ee7cac2b50c6e5.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:25:52.986Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Ghost Mansion Hindi Dubbed Full HD Movie 🍿",
+                            "thumbnail": "",
+                            "url": "https://seed128.bitchute.com/neKe8kkuMxZd/txhCS2srBpVA.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:25:52.991Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Nadikar (2025) Dual Audio [Hindi + Malayalam] 1080p",
-              "thumbnail": "",
-              "url": "https://seed122.bitchute.com/u78NJOlll6Oq/OOPGhwbDQA7m.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:29:49.849Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "kodi-2016-south-indian-movie-hindi-dubbed",
-      "slug": "kodi-2016-south-indian-movie-hindi-dubbed",
-      "title": "Kodi (2016) South Indian Movie (Hindi Dubbed)",
-      "poster": "https://c.saavncdn.com/718/Kodi-Malayalam-2016-20250307181322-500x500.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:32:10.846Z",
-      "seasons": [
+            "id": "nadikar-2025-dual-audio-hindi-malayalam-1080p",
+            "slug": "nadikar-2025-dual-audio-hindi-malayalam-1080p",
+            "title": "Nadikar (2025) Dual Audio [Hindi + Malayalam] 1080p",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Hb5zNMsyjz8GjgWrrXYrQaRbTGudFmS8Q8AYBvujOZhcgtb7XIRf6yGh&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:29:49.844Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Nadikar (2025) Dual Audio [Hindi + Malayalam] 1080p",
+                            "thumbnail": "",
+                            "url": "https://seed122.bitchute.com/u78NJOlll6Oq/OOPGhwbDQA7m.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:29:49.849Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Kodi (2016) South Indian Movie (Hindi Dubbed)",
-              "thumbnail": "",
-              "url": "https://seed307.bitchute.com/u78NJOlll6Oq/kVzScOk99HlY.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:32:10.851Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "detective-ujjwalan-2025-hindi-hq-studio-dub-ds4k-web-dl-4k-1080p",
-      "slug": "detective-ujjwalan-2025-hindi-hq-studio-dub-ds4k-web-dl-4k-1080p",
-      "title": "Detective Ujjwalan (2025) [Hindi – HQ/Studio Dub] DS4K WEB-DL 4K 1080p",
-      "poster": "https://m.media-amazon.com/images/M/MV5BOTQxYjI5ZTYtNWJmMy00Mjk4LTk0NTYtNmRjOGFlYTM5YzVkXkEyXkFqcGc@._V1_.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:34:44.316Z",
-      "seasons": [
+            "id": "kodi-2016-south-indian-movie-hindi-dubbed",
+            "slug": "kodi-2016-south-indian-movie-hindi-dubbed",
+            "title": "Kodi (2016) South Indian Movie (Hindi Dubbed)",
+            "poster": "https://c.saavncdn.com/718/Kodi-Malayalam-2016-20250307181322-500x500.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:32:10.846Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Kodi (2016) South Indian Movie (Hindi Dubbed)",
+                            "thumbnail": "",
+                            "url": "https://seed307.bitchute.com/u78NJOlll6Oq/kVzScOk99HlY.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:32:10.851Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Detective Ujjwalan (2025) [Hindi – HQ/Studio Dub] DS4K WEB-DL 4K 1080p",
-              "thumbnail": "",
-              "url": "https://seed125b.bitchute.com/u78NJOlll6Oq/9bL0SKQ52XUF.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:34:44.317Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "sasanasabha-2023-south-hindi-dubbed-movie-hd-720p",
-      "slug": "sasanasabha-2023-south-hindi-dubbed-movie-hd-720p",
-      "title": "Sasanasabha.(2023).South.Hindi.Dubbed.Movie.HD.720p",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfttcvbn--4IDzlEjIUMYu_mC9wMYFKJJM_4trM4aLKzHQAaNJ0U3BrUY&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:38:40.994Z",
-      "seasons": [
+            "id": "detective-ujjwalan-2025-hindi-hq-studio-dub-ds4k-web-dl-4k-1080p",
+            "slug": "detective-ujjwalan-2025-hindi-hq-studio-dub-ds4k-web-dl-4k-1080p",
+            "title": "Detective Ujjwalan (2025) [Hindi – HQ/Studio Dub] DS4K WEB-DL 4K 1080p",
+            "poster": "https://m.media-amazon.com/images/M/MV5BOTQxYjI5ZTYtNWJmMy00Mjk4LTk0NTYtNmRjOGFlYTM5YzVkXkEyXkFqcGc@._V1_.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:34:44.316Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Detective Ujjwalan (2025) [Hindi – HQ/Studio Dub] DS4K WEB-DL 4K 1080p",
+                            "thumbnail": "",
+                            "url": "https://seed125b.bitchute.com/u78NJOlll6Oq/9bL0SKQ52XUF.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:34:44.317Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Sasanasabha.(2023).South.Hindi.Dubbed.Movie.HD.720p",
-              "thumbnail": "",
-              "url": "https://seed128.bitchute.com/0VVyOZY9dPcp/xEb0T8JqRQrX.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:38:41.003Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "baaghi-2-2018-hindi-720p",
-      "slug": "baaghi-2-2018-hindi-720p",
-      "title": "Baaghi 2 - 2018 Hindi 720p",
-      "poster": "https://m.media-amazon.com/images/M/MV5BNThlYzE4M2MtZjMyNy00ZTMxLWI0ODgtNDEzMzljMGJlZDg0XkEyXkFqcGc@._V1_.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:40:39.494Z",
-      "seasons": [
+            "id": "sasanasabha-2023-south-hindi-dubbed-movie-hd-720p",
+            "slug": "sasanasabha-2023-south-hindi-dubbed-movie-hd-720p",
+            "title": "Sasanasabha.(2023).South.Hindi.Dubbed.Movie.HD.720p",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfttcvbn--4IDzlEjIUMYu_mC9wMYFKJJM_4trM4aLKzHQAaNJ0U3BrUY&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:38:40.994Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Sasanasabha.(2023).South.Hindi.Dubbed.Movie.HD.720p",
+                            "thumbnail": "",
+                            "url": "https://seed128.bitchute.com/0VVyOZY9dPcp/xEb0T8JqRQrX.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:38:41.003Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Baaghi 2 - 2018 Hindi 720p",
-              "thumbnail": "",
-              "url": "https://seed125b.bitchute.com/0VVyOZY9dPcp/94grBSZlyVoA.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:40:39.497Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "baadshaho-2017-hindi",
-      "slug": "baadshaho-2017-hindi",
-      "title": "Baadshaho 2017.Hindi.",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOsPhzhpwNtsM6krEj7pG0mAib-tDAC0ctKon7CsNZUz8u6K0_jcBtknTE&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:42:02.187Z",
-      "seasons": [
+            "id": "baaghi-2-2018-hindi-720p",
+            "slug": "baaghi-2-2018-hindi-720p",
+            "title": "Baaghi 2 - 2018 Hindi 720p",
+            "poster": "https://m.media-amazon.com/images/M/MV5BNThlYzE4M2MtZjMyNy00ZTMxLWI0ODgtNDEzMzljMGJlZDg0XkEyXkFqcGc@._V1_.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:40:39.494Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Baaghi 2 - 2018 Hindi 720p",
+                            "thumbnail": "",
+                            "url": "https://seed125b.bitchute.com/0VVyOZY9dPcp/94grBSZlyVoA.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:40:39.497Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Baadshaho 2017.Hindi.",
-              "thumbnail": "",
-              "url": "https://seed167b.bitchute.com/0VVyOZY9dPcp/GC0asVXmRHJH.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:42:02.192Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "sector-36-2024-hindi-720p",
-      "slug": "sector-36-2024-hindi-720p",
-      "title": "Sector 36 2024 Hindi 720p",
-      "poster": "https://stat5.bollywoodhungama.in/wp-content/uploads/2024/09/Sector-36-322x402.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:43:54.531Z",
-      "seasons": [
+            "id": "baadshaho-2017-hindi",
+            "slug": "baadshaho-2017-hindi",
+            "title": "Baadshaho 2017.Hindi.",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOsPhzhpwNtsM6krEj7pG0mAib-tDAC0ctKon7CsNZUz8u6K0_jcBtknTE&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:42:02.187Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Baadshaho 2017.Hindi.",
+                            "thumbnail": "",
+                            "url": "https://seed167b.bitchute.com/0VVyOZY9dPcp/GC0asVXmRHJH.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:42:02.192Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Sector 36 2024 Hindi 720p",
-              "thumbnail": "",
-              "url": "https://zb10-7gsop1v78b.bitchute.com/0VVyOZY9dPcp/DpEmAQXLQYoS.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:43:54.532Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "bullah-2026-720p-hdtvrip-punjabi",
-      "slug": "bullah-2026-720p-hdtvrip-punjabi",
-      "title": "Bullah.2026.720p.HDTVRip.Punjabi",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYjMxN2E2MDEtOTFiMi00NzJiLTgzNDQtM2VmOWFiYjgxMjA2XkEyXkFqcGc@._V1_.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:45:19.814Z",
-      "seasons": [
+            "id": "sector-36-2024-hindi-720p",
+            "slug": "sector-36-2024-hindi-720p",
+            "title": "Sector 36 2024 Hindi 720p",
+            "poster": "https://stat5.bollywoodhungama.in/wp-content/uploads/2024/09/Sector-36-322x402.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:43:54.531Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Sector 36 2024 Hindi 720p",
+                            "thumbnail": "",
+                            "url": "https://zb10-7gsop1v78b.bitchute.com/0VVyOZY9dPcp/DpEmAQXLQYoS.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:43:54.532Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Bullah.2026.720p.HDTVRip.Punjabi",
-              "thumbnail": "",
-              "url": "https://seed167b.bitchute.com/0VVyOZY9dPcp/YkBHw2xbDzK4.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:45:19.814Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "vadh-2-2025-720p",
-      "slug": "vadh-2-2025-720p",
-      "title": "Vadh.2.2025.720p",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYmJDqRSqSjJdIxyvNt7GxDuo36tQvTqR5CyNzz-Eob4Zj8D-38ly_F24&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:47:09.544Z",
-      "seasons": [
+            "id": "bullah-2026-720p-hdtvrip-punjabi",
+            "slug": "bullah-2026-720p-hdtvrip-punjabi",
+            "title": "Bullah.2026.720p.HDTVRip.Punjabi",
+            "poster": "https://m.media-amazon.com/images/M/MV5BYjMxN2E2MDEtOTFiMi00NzJiLTgzNDQtM2VmOWFiYjgxMjA2XkEyXkFqcGc@._V1_.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:45:19.814Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Bullah.2026.720p.HDTVRip.Punjabi",
+                            "thumbnail": "",
+                            "url": "https://seed167b.bitchute.com/0VVyOZY9dPcp/YkBHw2xbDzK4.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:45:19.814Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Vadh.2.2025.720p",
-              "thumbnail": "",
-              "url": "https://seed307.bitchute.com/0VVyOZY9dPcp/sV3urI0nBx9j.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:47:09.549Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "deva-2025-720p-hindi",
-      "slug": "deva-2025-720p-hindi",
-      "title": "DEVA.2025.720p.Hindi",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDkKg01cu9X79BXWjQp_tCRTrOoPrAHMQcAiygr7J3k-Kko-36eMBbiHN4&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:49:49.741Z",
-      "seasons": [
+            "id": "vadh-2-2025-720p",
+            "slug": "vadh-2-2025-720p",
+            "title": "Vadh.2.2025.720p",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYmJDqRSqSjJdIxyvNt7GxDuo36tQvTqR5CyNzz-Eob4Zj8D-38ly_F24&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:47:09.544Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Vadh.2.2025.720p",
+                            "thumbnail": "",
+                            "url": "https://seed307.bitchute.com/0VVyOZY9dPcp/sV3urI0nBx9j.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:47:09.549Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "DEVA.2025.720p.Hindi",
-              "thumbnail": "",
-              "url": "https://seed125b.bitchute.com/0VVyOZY9dPcp/aUqDLKaDGhrC.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:49:49.745Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "de-de-pyaar-de-2-2025-leaked",
-      "slug": "de-de-pyaar-de-2-2025-leaked",
-      "title": "De.De.Pyaar.De-2.2025.[Leaked]",
-      "poster": "https://cdn.bollywoodmdb.com/fit-in/movies/largethumb/440x660/2025/de-de-pyaar-de-2/de-de-pyaar-de-2-1763019429.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:52:03.568Z",
-      "seasons": [
+            "id": "deva-2025-720p-hindi",
+            "slug": "deva-2025-720p-hindi",
+            "title": "DEVA.2025.720p.Hindi",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDkKg01cu9X79BXWjQp_tCRTrOoPrAHMQcAiygr7J3k-Kko-36eMBbiHN4&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:49:49.741Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "DEVA.2025.720p.Hindi",
+                            "thumbnail": "",
+                            "url": "https://seed125b.bitchute.com/0VVyOZY9dPcp/aUqDLKaDGhrC.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:49:49.745Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "De.De.Pyaar.De-2.2025.[Leaked]",
-              "thumbnail": "",
-              "url": "https://zn21g5kls-n995b.bitchute.com/0VVyOZY9dPcp/TrEJwBpVkLaH.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:52:03.573Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "daddy-cool-munde-fool",
-      "slug": "daddy-cool-munde-fool",
-      "title": "Daddy Cool Munde Fool",
-      "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3UXZot7aPbkvAfctt2co408HuutQ2hTf5gWJ5h9nHRw&s=10",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T04:53:43.719Z",
-      "seasons": [
+            "id": "de-de-pyaar-de-2-2025-leaked",
+            "slug": "de-de-pyaar-de-2-2025-leaked",
+            "title": "De.De.Pyaar.De-2.2025.[Leaked]",
+            "poster": "https://cdn.bollywoodmdb.com/fit-in/movies/largethumb/440x660/2025/de-de-pyaar-de-2/de-de-pyaar-de-2-1763019429.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:52:03.568Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "De.De.Pyaar.De-2.2025.[Leaked]",
+                            "thumbnail": "",
+                            "url": "https://zn21g5kls-n995b.bitchute.com/0VVyOZY9dPcp/TrEJwBpVkLaH.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:52:03.573Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Daddy Cool Munde Fool",
-              "thumbnail": "",
-              "url": "https://seed122.bitchute.com/0VVyOZY9dPcp/U0ndex6ltl3g.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T04:53:43.722Z"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "dabangg-3-2019-hindi-720p",
-      "slug": "dabangg-3-2019-hindi-720p",
-      "title": "Dabangg 3 2019 Hindi 720p",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMWNmZmQyOTktZjdmOC00NDFmLTk0ZDktZjg4N2Y1NTE2MWQ3XkEyXkFqcGc@._V1_.jpg",
-      "banner": "",
-      "description": "",
-      "genres": [],
-      "release_year": 2026,
-      "status": "completed",
-      "featured": false,
-      "category": "movie",
-      "popularity": 0,
-      "added_at": "2026-11-22T05:00:16.234Z",
-      "seasons": [
+            "id": "daddy-cool-munde-fool",
+            "slug": "daddy-cool-munde-fool",
+            "title": "Daddy Cool Munde Fool",
+            "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3UXZot7aPbkvAfctt2co408HuutQ2hTf5gWJ5h9nHRw&s=10",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T04:53:43.719Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Daddy Cool Munde Fool",
+                            "thumbnail": "",
+                            "url": "https://seed122.bitchute.com/0VVyOZY9dPcp/U0ndex6ltl3g.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T04:53:43.722Z"
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "number": 1,
-          "title": "Movie",
-          "episodes": [
-            {
-              "number": 1,
-              "title": "Dabangg 3 2019 Hindi 720p",
-              "thumbnail": "",
-              "url": "https://seed132.bitchute.com/0VVyOZY9dPcp/aHXZFxxSPChh.mp4",
-              "quality": "Original",
-              "duration": "",
-              "format": "mp4",
-              "added_at": "2026-11-22T05:00:16.244Z"
-            }
-          ]
+            "id": "dabangg-3-2019-hindi-720p",
+            "slug": "dabangg-3-2019-hindi-720p",
+            "title": "Dabangg 3 2019 Hindi 720p",
+            "poster": "https://m.media-amazon.com/images/M/MV5BMWNmZmQyOTktZjdmOC00NDFmLTk0ZDktZjg4N2Y1NTE2MWQ3XkEyXkFqcGc@._V1_.jpg",
+            "banner": "",
+            "description": "",
+            "genres": [],
+            "release_year": 2026,
+            "status": "completed",
+            "featured": false,
+            "category": "movie",
+            "popularity": 0,
+            "added_at": "2026-11-22T05:00:16.234Z",
+            "seasons": [
+                {
+                    "number": 1,
+                    "title": "Movie",
+                    "episodes": [
+                        {
+                            "number": 1,
+                            "title": "Dabangg 3 2019 Hindi 720p",
+                            "thumbnail": "",
+                            "url": "https://seed132.bitchute.com/0VVyOZY9dPcp/aHXZFxxSPChh.mp4",
+                            "quality": "Original",
+                            "duration": "",
+                            "format": "mp4",
+                            "added_at": "2026-11-22T05:00:16.244Z"
+                        }
+                    ]
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
