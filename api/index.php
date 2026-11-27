@@ -1,0 +1,3549 @@
+<?php
+/* ===== ADMIN: isi file se kholo -> ?admin  (ya /index.php/admin) ===== */
+if (isset($_GET['admin']) || (($_SERVER['PATH_INFO'] ?? '') === '/admin')) {
+    header('Content-Type: text/html; charset=utf-8'); header('Cache-Control: no-store'); header('X-Robots-Tag: noindex, nofollow');
+?>
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0b0710"><title>Move Tok Admin</title>
+<style>
+:root{--bg:#0b0710;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--tx:#f4f1f8;--mu:#a79fb5;--ac:#ff4b6e;--ac2:#ff7a59;--ok:#34d399}
+[hidden]{display:none!important}
+*{box-sizing:border-box}html,body{margin:0;background:radial-gradient(900px 500px at 0 0,#3a1020,transparent),radial-gradient(900px 600px at 100% 100%,#241a5c,transparent),var(--bg);color:var(--tx);font:15px/1.4 system-ui,Roboto,sans-serif;min-height:100%}
+#app{max-width:760px;margin:0 auto;padding:12px 12px 90px}
+.top{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--line);border-radius:20px;background:var(--card);margin-bottom:12px}
+.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:grid;place-items:center;font-weight:800}
+.top b{flex:1}.card{border:1px solid var(--line);border-radius:20px;background:var(--card);padding:14px;margin-bottom:12px}
+h3{margin:0 0 10px;font-size:15px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+input,select{width:100%;padding:12px 14px;margin:4px 0 10px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--tx);font:inherit}
+label{font-size:13px;color:var(--mu);font-weight:600}
+button{font:inherit;color:var(--tx);cursor:pointer}.b1{border:0;border-radius:14px;padding:11px 18px;font-weight:700;background:linear-gradient(135deg,var(--ac),var(--ac2))}
+.b2{border:1px solid var(--line);border-radius:14px;padding:10px 14px;background:rgba(255,255,255,.07)}.sm{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:rgba(255,255,255,.07);font-size:13px}.sm.d{color:#ff8a9d}
+.x{border:0;background:rgba(255,75,110,.2);border-radius:10px;padding:6px 10px;color:#ff8a9d;font-size:13px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(11,7,16,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:5}
+nav button{flex:1;border:0;border-radius:14px;padding:11px 2px;background:none;color:var(--mu);font-weight:700;font-size:11.5px}nav button.on{background:linear-gradient(135deg,#b3405a,#7d4a55);color:#fff}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.chip{border:1px solid var(--line);border-radius:99px;padding:7px 14px;background:none;color:var(--mu);font-size:13px;font-weight:600}.chip.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.st{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(0,0,0,.25)}.st b{display:block;font-size:24px}.st span{color:var(--mu);font-size:12px}
+.row{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:0}.row img{width:44px;height:62px;object-fit:cover;border-radius:8px;background:#1b1426;flex:none}
+.ri{flex:1;min-width:0}.rt{font-weight:600;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.rs{font-size:12px;color:var(--mu)}.ra{display:flex;flex-direction:column;gap:6px}
+.tg{font-size:10px;padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.12);vertical-align:middle}.tg.r{background:#ff4b6e}
+.bars{display:flex;gap:6px;align-items:flex-end;height:110px}.bars.sc{overflow-x:auto}.bars.sc div{min-width:30px}.bars div{flex:1;text-align:center;font-size:10px;color:var(--mu)}.bars i{display:block;background:linear-gradient(var(--ac),var(--ac2));border-radius:6px 6px 0 0;min-height:2px;margin-bottom:3px}
+#ed,#md{position:fixed;inset:0;background:var(--bg);z-index:20;overflow:auto}#md{background:rgba(0,0,0,.7);display:grid;place-items:center;padding:16px}#md>div{width:100%;max-width:420px;background:#171021;border:1px solid var(--line);border-radius:20px;padding:16px}
+.edh{position:sticky;top:0;display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px;background:rgba(11,7,16,.95);border-bottom:1px solid var(--line);z-index:2}.edb{max-width:760px;margin:0 auto;padding:12px}
+.sn{border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:12px;background:rgba(255,255,255,.04)}.sh,.eh{display:flex;gap:8px;align-items:center}.sh input,.eh input{width:80px;margin:4px 0}.sh b,.eh b{flex:none}.sh button:first-of-type{margin-left:auto}
+.ep{border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}.ep .qin{margin:3px 0;padding:9px 12px;font-size:13px}.eh button{margin-left:auto}
+#toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#000c;border:1px solid var(--line);padding:10px 16px;border-radius:14px;z-index:30;max-width:90%}
+.mu{color:var(--mu);font-size:13px}.err{color:#ff8a9d}
+
+/* ===== pro UI ===== */
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}100%{box-shadow:0 0 0 12px rgba(52,211,153,0)}}
+@keyframes sh{0%{background-position:-200% 0}100%{background-position:200% 0}}
+#app{padding-top:max(10px,env(safe-area-inset-top))}
+.top{position:sticky;top:8px;z-index:6;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:rgba(22,13,30,.78);box-shadow:0 10px 30px #0007}
+.top b{font-size:16px;letter-spacing:.01em}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.035));box-shadow:0 12px 32px #0004;padding:16px;animation:up .35s ease both}
+h3{display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.09em;margin:0 0 12px}
+h3::before{content:"";width:3px;height:14px;border-radius:3px;background:linear-gradient(var(--ac),var(--ac2));flex:none}
+.sub{font-size:11.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin:18px 0 4px}
+.seg{display:flex;gap:2px;background:rgba(0,0,0,.38);border:1px solid var(--line);border-radius:15px;padding:4px;margin-bottom:14px}
+.seg.sc{overflow-x:auto;scrollbar-width:none}.seg.sc::-webkit-scrollbar{display:none}
+.seg button{flex:1;border:0;background:none;color:var(--mu);padding:10px 6px;border-radius:11px;font-weight:700;font-size:12.5px;white-space:nowrap;transition:.2s}
+.seg.sc button{flex:none;padding:10px 14px}
+.seg button.on{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;box-shadow:0 4px 14px rgba(255,75,110,.35)}
+.big{display:flex;align-items:center;gap:14px;margin:4px 0 14px}
+.big b{font-size:46px;line-height:1;font-weight:800;letter-spacing:-.02em}
+.big small{display:block;color:var(--mu);font-size:12.5px;line-height:1.3}
+.pulse{width:12px;height:12px;border-radius:50%;background:var(--ok);animation:pl 1.6s infinite;flex:none}.pulse.off{background:#6b6478;animation:none}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kp{border:1px solid var(--line);border-radius:14px;padding:10px 10px 9px;background:rgba(0,0,0,.28)}
+.kp em{font-style:normal;font-size:15px;display:block;margin-bottom:2px}.kp b{display:block;font-size:20px;font-weight:800}.kp span{font-size:11px;color:var(--mu)}
+.spark{display:flex;gap:4px;align-items:flex-end;height:50px;margin:16px 0 4px}.spark div{flex:1;display:flex;align-items:flex-end;height:100%}
+.spark i{display:block;width:100%;border-radius:5px 5px 2px 2px;background:linear-gradient(var(--ac),var(--ac2));opacity:.92}
+.spl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mu)}
+.st{background:rgba(0,0,0,.28)}.st b{font-size:22px;font-weight:800}
+.row{padding:10px 0}.rt{font-size:14px}
+.bars.sc{padding-bottom:4px}
+nav{padding-top:6px}
+nav button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;padding:7px 2px;line-height:1.15}
+nav button i{font-style:normal;font-size:17px;filter:grayscale(.4)}nav button.on i{filter:none}
+.sk div{height:16px;border-radius:8px;margin:12px 0;background:linear-gradient(90deg,rgba(255,255,255,.05) 25%,rgba(255,255,255,.14) 50%,rgba(255,255,255,.05) 75%);background-size:200% 100%;animation:sh 1.3s infinite}
+.sk div:nth-child(1){width:45%}.sk div:nth-child(2){width:90%;height:64px}.sk div:nth-child(3){width:70%}
+</style></head><body><div id="app"></div><div id="ed" hidden></div><div id="md" hidden></div><div id="toast" hidden></div>
+<script>
+const $=s=>document.querySelector(s);const app=$('#app');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CATS={anime:'Anime & Dramas',movie:'Movies',hentai:'Hentai'};
+let S={rg:'7',win:30,nw:30,tab:'dash',lib:'anime',q:'',lim:40,eng:'blk',ecat:'all',eq:'',elim:60,E:{},cat:null,ed:null,cm:null};
+function toast(m,ms){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,ms||2600)}
+/* ---------- Firebase (ek hi database: project-540142752653961937) ---------- */
+const FIREBASE_CONFIG={apiKey:"AIzaSyAxYHZM-aZVh9IPz7hLnVsBvit9c_jXz5M",authDomain:"project-540142752653961937.firebaseapp.com",databaseURL:"https://project-540142752653961937-default-rtdb.firebaseio.com",projectId:"project-540142752653961937",storageBucket:"project-540142752653961937.firebasestorage.app",messagingSenderId:"353595493577",appId:"1:353595493577:web:f36bddc0d854b2f7ecd118",measurementId:"G-P7MV3W3G7X"};
+const AN=()=>FIREBASE_CONFIG.databaseURL.replace(/\/+$/,'');
+/* ---------- config / token (sirf is device ke localStorage me) ---------- */
+let TOKEN=localStorage.getItem('mt_gh')||'';
+let C=Object.assign({o:'h4xzico1111-hub',r:'Move-tok',b:'main',site:''},JSON.parse(localStorage.getItem('mt_cfg')||'{}'));delete C.fb;delete C.fs;
+const SITE=()=>C.site||location.origin+location.pathname.replace(/\/admin\/?$/,'');
+const FILES={anime:'data/anime.json',movie:'data/movie.json',hentai:'data/hentai.json'};
+const b64e=s=>btoa(unescape(encodeURIComponent(s))),b64d=s=>decodeURIComponent(escape(atob(s.replace(/\n/g,''))));
+const low=s=>s.replace(/[A-Z]/g,c=>c.toLowerCase());
+function md5(str){const u=unescape(encodeURIComponent(str)),n=u.length,w=[];for(let i=0;i<n;i++)w[i>>2]|=u.charCodeAt(i)<<((i%4)*8);w[n>>2]|=0x80<<((n%4)*8);const len=(((n+8)>>6)+1)*16;w[len-2]=n*8;
+ const K=[],R=[7,12,17,22,5,9,14,20,4,11,16,23,6,10,15,21];for(let i=0;i<64;i++)K[i]=Math.floor(Math.abs(Math.sin(i+1))*4294967296)|0;
+ let a0=0x67452301,b0=0xefcdab89|0,c0=0x98badcfe|0,d0=0x10325476;
+ for(let o=0;o<len;o+=16){let A=a0,B=b0,Cc=c0,D=d0;for(let i=0;i<64;i++){let F,g;
+  if(i<16){F=(B&Cc)|(~B&D);g=i}else if(i<32){F=(D&B)|(~D&Cc);g=(5*i+1)%16}else if(i<48){F=B^Cc^D;g=(3*i+5)%16}else{F=Cc^(B|~D);g=(7*i)%16}
+  const t=D;D=Cc;Cc=B;const x=(A+F+K[i]+(w[o+g]|0))|0,r=R[(i>>4)*4+(i%4)];B=(B+((x<<r)|(x>>>(32-r))))|0;A=t}
+  a0=(a0+A)|0;b0=(b0+B)|0;c0=(c0+Cc)|0;d0=(d0+D)|0}
+ let out='';for(const v of [a0,b0,c0,d0])for(let i=0;i<4;i++)out+=('0'+((v>>>(i*8))&255).toString(16)).slice(-2);return out}
+const ghU=p=>`https://api.github.com/repos/${C.o}/${C.r}/contents/${p}`;
+const ghH=raw=>({Authorization:'Bearer '+TOKEN,Accept:raw?'application/vnd.github.raw+json':'application/vnd.github+json'});
+async function ghRead(p){if(!TOKEN)throw new Error('GitHub token nahi hai');const r=await fetch(ghU(p)+'?ref='+encodeURIComponent(C.b)+'&t='+Date.now(),{headers:ghH(),cache:'no-store'});
+ if(r.status===404)return[null,null];if(!r.ok)throw new Error('GitHub '+r.status+(r.status===401?' - token galat/expire':'')+': '+(await r.text()).slice(0,120));
+ const j=await r.json();let t=j.content?b64d(j.content):'';if(!t){const r2=await fetch(ghU(p)+'?ref='+encodeURIComponent(C.b),{headers:ghH(1),cache:'no-store'});t=await r2.text()}return[JSON.parse(t),j.sha]}
+async function ghWrite(p,data,sha,msg){const body={message:msg,branch:C.b,content:b64e(JSON.stringify(data,null,2))};if(sha)body.sha=sha;
+ const r=await fetch(ghU(p),{method:'PUT',headers:{...ghH(),'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw new Error('GitHub '+r.status+': '+(await r.text()).slice(0,120))}
+async function catLoad(f){const[d,sha]=await ghRead(FILES[f]);if(d===null)return{d:{version:1,anime:[]},items:[],sha:null,wrap:true};const wrap=!Array.isArray(d)&&Array.isArray(d.anime);return{d,items:wrap?d.anime:(Array.isArray(d)?d:[]),sha,wrap}}
+const catStore=(f,c,items,msg)=>ghWrite(FILES[f],c.wrap?{...c.d,anime:items,updated_at:new Date().toISOString()}:items,c.sha,msg);
+async function siteGet(u){const px=[x=>x,x=>'https://api.allorigins.win/raw?url='+encodeURIComponent(x),x=>'https://corsproxy.io/?url='+encodeURIComponent(x)];let last='';
+ for(const f of px){try{const r=await fetch(f(u),{cache:'no-store'});if(!r.ok){last='HTTP '+r.status;continue}const t=await r.text();if(t&&t.length>20)return t}catch(x){last=String(x.message||x)}}
+ throw new Error('Site tak pahunch nahi paya: '+u+' ('+last+'). Niche Site URL daalo (apni live site ka link).')}
+const ROUTES={
+ async cat(){const tp={anime:'Anime',movie:'Movie',hentai:'Hentai'},cat={};for(const f in FILES){const c=await catLoad(f);c.items.forEach(it=>{if(it&&it.title)it._vk=md5(low((tp[f]+'|'+String(it.title).trim()).trim())).slice(0,16)});cat[f]=c.items}return{ok:true,cat}},
+ async save(b){const f=b.f;if(!FILES[f])throw new Error('bad category');const it={...b.item},slug=String(it.slug||'').replace(/[^A-Za-z0-9_\-]/g,'');if(!slug)throw new Error('bad slug');if(!String(it.title||'').trim())throw new Error('Title chahiye');
+  const c=await catLoad(f),items=c.items.filter(x=>!(x&&x.slug===slug));delete it._vk;it.slug=slug;it.category=it.category||(f==='movie'?'movie':f==='hentai'?'hentai':'anime');it.added_at=it.added_at||new Date().toISOString();items.unshift(it);await catStore(f,c,items,'admin: save '+slug);return{ok:true}},
+ async del(b){const f=b.f;if(!FILES[f])throw new Error('bad category');const c=await catLoad(f);await catStore(f,c,c.items.filter(x=>!(x&&x.slug===b.slug)),'admin: delete '+b.slug);return{ok:true}},
+ async bhide(b){const title=String(b.title||'').trim(),f=b.category==='movie'?'movie':'anime';if(!title)throw new Error('no title');const c=await catLoad(f);
+  if(c.items.some(x=>x&&low(String(x.title||'').trim())===low(title)))return{ok:true};c.items.unshift({slug:'hidden-'+md5(f+low(title)).slice(0,10),title,category:f,poster:'',rating:0,seasons:[],added_at:new Date().toISOString()});await catStore(f,c,c.items,'admin: hide '+title);return{ok:true}},
+ async engine(b){const e=b.e,items=[],base=SITE();
+  if(e==='blk'){const t=await siteGet(base+(base.includes('?')?'&':'?')+'t='+Date.now());const m=t.match(/const CATALOG = ([\s\S]*?);\s*const \$ = id/);let cj;
+   try{cj=JSON.parse(m[1])}catch{throw new Error('Site ka catalog nahi mila ('+base+'). '+(t.includes('<'+'?=')?'Ye PHP server nahi hai, index.php ka code seedha aa raha hai. ':'')+'Page ki shuruaat: "'+t.slice(0,70).replace(/\s+/g,' ')+'"')}
+   (cj.anime||[]).forEach(x=>{if(x&&String(x.slug||'').startsWith('blk-'))items.push({k:x.slug,title:x.title||'',poster:x.poster||'',category:x.category||'anime',rating:x.rating||0})})}
+  else if(e==='as'||e==='hx'){let j;try{j=JSON.parse(await siteGet(base+(base.includes('?')?'&':'?')+'action='+e+'_list&page='+Math.max(1,b.page|0)+'&q='+encodeURIComponent(b.q||'')))}catch(x){throw new Error('Engine list nahi mili: '+(x.message||x))}
+   if(!j.ok)throw new Error(j.error||'Engine jawab nahi de raha');j.items.forEach(x=>items.push({k:x.link||'',title:x.title||'',poster:x.thumb||'',category:e==='as'?'multi':'hentai'}))}
+  else throw new Error('bad engine');return{ok:true,items}},
+ async fb(b){const p=String(b.p||'').replace(/^\/+|\/+$/g,'');if(!/^(votes|comments|stats)(\/[A-Za-z0-9_-]+){0,3}$/.test(p))throw new Error('bad path');
+  const base=SITE(),u=base+(base.includes('?')?'&':'?')+'action=adm_fb';let r;
+  try{r=await fetch(u,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json',Authorization:'Bearer '+TOKEN,'X-Admin-Token':TOKEN},body:JSON.stringify({p,sh:b.sh?1:0,m:b.m==='DELETE'?'DELETE':'GET'})})}catch(e){throw new Error('Site server tak nahi pahunch paya: '+(e.message||e))}
+  const t=await r.text();let j;try{j=JSON.parse(t)}catch{throw new Error('Server ne JSON nahi diya (HTTP '+r.status+'). Site URL check karo (index.php wala link).')}
+  if(!j.ok)throw new Error(j.error||('HTTP '+r.status));return{ok:true,d:j.d}},
+ async an(b){const p=String(b.p||'').replace(/^\/+|\/+$/g,'');if(!/^track(\/[A-Za-z0-9_-]+){0,3}$/.test(p))throw new Error('bad path');const q=new URLSearchParams();if(b.sh)q.set('shallow','true');if(b.q)for(const k in b.q)q.set(k,b.q[k]);
+  const r=await fetch(`${AN()}/${p}.json?${q}`,{method:b.m==='DELETE'?'DELETE':'GET',cache:'no-store'});if(!r.ok)throw new Error('Analytics Firebase HTTP '+r.status+' (rules me "track" ko read/write allow karo)');return{ok:true,d:await r.json()}}
+};
+async function api(a,body){try{return await ROUTES[a](body||{})}catch(e){return{ok:false,error:e.message||String(e)}}}
+async function fa(p,sh,m,q){const j=await api('an',{p,sh:sh?1:0,m:m||'GET',q});if(!j.ok){S.aerr=j.error||'error';toast(j.error||'Analytics error',4500);return null}return j.d}
+async function fb(p,sh,m){const j=await api('fb',{p,sh:sh?1:0,m:m||'GET'});if(!j.ok){toast(j.error||'Firebase error');return null}return j.d}
+const epCount=it=>(it.seasons||[]).reduce((n,s)=>n+(Array.isArray(s.episodes)?s.episodes.length:(s.count||0)),0);
+const img=u=>`<img src="${esc(u||'')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`;
+
+/* ---------- boot ---------- */
+function shell(){app.innerHTML=`<div class=top><div class=logo>M</div><b>Move Tok Admin</b><button class=sm data-act=disc>Token</button></div><div id=v></div><nav>${[['dash','Dashboard','📊'],['lib','Library','📚'],['eng','Engines','🎛️'],['cm','Comments','💬'],['usr','Users','👥'],['apk','API','🔑']].map(([k,n,ic])=>`<button data-t="${k}"><i>${ic}</i>${n}</button>`).join('')}</nav>`}
+function boot(){if(!TOKEN)return connectUI();shell();go('dash')}
+function connectUI(){app.innerHTML=`<div class=top><div class=logo>M</div><b>Move Tok Admin</b></div><div class=card><h3>Connect to GitHub</h3><p class=mu>Fine-grained token ek baar paste karo. Ye sirf is device me save hota hai.</p><label>Access token</label><input id=tk type=password placeholder="github_pat_..." autocomplete=off><details style="margin-bottom:10px"><summary class=mu>Advanced (repo)</summary><label>Repo (owner/repo)</label><input id=co value="${esc(C.o+'/'+C.r)}"><label>Branch</label><input id=cb value="${esc(C.b)}"><label>Site URL (khaali = index.php isi folder me)</label><input id=cu value="${esc(C.site)}"></details><button class=b1 data-act=connect style="width:100%">Connect</button><p class=mu>Token ko Move-tok repo par <b>Contents: Read and write</b> chahiye.</p></div>`}
+async function connect(){const t=$('#tk').value.trim();if(!t)return toast('Token paste karo');const[o,r]=($('#co').value.trim()||'').split('/');
+ C={o:o||C.o,r:r||C.r,b:$('#cb').value.trim()||'main',site:$('#cu').value.trim()};
+ const x=await fetch(`https://api.github.com/repos/${C.o}/${C.r}`,{headers:{Authorization:'Bearer '+t}}).catch(()=>null);
+ if(!x||!x.ok)return toast(x?'Token ya repo galat (HTTP '+x.status+')':'Network error',4000);
+ TOKEN=t;localStorage.setItem('mt_gh',t);localStorage.setItem('mt_cfg',JSON.stringify(C));shell();go('dash')}
+function go(t){S.tab=t;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));({dash,lib,eng,cm,usr,apk})[t]()}
+const V=()=>$('#v');const loading=()=>{V().innerHTML='<div class="card sk"><div></div><div></div><div></div></div><div class="card sk"><div></div><div></div><div></div></div>'};
+async function loadCat(force){if(S.cat&&!force)return S.cat;const j=await api('cat');if(!j.ok){V().innerHTML=`<div class="card err">${esc(j.error)}</div>`;return null}S.cat=j.cat;return S.cat}
+
+/* ---------- dashboard ---------- */
+let liveT=null;
+async function fbTest(){const el=$('#fbt');el.textContent='Test chal raha hai...';const U=AN(),out=[];
+ const call=async(l,u,m,b)=>{try{const r=await fetch(u,{method:m,body:b?JSON.stringify(b):undefined,cache:'no-store'});const t=await r.text();out.push(l+': HTTP '+r.status+' '+t.slice(0,110));return r.status}catch(e){out.push(l+': network/CORS error ('+e.message+')');return 0}};
+ const w=await call('Write (site jaisa)',U+'/track.json','PATCH',{'test/ping':{'.sv':'timestamp'},'test/n':{'.sv':{increment:1}}});
+ const r=await call('Read',U+'/track/test.json','GET');await call('Cleanup',U+'/track/test.json','DELETE');
+ const ok=x=>x>=200&&x<300;
+ const hint=ok(w)&&ok(r)?'Firebase theek hai. Ab site ek baar kholo, 20 sec ruko, phir dashboard refresh karo.':ok(w)?'Write ho gaya par Read block hai: rules me ".read": true karo.':w===404?'Database mila hi nahi: Realtime Database bana hi nahi, ya URL galat.':(w===401||w===403)?'Permission denied: Realtime Database (Firestore nahi) ke Rules me track ko .read aur .write true karke Publish karo.':'Connect nahi ho paya: upar ka error mujhe bhejo.';
+ el.innerHTML=out.map(esc).join('<br>')+'<br><b>'+esc(hint)+'</b>'}
+function liveInfo(live){const now=Date.now(),a=Object.values(live||{}).filter(x=>x&&now-(x.t||0)<60000),pg={};a.forEach(x=>{const k=x.p||'home';pg[k]=(pg[k]||0)+1});return{n:a.length,mob:a.filter(x=>x.d==='m').length,pages:Object.entries(pg).sort((x,y)=>y[1]-x[1]).slice(0,8)}}
+function liveHTML(L){return `<div class=st style="margin-bottom:8px"><b style="color:var(--ok)">● ${L.n}</b><span>Abhi live dekh rahe hain (mobile ${L.mob} • desktop ${L.n-L.mob})</span></div>${L.pages.map(([p,c])=>`<div class=row><div class=ri><div class=rt>${esc(p)}</div></div><b>${c}</b></div>`).join('')}`}
+/* Firebase push-id time prefix: last N minute ke events bina index ke mil jaate hain */
+const PA='-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
+const pidFrom=ms=>{let s='';for(let i=0;i<8;i++){s=PA.charAt(ms%64)+s;ms=Math.floor(ms/64)}return s};
+const dk=ms=>new Date(ms).toISOString().slice(0,10).replace(/-/g,'');
+const ago=ms=>{const s=Math.max(0,Math.round((Date.now()-ms)/1000));return s<60?s+' sec':s<3600?Math.round(s/60)+' min':Math.round(s/3600)+' ghante'};
+async function fetchEv(min){const now=Date.now(),from=now-min*60000-120000,pid=pidFrom(from),out=[];
+ for(const d of new Set([dk(from),dk(now)])){const j=await api('an',{p:'track/ev/'+d,q:{orderBy:'"$key"',startAt:'"'+pid+'"'}});if(j.ok&&j.d&&typeof j.d==='object')Object.values(j.d).forEach(x=>{if(x&&typeof x==='object'&&(x.t||0)>=now-min*60000)out.push(x)})}
+ return out.sort((a,b)=>b.t-a.t)}
+const none='<p class=mu>Kuch nahi.</p>';
+const WL={0:'Real-time',10:'10 min',30:'30 min',60:'1 ghanta'};
+function evHTML(E,min,L){const rt=!min,now=Date.now(),W=(rt?120:min*60)*1000,ev=E.filter(x=>now-x.t<W),vm=new Map();
+ Object.values(L||{}).forEach(x=>{if(x&&x.v&&now-(x.t||0)<120000)vm.set(x.v,x.d)});ev.forEach(x=>{if(x.v&&(!vm.has(x.v)||!vm.get(x.v)))vm.set(x.v,x.d)});
+ const n=vm.size,vals=[...vm.values()],mob=vals.filter(d=>d==='m').length,desk=vals.filter(d=>d==='d').length,
+  pv=ev.filter(x=>x.e==='pv'),pl=ev.filter(x=>x.e==='play'),ck=ev.filter(x=>x.e==='clk'),pg={};pv.forEach(x=>{const k=x.p||'home';pg[k]=(pg[k]||0)+1});
+ const SP=rt?300000:min*60000,B=12,bk=Array.from({length:B},()=>new Set());E.forEach(x=>{const i=Math.floor((now-x.t)/SP*B);if(i>=0&&i<B)bk[B-1-i].add(x.v)});const mb=Math.max(1,...bk.map(q=>q.size));
+ const kp=(ic,v,l)=>`<div class=kp><em>${ic}</em><b>${v}</b><span>${l}</span></div>`;
+ return `<div class=big><span class="pulse ${n?'':'off'}"></span><b>${n}</b><small>${rt?'visitors abhi active':'unique visitors<br>pichle '+WL[min]}</small></div>
+ <div class=kpis>${kp('📱',mob,'Mobile')}${kp('💻',desk,'Desktop')}${kp('📄',pv.length,'Page views')}${kp('▶️',pl.length,'Plays')}${kp('👆',ck.length,'Clicks')}${kp('🧭',new Set(ev.map(x=>x.s)).size,'Sessions')}</div>
+ <div class=spark>${bk.map(q=>`<div><i style="height:${Math.max(3,Math.round(q.size/mb*46))}px"></i></div>`).join('')}</div><div class=spl><span>${rt?'5 min pehle':WL[min]+' pehle'}</span><span>ab</span></div>
+ <div class=sub>Kaun sa page</div>${Object.entries(pg).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([p,c])=>`<div class=row><div class=ri><div class=rt>${esc(p)}</div></div><b>${c}</b></div>`).join('')||none}
+ <div class=sub>Kisne kya dekha</div>${pl.slice(0,20).map(x=>`<div class=row><div class=ri><div class=rt>${esc(x.n||x.k||'')}</div><div class=rs>user ${esc(String(x.v||'').slice(0,6))} • ${ago(x.t)} pehle</div></div></div>`).join('')||none}
+ <div class=sub>Kahan click hua</div>${ck.slice(0,25).map(x=>`<div class=row><div class=ri><div class=rt>${esc(x.l||'')}</div><div class=rs>${esc(x.p||'')} • screen par x ${x.x??'?'}% y ${x.y??'?'}% • ${ago(x.t)} pehle</div></div></div>`).join('')||none}`}
+async function liveTick(){if(S.tab!=='dash'||!$('#evb')){clearInterval(liveT);return}const[j,E]=await Promise.all([api('an',{p:'track/live'}),fetchEv(S.win||5)]);if(j.ok&&S.dd)S.dd.live=j.d;if(S.dd)S.dd.evs=E;if($('#evb'))$('#evb').innerHTML=evHTML(E,S.win,S.dd&&S.dd.live)}
+async function purgeEv(){try{const k=await api('an',{p:'track/ev',sh:1});if(!k.ok||!k.d)return;const old=dk(Date.now()-7*864e5);for(const d of Object.keys(k.d))if(/^\d{8}$/.test(d)&&d<old)await api('an',{p:'track/ev/'+d,m:'DELETE'})}catch(e){}}
+async function dash(){loading();clearInterval(liveT);S.aerr='';
+ const [c,votes,cms,live,days,users,watch,ref,os,br,clk,evs]=await Promise.all([loadCat(true),fb('votes'),fb('comments'),fa('track/live'),fa('track/days'),fa('track/users',1),fa('track/watch'),fa('track/ref'),fa('track/os'),fa('track/br'),fa('track/clk'),fetchEv(S.win||5)]);if(!c)return;
+ S.dd={c,votes,cms,live,days,users,watch,ref,os,br,clk,evs};dashR();liveT=setInterval(liveTick,10000);purgeEv()}
+const RG=[['today','Aaj'],['7','7 din'],['30','30 din'],['month','Is mahina'],['year','Is saal'],['all','Sab']];
+function dashR(){const {c,votes,cms,live,days,users,watch,ref,os,br,clk,evs}=S.dd;
+ const VT=votes||{},CM=cms||{},D=days||{},W=watch||{},CK=clk||{};const now=Date.now(),nd=new Date(now),Y=nd.getUTCFullYear(),M=nd.getUTCMonth();const t=D[dk(now)]||{};
+ const titles={};Object.values(c).flat().forEach(x=>{if(x._vk)titles[x._vk]=x.title});Object.entries(W).forEach(([k,x])=>{if(x.t)titles[k]=x.t});
+ const live_=a=>a.filter(x=>(x.seasons||[]).length),eps=a=>a.reduce((n,x)=>n+epCount(x),0),sum=f=>Object.values(VT).reduce((n,x)=>n+(x[f]||0),0);
+ const nCm=Object.values(CM).reduce((n,x)=>n+Object.keys(x||{}).length,0),hid=Object.values(c).flat().filter(x=>!(x.seasons||[]).length).length;
+ const tot=Object.values(D).reduce((n,x)=>n+(x.views||0),0),totW=Object.values(D).reduce((n,x)=>n+(x.w||0),0),totPv=Object.values(D).reduce((n,x)=>n+(x.pv||0),0);
+ /* ---- range (din / mahina / saal / sab) ---- */
+ const r=S.rg;let from=r==='today'?dk(now):r==='7'?dk(now-6*864e5):r==='30'?dk(now-29*864e5):r==='month'?dk(Date.UTC(Y,M,1)):r==='year'?dk(Date.UTC(Y,0,1)):'00000000';
+ const ks=Object.keys(D).filter(k=>k>=from).sort();const A={};ks.forEach(k=>['views','new','pv','w','secs','mob','desk','clk'].forEach(f=>A[f]=(A[f]||0)+((D[k]||{})[f]||0)));
+ let bars=[];if(r==='year'||r==='all'){const m={};ks.forEach(k=>m[k.slice(0,6)]=(m[k.slice(0,6)]||0)+((D[k]||{}).views||0));
+  if(r==='year')for(let i=0;i<=M;i++)bars.push({l:String(i+1).padStart(2,'0')+'/'+String(Y).slice(2),v:m[Y+String(i+1).padStart(2,'0')]||0});else bars=Object.keys(m).sort().map(k=>({l:k.slice(4)+'/'+k.slice(2,4),v:m[k]}))}
+ else{const n=r==='today'?1:r==='7'?7:r==='30'?30:nd.getUTCDate();for(let i=n-1;i>=0;i--){const k=dk(now-i*864e5);bars.push({l:k.slice(6)+'/'+k.slice(4,6),v:(D[k]||{}).views||0})}}
+ const mx=Math.max(1,...bars.map(x=>x.v));const avg=A.views?Math.round((A.secs||0)/A.views/6)/10:0;
+ const ck={};ks.forEach(d=>Object.entries(CK[d]||{}).forEach(([k,x])=>{const o=ck[k]||(ck[k]={c:0,n:x.n||k});o.c+=x.c||0}));const topC=Object.values(ck).sort((a,b)=>b.c-a.c).slice(0,15);
+ const topW=Object.entries(W).sort((a,b)=>(b[1].c||0)-(a[1].c||0)).slice(0,10),topL=Object.entries(VT).sort((a,b)=>(b[1].l||0)-(a[1].l||0)).slice(0,5);
+ const unseen=Object.values(c).flat().filter(x=>x._vk&&(x.seasons||[]).length&&!(W[x._vk]&&W[x._vk].c));
+ const st=(n,l)=>`<div class=st><b>${n}</b><span>${l}</span></div>`;
+ const lst=(o,n)=>Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,n).map(([k,v])=>`<div class=row><div class=ri><div class=rt>${esc(k.replace(/_/g,'.'))}</div></div><b>${v}</b></div>`).join('')||'<p class=mu>Abhi data nahi.</p>';
+ V().innerHTML=`${(!users&&!days&&!live)||S.aerr?'<div class="card err">Tracking data nahi mila.'+(S.aerr?'<br>Error: '+esc(S.aerr):'')+'</div>':''} <div class=card><h3>Live Activity</h3><div class=seg>${[0,10,30,60].map(m=>`<button class="${m===S.win?'on':''}" data-act=win data-k=${m}>${WL[m]}</button>`).join('')}</div><div id=evb>${evHTML(evs||[],S.win,live)}</div></div>
+ <div class=card><h3>Visitors report</h3><div class="seg sc">${RG.map(([k,n])=>`<button class="${k===r?'on':''}" data-act=rg data-k=${k}>${n}</button>`).join('')}</div><div class=grid>${st(A.views||0,'Visitors')}${st(A.new||0,'Naye users')}${st(A.pv||0,'Pageviews')}${st(A.w||0,'Plays')}${st(A.clk||0,'Clicks')}${st(avg+' min','Avg time / visitor')}${st((A.mob||0)+' / '+(A.desk||0),'Mobile / Desktop')}${st(ks.length,'Din ka data')}</div>
+ <div class="bars sc" style="margin-top:14px">${bars.map(x=>`<div><i style="height:${Math.round(x.v/mx*90)}px"></i>${x.v}<br>${x.l}</div>`).join('')}</div></div>
+ <div class=card><h3>Kahan click hua (${RG.find(x=>x[0]===r)[1]})</h3>${topC.map(x=>`<div class=row><div class=ri><div class=rt>${esc(x.n)}</div></div><b>${x.c}</b></div>`).join('')||'<p class=mu>Abhi click data nahi (site khulne ke baad aana shuru hoga).</p>'}</div>
+ <div class=card><h3>Users & Traffic (total)</h3><div class=grid>${st(users?Object.keys(users).length:0,'Total users')}${st(t.views||0,'Aaj ke visitors')}${st(t.new||0,'Aaj ke naye users')}${st(t.pv||0,'Aaj ke pageviews')}${st(tot,'Total visitor-days')}${st(totPv,'Total pageviews')}${st(totW,'Total plays')}</div></div>
+ <div class=card><h3>Device / OS (naye users)</h3>${lst(os,6)}</div><div class=card><h3>Browser</h3>${lst(br,6)}</div><div class=card><h3>Traffic source (referrer)</h3>${lst(ref,8)}</div>
+ <div class=card><h3>Top watched</h3>${topW.length?topW.map(([k,x])=>`<div class=row><div class=ri><div class=rt>${esc(x.t||titles[k]||k)}</div><div class=rs>${esc(x.y||'')}</div></div><b>${x.c||0}</b></div>`).join(''):'<p class=mu>Abhi data nahi.</p>'}</div>
+ <div class=card><h3>Kisi ne nahi dekha (${unseen.length})</h3>${unseen.slice(0,S.nw).map(x=>`<div class=row>${img(x.poster||x.banner)}<div class=ri><div class=rt>${esc(x.title)}</div><div class=rs>${esc(x.category||'')}</div></div></div>`).join('')||'<p class=mu>Sab kuch kisi ne dekha hai.</p>'}${unseen.length>S.nw?'<button class=b2 data-act=nwmore style="width:100%;margin-top:8px">Aur dikhao</button>':''}</div>
+ <div class=card><h3>Library</h3><div class=grid>${Object.keys(CATS).map(f=>st(live_(c[f]).length,CATS[f]+' titles • '+eps(c[f])+' eps')).join('')}${st(hid,'Hidden engine videos')}</div></div>
+ <div class=card><h3>Diagnostics</h3><button class=b2 data-act=fbtest>Firebase test karo</button><div id=fbt class=mu style="margin-top:8px"></div></div>
+ <div class=card><h3>Likes & comments</h3><div class=grid>${st(sum('l'),'Total likes')}${st(sum('d'),'Total dislikes')}${st(nCm,'Total comments')}${st(Object.keys(CM).length,'Titles with comments')}</div>${topL.map(([k,x])=>`<div class=row><div class=ri><div class=rt>${esc(titles[k]||k)}</div></div><span class=mu>👍 ${x.l||0} 👎 ${x.d||0}</span></div>`).join('')}</div>`}
+
+/* ---------- library ---------- */
+async function lib(){loading();const c=await loadCat();if(!c)return;libR()}
+function libR(){const f=S.lib,q=S.q.toLowerCase();const all=S.cat[f],ls=all.filter(x=>!q||String(x.title).toLowerCase().includes(q));
+ V().innerHTML=`<div class=chips>${Object.keys(CATS).map(k=>`<button class="chip ${k===f?'on':''}" data-act=libcat data-k="${k}">${CATS[k]} (${S.cat[k].length})</button>`).join('')}</div>
+ <div style="display:flex;gap:8px"><input id=lq placeholder="Title search..." value="${esc(S.q)}" style="margin:0"><button class=b1 data-act=new>+ New</button></div><div class=card style="margin-top:12px">${ls.slice(0,S.lim).map(x=>`<div class=row>${img(x.poster||x.banner)}<div class=ri><div class=rt>${esc(x.title)}</div><div class=rs>${(x.seasons||[]).length?(x.seasons||[]).length+' season • '+epCount(x)+' ep':'<span class="tg r">ENGINE HIDDEN</span> (delete = wapas dikhega)'}</div></div><div class=ra><button class=sm data-act=edit data-s="${esc(x.slug)}">Edit</button><button class="sm d" data-act=delt data-s="${esc(x.slug)}">Delete</button></div></div>`).join('')||'<p class=mu>Kuch nahi mila.</p>'}${ls.length>S.lim?'<button class=b2 data-act=more style="width:100%;margin-top:8px">Aur dikhao</button>':''}</div>`;
+ $('#lq').addEventListener('input',e=>{S.q=e.target.value;S.lim=40;const p=e.target.selectionStart;libR();const n=$('#lq');n.focus();n.setSelectionRange(p,p)})}
+function blank(f){return{slug:'',title:'',poster:'',banner:'',rating:0,seasons:[{number:1,episodes:[{number:1,sources:[]}]}]}}
+function epRow(e,movie){const src={};(e.sources||[]).forEach(x=>src[x.quality||'Default']=x.url);if(e.url&&!Object.values(src).includes(e.url))src.Auto=e.url;
+ const std=['360p','480p','720p','1080p','Auto'],extra=(e.sources||[]).filter(x=>!std.includes(x.quality||'Default'));const keep={...e};['sources','url','number'].forEach(k=>delete keep[k]);
+ return `<div class=ep data-keep='${esc(JSON.stringify(keep))}' data-x='${esc(JSON.stringify(extra))}' ${e._new?'data-new=1':''}><div class=eh><b>Ep</b><input class=eno type=number min=1 value="${esc(e.number||1)}">${movie?'':'<button class=x data-act=delep>✕</button>'}</div>${std.map(q=>`<input class=qin data-q="${q}" placeholder="${q==='Auto'?'Master / single link (m3u8, mp4)':q+' link'}" value="${esc(src[q]||'')}">`).join('')}</div>`}
+function snHTML(s,movie){const k={...s};['episodes','number'].forEach(x=>delete k[x]);return `<div class=sn data-keep='${esc(JSON.stringify(k))}'><div class=sh><b>Season</b><input class=sno type=number min=1 value="${esc(s.number||1)}">${movie?'':'<button class=x data-act=addep>+ Episode</button><button class=x data-act=delsn>✕</button>'}</div>${(Array.isArray(s.episodes)?s.episodes:[]).map(e=>epRow(e,movie)).join('')}</div>`}
+function renderEd(){const {f,item}=S.ed,movie=f==='movie',st=($('#ed .edb')||{}).scrollTop||0;
+ $('#ed').innerHTML=`<div class=edh><button class=b2 data-act=edclose>← Back</button><b>${item.slug?'Edit':'New'} • ${CATS[f]}</b><button class=b1 data-act=edsave>Save</button></div><div class=edb><label>Title *</label><input id=f_t value="${esc(item.title)}"><label>Poster image URL</label><input id=f_p value="${esc(item.poster)}"><label>Banner image URL</label><input id=f_b value="${esc(item.banner)}"><label>Rating</label><input id=f_r type=number step=0.1 min=0 max=10 value="${esc(item.rating||0)}"><h3>${movie?'Video links':'Seasons & Episodes'}</h3>${(item.seasons||[]).map(s=>snHTML(s,movie)).join('')}${movie?'':'<button class=b2 data-act=addsn style="width:100%">+ Next season</button>'}</div>`;$('#ed').hidden=false;$('#ed .edb').scrollTop=st}
+function gather(){const g=id=>$(id).value.trim();const it={...S.ed.item,title:g('#f_t'),poster:g('#f_p'),banner:g('#f_b'),rating:parseFloat($('#f_r').value)||0};
+ it.seasons=[...document.querySelectorAll('#ed .sn')].map(sd=>({...JSON.parse(sd.dataset.keep||'{}'),number:+sd.querySelector('.sno').value||1,episodes:[...sd.querySelectorAll('.ep')].map(ed=>{const sources=[];ed.querySelectorAll('.qin').forEach(i=>{const u=i.value.trim();if(u)sources.push({quality:i.dataset.q,url:u})});JSON.parse(ed.dataset.x||'[]').forEach(x=>sources.push(x));const k=JSON.parse(ed.dataset.keep||'{}');if(ed.dataset.new&&!k.added_at)k.added_at=new Date().toISOString();return{...k,number:+ed.querySelector('.eno').value||1,sources}})}));return it}
+async function saveEd(){S.cat&&0;const it=gather();if(!it.title)return toast('Title likho');if(!it.slug)it.slug=(it.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'t')+'-'+Date.now().toString(36);
+ it.updated_at=new Date().toISOString();const j=await api('save',{f:S.ed.f,item:it});if(!j.ok)return toast(j.error||'Save fail',4000);toast('Saved ✔ (site par ~15 sec me dikhega)');$('#ed').hidden=true;S.ed=null;await loadCat(true);if(S.tab==='lib')libR()}
+
+/* ---------- engines ---------- */
+const ENG={blk:'Anime & Movies (Blakite)',as:'Multi Language (AnimesSalt)',hx:'Hentai (HotXV)'};
+function engSt(){return S.E[S.eng]||(S.E[S.eng]={items:[],page:0,more:true,loaded:false,err:''})}
+async function eng(){const st=engSt();if(!st.loaded){loading();await engFetch()}engR()}
+async function engFetch(){const e=S.eng,st=engSt();if(e==='blk'){const j=await api('engine',{e});st.items=j.items||[];st.err=j.ok?'':j.error;st.loaded=true;return}
+ const j=await api('engine',{e,page:st.page+1,q:S.eq});st.loaded=true;if(!j.ok){st.err=j.error;st.more=false;return}st.err='';st.page++;if(!j.items.length)st.more=false;st.items.push(...j.items)}
+function engR(){const st=engSt(),e=S.eng,q=S.eq.toLowerCase();let ls=st.items;if(e==='blk')ls=ls.filter(x=>(S.ecat==='all'||x.category===S.ecat)&&(!q||String(x.title).toLowerCase().includes(q)));
+ V().innerHTML=`<div class=chips>${Object.keys(ENG).map(k=>`<button class="chip ${k===e?'on':''}" data-act=engsel data-k="${k}">${ENG[k]}</button>`).join('')}</div>${e==='blk'?`<div class=chips>${['all','anime','movie'].map(k=>`<button class="chip ${k===S.ecat?'on':''}" data-act=ecat data-k="${k}">${k}</button>`).join('')}</div>`:''}
+ <input id=eq placeholder="${e==='blk'?'Search...':'Search (Enter dabao)'}" value="${esc(S.eq)}"><div class=card><h3>${ENG[e]} • ${ls.length}${e!=='blk'&&st.more?'+':''} videos</h3>${e==='blk'?'<p class=mu>Hide = site se hata do. Replace = apne links ke saath apni copy banao (engine wali chhup jaayegi, title same rakhna).</p>':'<p class=mu>Ye engine live scrape hota hai, user panel badle bina inhe hide/edit nahi kar sakte. Yahan sirf dekh sakte ho.</p>'}${st.err?`<p class=err>${esc(st.err)}</p><label>Site URL (jahan index.php chal raha hai)</label><input id=su placeholder="https://tumhari-site.com/index.php" value="${esc(C.site)}"><button class=b1 data-act=setsite>Save & retry</button>`:''}${ls.slice(0,e==='blk'?S.elim:9999).map(x=>`<div class=row>${img(x.poster)}<div class=ri><div class=rt>${esc(x.title)}</div><div class=rs>${esc(x.category)}</div></div>${e==='blk'?`<div class=ra><button class="sm d" data-act=bh data-k="${esc(x.k)}">Hide</button><button class=sm data-act=br data-k="${esc(x.k)}">Replace</button></div>`:''}</div>`).join('')||'<p class=mu>Kuch nahi mila.</p>'}${e==='blk'?(ls.length>S.elim?'<button class=b2 data-act=emore style="width:100%;margin-top:8px">Aur dikhao</button>':''):(st.more?'<button class=b2 data-act=efetch style="width:100%;margin-top:8px">Load more</button>':'')}</div>`;
+ $('#eq').addEventListener(e==='blk'?'input':'keydown',async ev=>{if(e==='blk'){S.eq=ev.target.value;S.elim=60;const p=ev.target.selectionStart;engR();const n=$('#eq');n.focus();n.setSelectionRange(p,p)}else if(ev.key==='Enter'){S.eq=ev.target.value;S.E[S.eng]=null;loading();await engFetch();engR()}})}
+const engFind=k=>engSt().items.find(x=>x.k===k);
+
+/* ---------- comments & votes ---------- */
+async function cm(){loading();const [ks,w]=await Promise.all([fb('comments',1),fa('track/watch')]);const c=await loadCat();const T={};if(c)Object.values(c).flat().forEach(x=>{if(x._vk)T[x._vk]=x.title});Object.entries(w||{}).forEach(([k,x])=>{if(x.t)T[k]=x.t});S.cm={T};
+ V().innerHTML=`<div class=card><h3>Comments wale titles</h3>${ks&&Object.keys(ks).length?Object.keys(ks).map(k=>`<div class=row><div class=ri><div class=rt>${esc(T[k]||k)}</div></div><button class=sm data-act=cmopen data-k="${esc(k)}">Dekho</button></div>`).join(''):'<p class=mu>Koi comment nahi.</p>'}</div><div id=cmd></div>`}
+async function cmOpen(k){const d=await fb('comments/'+k)||{};const T=S.cm.T;
+ $('#cmd').innerHTML=`<div class=card><h3>${esc(T[k]||k)}</h3><div style="display:flex;gap:8px;margin-bottom:8px"><button class="sm d" data-act=cmall data-k="${esc(k)}">Saare comments delete</button><button class="sm d" data-act=votereset data-k="${esc(k)}">Votes reset</button></div>${Object.entries(d).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0)).map(([id,x])=>`<div class=row><div class=ri><div class=rt>${esc(x.n)}</div><div class=rs>${esc(x.t)} • ${x.ts?new Date(x.ts).toLocaleString():''}</div></div><button class="sm d" data-act=cmdel data-k="${esc(k)}" data-i="${esc(id)}">Delete</button></div>`).join('')||'<p class=mu>Khaali.</p>'}</div>`;$('#cmd').scrollIntoView()}
+
+/* ---------- users ---------- */
+async function usr(){loading();const u=await fa('track/users');S.us={u:u||{},lim:50};usrR()}
+function usrR(){const ls=Object.entries(S.us.u).sort((a,b)=>(b[1].ls||0)-(a[1].ls||0));
+ V().innerHTML=`<div class=card><h3>Users (${ls.length})</h3>${ls.slice(0,S.us.lim).map(([id,x])=>`<div class=row><div class=ri><div class=rt>${esc(id.slice(0,8))} • ${x.d==='m'?'Mobile':'Desktop'} ${esc(x.os||'')} ${esc(x.br||'')}</div><div class=rs>Last: ${x.ls?new Date(x.ls).toLocaleString():'-'} • ${x.n||0} visit • ${x.plays||0} plays • ${Math.round((x.secs||0)/60)} min</div></div><button class=sm data-act=uopen data-k="${esc(id)}">Dekho</button></div>`).join('')||'<p class=mu>Abhi koi user nahi.</p>'}${ls.length>S.us.lim?'<button class=b2 data-act=umore style="width:100%;margin-top:8px">Aur dikhao</button>':''}</div><div id=ud></div>`}
+async function uOpen(id){const h=await fa('track/uw/'+id)||{},x=S.us.u[id]||{},L=Object.values(h).sort((a,b)=>(b.t||0)-(a.t||0));
+ $('#ud').innerHTML=`<div class=card><h3>User ${esc(id.slice(0,8))}</h3><p class=mu>Pehli baar: ${x.fs?new Date(x.fs).toLocaleString():'-'}<br>Last: ${x.ls?new Date(x.ls).toLocaleString():'-'}<br>Screen ${esc(x.sc||'-')} • ${esc(x.lg||'')} • ${esc(x.tz||'')}<br>${x.n||0} visit • ${x.plays||0} plays • ${Math.round((x.secs||0)/60)} min</p><h3>Isne ye dekha (${L.length})</h3>${L.slice(0,100).map(w=>`<div class=row><div class=ri><div class=rt>${esc(w.n||w.k||'')}</div><div class=rs>${esc(w.y||'')} • ${w.t?new Date(w.t).toLocaleString():''}</div></div></div>`).join('')||'<p class=mu>Abhi kuch nahi dekha (ya purana user, history naye plays se banegi).</p>'}</div>`;$('#ud').scrollIntoView()}
+/* ---------- API keys (hash GitHub data/api_keys.json me, site ?action=api se check karti hai) ---------- */
+const KF='data/api_keys.json';
+const SHA=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+async function keysLoad(){const[d,sha]=await ghRead(KF);return{keys:d&&Array.isArray(d.keys)?d.keys:[],sha}}
+const keysSave=(keys,sha,msg)=>ghWrite(KF,{version:1,keys},sha,msg);
+async function keyMod(fn,msg){try{const{keys,sha}=await keysLoad();fn(keys);await keysSave(keys,sha,msg);S.keys=keys;apkR()}catch(e){toast(e.message||'Fail',4000)}}
+async function apk(){loading();try{S.keys=(await keysLoad()).keys}catch(e){V().innerHTML=`<div class="card err">${esc(e.message)}</div>`;return}apkR()}
+const keyState=k=>k.off?['Disabled','err']:(k.exp&&Date.parse(k.exp)<Date.now())?['Expired','err']:['Active',''];
+function apkR(){const b=SITE(),u=b+(b.includes('?')?'&':'?')+'action=api&key=';
+ V().innerHTML=`${S.newKey?`<div class=card><h3>Nayi API key (abhi copy kar lo, dobara nahi dikhegi)</h3><input id=nk readonly value="${esc(S.newKey)}"><button class=b1 data-act=kcopy style="width:100%">Copy key</button><p class=mu style="word-break:break-all">${esc(u+S.newKey)}&type=all</p></div>`:''}
+ <div class=card><h3>Nayi API key banao</h3><label>Naam (kiske liye)</label><input id=kn placeholder="e.g. Rahul ki website"><label>Expire</label><select id=ke><option value=0>Kabhi expire nahi</option><option value=1>1 din</option><option value=7>7 din</option><option value=30 selected>30 din</option><option value=90>90 din</option><option value=365>1 saal</option></select><button class=b1 data-act=kmake style="width:100%">Key banao</button></div>
+ <div class=card><h3>Keys (${S.keys.length})</h3>${S.keys.map(k=>{const[s,c]=keyState(k);return `<div class=row><div class=ri><div class=rt>${esc(k.name||'key')} <span class=tg>${esc(k.id)}…</span></div><div class=rs><span class="${c}">${s}</span> • ${k.exp?'Expire: '+new Date(k.exp).toLocaleString():'Kabhi expire nahi'} • bani ${new Date(k.created).toLocaleDateString()}</div></div><div class=ra><button class=sm data-act=ktog data-k="${esc(k.id)}">${k.off?'Enable':'Disable'}</button><button class=sm data-act=kexp data-k="${esc(k.id)}">Expiry</button><button class="sm d" data-act=kdel data-k="${esc(k.id)}">Delete</button></div></div>`}).join('')||'<p class=mu>Koi key nahi.</p>'}</div>
+ <div class=card><h3>Kaise use karein</h3><p class=mu style="word-break:break-all">GET ${esc(u)}KEY&amp;type=all<br><br><b>type</b>: all, catalog, comments, votes, analytics, users<br><b>cat</b> (catalog ke liye): anime, movie, hentai<br>Key header se bhi chalti hai: X-API-Key: KEY<br><br>JS: fetch("${esc(u)}KEY&amp;type=all").then(r=&gt;r.json())<br><br>Expire ya disable hone par 403 aata hai. Revoke ke ~15 sec baad key band ho jaati hai.</p></div>`}
+async function kmake(){const name=$('#kn').value.trim()||'key',days=+$('#ke').value,b=new Uint8Array(16);crypto.getRandomValues(b);const key='mt_'+[...b].map(x=>x.toString(16).padStart(2,'0')).join('');
+ const rec={id:key.slice(0,11),name,h:await SHA(key),created:new Date().toISOString(),exp:days?new Date(Date.now()+days*864e5).toISOString():null,off:false};
+ await keyMod(k=>k.unshift(rec),'admin: api key '+rec.id);if(S.keys.some(x=>x.id===rec.id))S.newKey=key,apkR()}
+
+/* ---------- events ---------- */
+document.addEventListener('click',async e=>{const n=e.target.closest('[data-t],[data-act]');if(!n)return;if(n.dataset.t)return go(n.dataset.t);const a=n.dataset.act,k=n.dataset.k;
+ if(a==='connect')return connect();
+ if(a==='fbtest')return fbTest();
+ if(a==='setsite'){C.site=$('#su').value.trim();localStorage.setItem('mt_cfg',JSON.stringify(C));S.E[S.eng]=null;return eng()}
+ if(a==='disc'){if(confirm('Token hata kar dobara connect karein?')){localStorage.removeItem('mt_gh');TOKEN='';S.cat=null;S.E={};S.newKey='';connectUI()}return}
+ if(a==='libcat'){S.lib=k;S.q='';S.lim=40;libR()}
+ if(a==='more'){S.lim+=40;libR()}
+ if(a==='new'){S.ed={f:S.lib,item:blank(S.lib)};renderEd()}
+ if(a==='edit'){const it=S.cat[S.lib].find(x=>x.slug===n.dataset.s);if(it){S.ed={f:S.lib,item:JSON.parse(JSON.stringify(it))};renderEd()}}
+ if(a==='delt'){const it=S.cat[S.lib].find(x=>x.slug===n.dataset.s);if(it&&confirm('Delete: '+it.title+' ? (saare episodes bhi)')){const j=await api('del',{f:S.lib,slug:it.slug});if(j.ok){toast('Deleted');await loadCat(true);libR()}else toast(j.error||'Fail',4000)}}
+ if(a==='edclose'){if(confirm('Bina save kiye band karein?')){$('#ed').hidden=true;S.ed=null}}
+ if(a==='edsave')saveEd();
+ if(a==='addsn'){const it=gather();const mx=Math.max(0,...it.seasons.map(s=>s.number));it.seasons.push({number:mx+1,episodes:[{number:1,sources:[],_new:true}]});S.ed.item=it;renderEd()}
+ if(a==='delsn'){if(!confirm('Season delete?'))return;const it=gather();const i=[...document.querySelectorAll('#ed .sn')].indexOf(n.closest('.sn'));it.seasons.splice(i,1);S.ed.item=it;renderEd()}
+ if(a==='addep'){const it=gather();const i=[...document.querySelectorAll('#ed .sn')].indexOf(n.closest('.sn'));const s=it.seasons[i];s.episodes.push({number:Math.max(0,...s.episodes.map(x=>x.number))+1,sources:[],_new:true});S.ed.item=it;renderEd()}
+ if(a==='delep'){const it=gather();const sn=n.closest('.sn'),i=[...document.querySelectorAll('#ed .sn')].indexOf(sn),j=[...sn.querySelectorAll('.ep')].indexOf(n.closest('.ep'));it.seasons[i].episodes.splice(j,1);S.ed.item=it;renderEd()}
+ if(a==='engsel'){S.eng=k;S.eq='';S.elim=60;eng()}
+ if(a==='ecat'){S.ecat=k;S.elim=60;engR()}
+ if(a==='emore'){S.elim+=60;engR()}
+ if(a==='efetch'){n.disabled=true;await engFetch();engR()}
+ if(a==='bh'){const x=engFind(k);if(x&&confirm('"'+x.title+'" site se hide karein?')){const j=await api('bhide',{title:x.title,category:x.category});if(j.ok){engSt().items=engSt().items.filter(y=>y.k!==k);engR();toast('Hidden ✔ (~15 sec). Wapas dikhane ke liye Library se "0 ep" wali entry delete karo',5000);S.cat=null}else toast(j.error||'Fail',4000)}}
+ if(a==='br'){const x=engFind(k);if(x){const f=x.category==='movie'?'movie':'anime';S.ed={f,item:{slug:'',title:x.title,poster:x.poster,banner:'',rating:x.rating||0,seasons:[{number:1,episodes:[{number:1,sources:[]}]}]}};renderEd()}}
+ if(a==='rg'){S.rg=k;dashR()}
+ if(a==='win'){S.win=+k;S.dd.evs=await fetchEv(S.win||5);dashR()}
+ if(a==='nwmore'){S.nw+=30;dashR()}
+ if(a==='uopen')uOpen(k);
+ if(a==='umore'){S.us.lim+=50;usrR()}
+ if(a==='kmake')kmake();
+ if(a==='kcopy'){try{await navigator.clipboard.writeText(S.newKey);toast('Copied ✔')}catch{$('#nk').select();toast('Select ho gaya, copy karo')}}
+ if(a==='ktog')keyMod(ks=>{const x=ks.find(y=>y.id===k);if(x)x.off=!x.off},'admin: api key toggle '+k);
+ if(a==='kexp'){const v=prompt('Ab se kitne din baad expire? (0 = kabhi nahi)','30');if(v!==null&&!isNaN(+v)){const d=+v;keyMod(ks=>{const x=ks.find(y=>y.id===k);if(x)x.exp=d>0?new Date(Date.now()+d*864e5).toISOString():null},'admin: api key expiry '+k)}}
+ if(a==='kdel'&&confirm('Ye API key delete? Isse chalne wali sites band ho jayengi.'))keyMod(ks=>{const i=ks.findIndex(y=>y.id===k);if(i>=0)ks.splice(i,1)},'admin: api key delete '+k);
+ if(a==='cmopen')cmOpen(k);
+ if(a==='cmdel'&&confirm('Comment delete?')){await fb('comments/'+k+'/'+n.dataset.i,0,'DELETE');cmOpen(k)}
+ if(a==='cmall'&&confirm('Is title ke SAARE comments delete?')){await fb('comments/'+k,0,'DELETE');cm()}
+ if(a==='votereset'&&confirm('Likes/dislikes reset?')){await fb('votes/'+k,0,'DELETE');toast('Reset ✔')}
+});
+boot();
+</script></body></html>
+<?php
+    exit;
+}
+/* ===== USER SITE ===== */
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');    
+header('Pragma: no-cache');  
+header('X-Content-Type-Options: nosniff');  
+header('X-Frame-Options: SAMEORIGIN');  
+header('Referrer-Policy: same-origin');    
+
+/* ================= CONFIG ================= */  
+$GH_OWNER  = getenv('GH_OWNER') ?: 'h4xzico1111-hub';    
+$GH_REPO   = getenv('GH_REPO') ?: 'Move-tok';    
+$GH_BRANCH = getenv('GH_BRANCH') ?: 'main';    
+$GH_PATHS  = ['data/anime.json', 'data/movie.json', 'data/hentai.json'];    
+$GH_TOKEN  = getenv('GH_TOKEN') ?: '';    
+$CACHE_FILE = sys_get_temp_dir() . '/catalog.cache.json';    
+$CACHE_TTL  = 15;    
+$GH_DEBUG = '';    
+
+function fetch_catalog($url, $token) {    
+    global $GH_DEBUG;    
+    $headers = ['User-Agent: AniVerse-PHP'];    
+    if ($token) $headers[] = 'Authorization: Bearer ' . $token;    
+    if (function_exists('curl_init')) {    
+        $ch = curl_init($url);    
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 10,    
+            CURLOPT_FOLLOWLOCATION => true, CURLOPT_HTTPHEADER => $headers]);    
+        $out = curl_exec($ch);    
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);    
+        $GH_DEBUG .= 'curl[' . basename($url) . '] http=' . $code . ' err=' . curl_error($ch) . '; ';    
+        curl_close($ch);    
+        return ($out !== false && $code === 200) ? $out : null;    
+    }    
+    $ctx = stream_context_create(['http' => ['timeout' => 10, 'header' => implode("\r\n", $headers)]]);    
+    $out = @file_get_contents($url, false, $ctx);    
+    $GH_DEBUG .= 'fopen[' . basename($url) . '] ' . ($out === false ? 'failed ' . ($http_response_header[0] ?? '') : 'ok') . '; ';    
+    return $out === false ? null : $out;    
+}    
+
+/* ============ BLAKITE ENGINE ============ */  
+@ini_set('max_execution_time', 120);  
+@ini_set('memory_limit', '256M');  
+$BK_API   = 'https://blakiteapi.xyz/api/getAllAnime.php';  
+$BK_EMBED = 'https://blakiteapi.xyz';  
+$BK_FILE  = sys_get_temp_dir() . '/blk.catalog.json';  
+$BK_TTL   = 120;  
+
+function cGet($url, $t = 30, $ref = null) {  
+    $ch = curl_init();  
+    $h = [  
+        'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36',  
+        'Accept: application/json, text/plain, */*',  
+    ];  
+    if ($ref) {  
+        $h[] = "Referer: $ref";  
+        $p = parse_url($ref);  
+        if ($p) $h[] = 'Origin: ' . $p['scheme'] . '://' . $p['host'];  
+    }  
+    curl_setopt_array($ch, [  
+        CURLOPT_URL => $url, CURLOPT_RETURNTRANSFER => true,  
+        CURLOPT_TIMEOUT => $t, CURLOPT_CONNECTTIMEOUT => 10,  
+        CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false,  
+        CURLOPT_FOLLOWLOCATION => true, CURLOPT_ENCODING => '',  
+        CURLOPT_MAXREDIRS => 3,  
+        CURLOPT_HTTPHEADER => $h  
+    ]);  
+    if (defined('CURLOPT_REDIR_PROTOCOLS') && defined('CURLPROTO_HTTP')) {  
+        curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);  
+    }  
+    $b = curl_exec($ch);  
+    $c = curl_getinfo($ch, CURLINFO_HTTP_CODE);  
+    curl_close($ch);  
+    return ($c === 200 && $b) ? $b : null;  
+}  
+
+function jEnc($d) {  
+    $r = json_encode($d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);  
+    return $r ?: json_encode(['error' => 'encode fail']);  
+}  
+
+function blk_item($id, $src, $cat) {  
+    if (!is_array($src)) return null;  
+    $t  = $src['TMDB_DATA'] ?? [];  
+    $im = $src['IMAGES'] ?? [];  
+    $seasons = [];  
+    if (!empty($src['seasons']) && is_array($src['seasons'])) {  
+        foreach ($src['seasons'] as $num => $sd) {  
+            $eps = is_array($sd) ? (int)($sd['totalEpisodes'] ?? 0) : 0;  
+            $numStr = (string)$num;  
+            $n = (int) preg_replace('/\D/', '', $numStr);  
+            if ($n === 0 && is_numeric($numStr)) $n = (int)$numStr;  
+            $seasons[] = ['key' => $numStr, 'sortKey' => $n, 'eps' => $eps];  
+        }  
+        usort($seasons, fn($a, $b) => $a['sortKey'] - $b['sortKey']);  
+    }  
+    $type = $src['type'] ?? '';  
+    if (stripos($cat, 'hentai') !== false) return null;  
+    $isMovie = strtolower($cat) === 'movies' || strtolower($type) === 'movie';  
+
+    $idSafe = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$id);  
+    if ($idSafe === '') return null;  
+    $realTmdbId = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)($src['tmdbId'] ?? $src['originalTmdbId'] ?? $id));  
+    if ($realTmdbId === '') return null;  
+
+    $c = !empty($src['createdAt']) ? (int)strtotime($src['createdAt']) : 0;  
+    $u = !empty($src['updatedAt']) ? (int)strtotime($src['updatedAt']) : 0;  
+    $latest = max($c, $u);  
+
+    $outSeasons = [];  
+    if ($isMovie) {  
+        $outSeasons[] = ['number' => 1, 'key' => '1', 'count' => 1];  
+    } else {  
+        foreach ($seasons as $i => $s) {  
+            if ($s['eps'] < 1) continue;  
+            $outSeasons[] = ['number' => $s['sortKey'] ?: ($i + 1), 'key' => $s['key'], 'count' => $s['eps']];  
+        }  
+        if (!$outSeasons) return null;  
+    }  
+
+    return [  
+        'slug'     => 'blk-' . $idSafe,  
+        'title'    => $src['title'] ?? 'Untitled',  
+        'poster'   => $im['poster'] ?? '',  
+        'banner'   => $im['backdrop'] ?? '',  
+        'category' => $isMovie ? 'movie' : 'anime',  
+        'rating'   => round((float)($t['vote_average'] ?? $t['voteAverage'] ?? $t['rating'] ?? 0), 1),  
+        'added_at' => $latest ? gmdate('c', $latest) : '',  
+        'blk'      => $realTmdbId,  
+        'seasons'  => $outSeasons,  
+    ];  
+}  
+
+function blk_scan($raw, $cb) {  
+    $n = strlen($raw); $i = 0; $d = 0; $isObj = []; $key = []; $idx = []; $start = 0;  
+    while ($i < $n) {  
+        $i += strcspn($raw, '"{}[]', $i);  
+        if ($i >= $n) break;  
+        $c = $raw[$i];  
+        if ($c === '"') {  
+            $j = $i + 1;  
+            while (true) {  
+                $j += strcspn($raw, '"\\', $j);  
+                if ($j >= $n) return;  
+                if ($raw[$j] === '\\') { $j += 2; continue; }  
+                break;  
+            }  
+            if ($d >= 1 && $d <= 3 && !empty($isObj[$d])) {  
+                $k = $j + 1;  
+                while ($k < $n && ctype_space($raw[$k])) $k++;  
+                if ($k < $n && $raw[$k] === ':') $key[$d] = json_decode(substr($raw, $i, $j - $i + 1));  
+            }  
+            $i = $j + 1;  
+            continue;  
+        }  
+        if ($c === '{' || $c === '[') {  
+            if ($d >= 1 && empty($isObj[$d]) && $d <= 3) $key[$d] = $idx[$d]++;  
+            $d++;  
+            $isObj[$d] = ($c === '{'); $idx[$d] = 0;  
+            if ($d === 4) $start = $i;  
+        } else {  
+            if ($d === 4) {  
+                $item = json_decode(substr($raw, $start, $i - $start + 1), true);  
+                if (is_array($item) && ($key[1] ?? '') === 'data') $cb($key[3] ?? '', $item, (string)($key[2] ?? ''));  
+            }  
+            $d--;  
+        }  
+        $i++;  
+    }  
+}  
+
+function blk_catalog($existing) {  
+    global $BK_API, $BK_FILE, $BK_TTL;  
+    $list = null;  
+    if (is_file($BK_FILE) && (time() - filemtime($BK_FILE)) < $BK_TTL) {  
+        $list = json_decode((string)@file_get_contents($BK_FILE), true);  
+    }  
+    if (!is_array($list)) {  
+        $raw = null;  
+        for ($__try = 0; $__try < 3; $__try++) {  
+            $raw = cGet($BK_API, 40);  
+            if ($raw) break;  
+            if ($__try < 2) sleep($__try + 1);  
+        }  
+        $list = [];  
+        if ($raw) {  
+            $scanned = 0;  
+            blk_scan($raw, function($id, $src, $cat) use (&$list, &$scanned) {  
+                $scanned++;  
+                $it = blk_item($id, $src, $cat);  
+                if ($it) $list[] = $it;  
+            });  
+            @error_log('[Blk] raw=' . strlen($raw) . ' scanned=' . $scanned . ' added=' . count($list));  
+        } else {  
+            @error_log('[Blk] API fetch failed: ' . $BK_API);  
+        }  
+        unset($raw);  
+        if ($list) {  
+            @file_put_contents($BK_FILE, json_encode($list, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE), LOCK_EX);  
+        } elseif (is_file($BK_FILE)) {  
+            $list = json_decode((string)@file_get_contents($BK_FILE), true);  
+            @touch($BK_FILE);  
+        } else {  
+            $list = null;  
+        }  
+    }  
+    if (!is_array($list)) return [];  
+    $have = [];  
+    foreach ($existing as $a) {  
+        if (!is_array($a) || empty($a['title'])) continue;  
+        $k = ($a['category'] ?? '') === 'movie' ? 'movie' : ((($a['category'] ?? '') === 'hentai') ? 'hentai' : 'anime');  
+        $have[$k . '|' . strtolower(trim((string)$a['title']))] = 1;  
+    }  
+    return array_values(array_filter($list, fn($x) => empty($have[$x['category'] . '|' . strtolower(trim((string)$x['title']))])));  
+}  
+
+/* ============ FIREBASE ============ */  
+/* Ab sirf ek Firebase: project-540142752653961937. Purana move-tok DB (env me bhi ho to) ignore hota hai. */
+$__fbu = trim((string)getenv('FB_DB_URL'));  
+$__old = ($__fbu !== '' && stripos($__fbu, 'move-tok-default') !== false);  
+$FB_URL    = rtrim(($__fbu !== '' && !$__old) ? $__fbu : 'https://project-540142752653961937-default-rtdb.firebaseio.com', '/');  
+$FB_SECRET = $__old ? '' : (getenv('FB_DB_SECRET') ?: '');  
+$FB_SA     = $__old ? '' : (getenv('FB_SERVICE_ACCOUNT') ?: '');  
+function vote_key($k) { return substr(md5(strtolower(trim((string)$k))), 0, 16); }  
+function b64u($s) { return rtrim(strtr(base64_encode($s), '+/', '-_'), '='); }  
+function fb_token() {  
+    global $FB_SA, $FB_SECRET;  
+    if ($FB_SA) {  
+        $f = sys_get_temp_dir() . '/mt.fbtok.json';  
+        if (is_file($f)) {  
+            $c = json_decode((string)@file_get_contents($f), true);  
+            if (!empty($c['t']) && ($c['e'] ?? 0) > time() + 60) return ['access_token', $c['t']];  
+        }  
+        $sa = json_decode($FB_SA, true);  
+        if (!is_array($sa) || empty($sa['private_key']) || empty($sa['client_email'])) return null;  
+        $now = time();  
+        $h = b64u(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));  
+        $p = b64u(json_encode(['iss' => $sa['client_email'], 'scope' => 'https://www.googleapis.com/auth/firebase.database https://www.googleapis.com/auth/userinfo.email', 'aud' => 'https://oauth2.googleapis.com/token', 'iat' => $now, 'exp' => $now + 3600]));  
+        if (!function_exists('openssl_sign') || !openssl_sign("$h.$p", $sig, $sa['private_key'], OPENSSL_ALGO_SHA256)) return null;  
+        $ch = curl_init('https://oauth2.googleapis.com/token');  
+        curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 8, CURLOPT_CONNECTTIMEOUT => 4,  
+            CURLOPT_POSTFIELDS => http_build_query(['grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer', 'assertion' => "$h.$p." . b64u($sig)])]);  
+        $out = curl_exec($ch); curl_close($ch);  
+        $j = $out ? json_decode($out, true) : null;  
+        if (empty($j['access_token'])) return null;  
+        @file_put_contents($f, json_encode(['t' => $j['access_token'], 'e' => $now + (int)($j['expires_in'] ?? 3000)]), LOCK_EX);  
+        return ['access_token', $j['access_token']];  
+    }  
+    if ($FB_SECRET) return ['auth', $FB_SECRET];  
+    return ['no_auth', '']; // Fallback if DB is open
+}  
+function fb($method, $path, $q = [], $body = null) {  
+    global $FB_URL;  
+    $t = fb_token();  
+    if (!$t) return ['ok' => false, 'd' => null, 'err' => 'setup'];  
+    if ($t[0] !== 'no_auth') {
+        $q[$t[0]] = $t[1];  
+    }
+    $ch = curl_init($FB_URL . '/' . $path . '.json?' . http_build_query($q));  
+    $o = [CURLOPT_CUSTOMREQUEST => $method, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 6, CURLOPT_CONNECTTIMEOUT => 4,  
+          CURLOPT_HTTPHEADER => ['Content-Type: application/json']];  
+    if ($body !== null) $o[CURLOPT_POSTFIELDS] = json_encode($body, JSON_UNESCAPED_UNICODE);  
+    curl_setopt_array($ch, $o);  
+    $out = curl_exec($ch); $code = curl_getinfo($ch, CURLINFO_HTTP_CODE); curl_close($ch);  
+    if ($out === false || $code < 200 || $code >= 300) return ['ok' => false, 'd' => null, 'err' => 'http' . $code];  
+    return ['ok' => true, 'd' => json_decode($out, true)];  
+}  
+function votes_load() {  
+    $f = sys_get_temp_dir() . '/mt.votes.cache.json';  
+    if (is_file($f) && time() - filemtime($f) < 20) {  
+        $c = json_decode((string)@file_get_contents($f), true);  
+        if (is_array($c)) return $c;  
+    }  
+    $r = fb('GET', 'votes');  
+    $out = [];  
+    if ($r['ok'] && is_array($r['d'])) foreach ($r['d'] as $k => $e) if (is_array($e)) $out[$k] = ['l' => max(0, (int)($e['l'] ?? 0)), 'd' => max(0, (int)($e['d'] ?? 0))];  
+    if ($r['ok']) @file_put_contents($f, json_encode($out), LOCK_EX);  
+    return $out;  
+}  
+function rate_ok($tag, $sec) {  
+    $ip = trim(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'] ?? ($_SERVER['REMOTE_ADDR'] ?? 'x'))[0]);  
+    $f = sys_get_temp_dir() . '/mt.rl.' . $tag . '.' . md5($ip);  
+    if (is_file($f) && time() - filemtime($f) < $sec) return false;  
+    @touch($f);  
+    return true;  
+}  
+function clean_txt($s, $max) {  
+    $s = (string)$s;  
+    if (function_exists('iconv')) { $x = @iconv('UTF-8', 'UTF-8//IGNORE', $s); if ($x !== false) $s = $x; }  
+    $s = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $s);  
+    $s = trim($s);  
+    return function_exists('mb_substr') ? mb_substr($s, 0, $max, 'UTF-8') : substr($s, 0, $max);  
+}  
+
+$__a0 = $_GET['action'] ?? '';  
+if (in_array($__a0, ['votes', 'vote', 'cm', 'cm_add'], true)) {  
+    header('Content-Type: application/json; charset=utf-8');  
+    $isPost = ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST';  
+    $host = strtolower(explode(':', $_SERVER['HTTP_HOST'] ?? '')[0]);  
+    $sfs  = $_SERVER['HTTP_SEC_FETCH_SITE'] ?? '';  
+    $orig = $_SERVER['HTTP_ORIGIN'] ?? ($_SERVER['HTTP_REFERER'] ?? '');  
+    $oh   = ($orig !== '' && $orig !== 'null') ? strtolower((string)parse_url($orig, PHP_URL_HOST)) : '';  
+    $same = $sfs !== '' ? ($sfs === 'same-origin') : ($isPost ? ($oh !== '' && $oh === $host) : ($oh === '' || $oh === $host));  
+    if (!$same) { http_response_code(403); echo jEnc(['ok' => false, 'error' => 'forbidden']); exit; }  
+    
+    if ($__a0 === 'votes' || $__a0 === 'vote') {
+        $k = preg_replace('/[^a-zA-Z0-9]/', '', (string)($_REQUEST['k'] ?? ''));  
+        if ($k === '' || strlen($k) > 40) { echo jEnc(['ok' => false, 'error' => 'bad key']); exit; }  
+        if ($__a0 === 'vote') {  
+            if (!$isPost) { echo jEnc(['ok' => false]); exit; }  
+            $okv = ['like', 'dislike', 'none'];  
+            $v = in_array($_POST['v'] ?? '', $okv, true) ? $_POST['v'] : 'none';  
+            $p = in_array($_POST['p'] ?? '', $okv, true) ? $_POST['p'] : 'none';  
+            $dl = ($v === 'like' ? 1 : 0) - ($p === 'like' ? 1 : 0);  
+            $dd = ($v === 'dislike' ? 1 : 0) - ($p === 'dislike' ? 1 : 0);  
+            if ($dl || $dd) {  
+                $b = [];  
+                if ($dl) $b['l'] = ['.sv' => ['increment' => $dl]];  
+                if ($dd) $b['d'] = ['.sv' => ['increment' => $dd]];  
+                fb('PATCH', 'votes/' . $k, [], $b);  
+            }  
+        }  
+        $r = fb('GET', 'votes/' . $k);  
+        if (!$r['ok']) { echo jEnc(['ok' => false, 'error' => 'server']); exit; }  
+        $e = is_array($r['d']) ? $r['d'] : [];  
+        echo jEnc(['ok' => true, 'l' => max(0, (int)($e['l'] ?? 0)), 'd' => max(0, (int)($e['d'] ?? 0))]);  
+        exit;  
+    }  
+    if ($__a0 === 'cm') {  
+        $k = preg_replace('/[^a-zA-Z0-9]/', '', (string)($_REQUEST['k'] ?? ''));  
+        if ($k === '' || strlen($k) > 40) { echo jEnc(['ok' => false, 'error' => 'bad key']); exit; }  
+        $r = fb('GET', 'comments/' . $k, ['orderBy' => '"$key"', 'limitToLast' => 100]);  
+        if (!$r['ok']) { echo jEnc(['ok' => false, 'error' => 'server']); exit; }  
+        $d = is_array($r['d']) ? $r['d'] : [];  
+        ksort($d);  
+        $items = [];  
+        foreach (array_reverse($d, true) as $c) {  
+            if (is_array($c) && !empty($c['t'])) $items[] = ['n' => clean_txt($c['n'] ?? 'User', 30), 't' => clean_txt($c['t'], 500), 'ts' => (int)($c['ts'] ?? 0)];  
+        }  
+        echo jEnc(['ok' => true, 'items' => $items]);  
+        exit;  
+    }  
+    if ($__a0 === 'cm_add') {  
+        $k = preg_replace('/[^a-zA-Z0-9]/', '', (string)($_REQUEST['k'] ?? ''));  
+        if ($k === '' || strlen($k) > 40) { echo jEnc(['ok' => false, 'error' => 'bad key']); exit; }  
+        if (!$isPost) { echo jEnc(['ok' => false]); exit; }  
+        $n = clean_txt($_POST['n'] ?? '', 30);  
+        $t = clean_txt($_POST['t'] ?? '', 500);  
+        if ($n === '') { echo jEnc(['ok' => false, 'error' => 'Pehle apna naam likho.']); exit; }  
+        if ($t === '') { echo jEnc(['ok' => false, 'error' => 'Comment likho.']); exit; }  
+        if (!rate_ok('cm', 5)) { echo jEnc(['ok' => false, 'error' => 'Thoda ruko, 5 second baad dobara comment karo.']); exit; }  
+        $r = fb('POST', 'comments/' . $k, [], ['n' => $n, 't' => $t, 'ts' => ['.sv' => 'timestamp']]);  
+        echo jEnc($r['ok'] ? ['ok' => true] : ['ok' => false, 'error' => 'Comment post nahi hua.']);  
+        exit;  
+    }  
+}  
+
+/* ============ ADMIN SERVER API + PUBLIC DATA API ============ */
+function api_cors() {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Headers: Authorization, X-Admin-Token, X-API-Key, Content-Type');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+}
+function gh_admin_ok() {
+    global $GH_OWNER, $GH_REPO;
+    $tok = '';
+    $h = $_SERVER['HTTP_AUTHORIZATION'] ?? ($_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '');
+    if (stripos($h, 'Bearer ') === 0) $tok = trim(substr($h, 7));
+    if ($tok === '') $tok = trim($_SERVER['HTTP_X_ADMIN_TOKEN'] ?? '');
+    if ($tok === '' || strlen($tok) > 300) return false;
+    $f = sys_get_temp_dir() . '/mt.adm.' . hash('sha256', $tok . '|' . $GH_OWNER . '|' . $GH_REPO);
+    if (is_file($f) && time() - filemtime($f) < 300) return true;
+    $ch = curl_init('https://api.github.com/repos/' . rawurlencode($GH_OWNER) . '/' . rawurlencode($GH_REPO));
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 8, CURLOPT_CONNECTTIMEOUT => 4,
+        CURLOPT_HTTPHEADER => ['User-Agent: MoveTok-Admin', 'Accept: application/vnd.github+json', 'Authorization: Bearer ' . $tok]]);
+    $out = curl_exec($ch); $code = curl_getinfo($ch, CURLINFO_HTTP_CODE); curl_close($ch);
+    if ($out === false || $code !== 200) return false;
+    $j = json_decode($out, true);
+    if (empty($j['permissions']['push'])) return false;
+    @file_put_contents($f, '1', LOCK_EX);
+    return true;
+}
+function api_gh_raw($p) {
+    global $GH_OWNER, $GH_REPO, $GH_BRANCH, $GH_TOKEN;
+    $url = 'https://raw.githubusercontent.com/' . rawurlencode($GH_OWNER) . '/' . rawurlencode($GH_REPO) . '/' . rawurlencode($GH_BRANCH) . '/' . $p . '?nocache=' . time();
+    return fetch_catalog($url, $GH_TOKEN);
+}
+function api_keys_load() {
+    $raw = api_gh_raw('data/api_keys.json');
+    if ($raw === null) return null;
+    $j = json_decode($raw, true);
+    return (is_array($j) && isset($j['keys']) && is_array($j['keys'])) ? $j['keys'] : [];
+}
+function api_catalog($only, $slug) {
+    $tp = ['anime' => 'Anime', 'movie' => 'Movie', 'hentai' => 'Hentai'];
+    $out = [];
+    foreach ($tp as $cat => $label) {
+        if ($only !== '' && $only !== $cat) continue;
+        $raw = api_gh_raw('data/' . $cat . '.json');
+        $parsed = $raw ? json_decode($raw, true) : null;
+        $list = (is_array($parsed) && isset($parsed['anime']) && is_array($parsed['anime'])) ? $parsed['anime'] : (is_array($parsed) ? $parsed : []);
+        $items = [];
+        foreach ($list as $it) {
+            if (!is_array($it) || empty($it['title'])) continue;
+            if (strpos((string)($it['slug'] ?? ''), 'hidden-') === 0) continue;
+            if ($slug !== '' && ($it['slug'] ?? '') !== $slug) continue;
+            $it['vk'] = vote_key($label . '|' . trim((string)$it['title']));
+            $items[] = $it;
+        }
+        $out[$cat] = $items;
+    }
+    return $out;
+}
+
+$__a1 = $_GET['action'] ?? '';
+if ($__a1 === 'adm_fb') {
+    header('Content-Type: application/json; charset=utf-8'); header('Cache-Control: no-store'); api_cors();
+    if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') { http_response_code(204); exit; }
+    if (!gh_admin_ok()) { http_response_code(401); echo jEnc(['ok' => false, 'error' => 'Admin token galat hai ya repo par write access nahi (HTTP 401)']); exit; }
+    $in = json_decode((string)file_get_contents('php://input'), true);
+    if (!is_array($in)) $in = [];
+    $p = trim((string)($in['p'] ?? ''), '/');
+    if (!preg_match('#^(votes|comments|stats)(/[A-Za-z0-9_-]+){0,3}$#', $p)) { echo jEnc(['ok' => false, 'error' => 'bad path']); exit; }
+    $m = (($in['m'] ?? 'GET') === 'DELETE') ? 'DELETE' : 'GET';
+    $q = [];
+    if (!empty($in['sh'])) $q['shallow'] = 'true';
+    $r = fb($m, $p, $q);
+    echo jEnc($r['ok'] ? ['ok' => true, 'd' => $r['d']] : ['ok' => false, 'error' => 'Firebase ' . ($r['err'] ?? 'error') . ' (project-540142752653961937 ke Realtime Database Rules me votes/comments allow karo, ya Vercel env FB_DB_SECRET set karo)']);
+    exit;
+}
+if ($__a1 === 'api') {
+    header('Content-Type: application/json; charset=utf-8'); header('Cache-Control: no-store'); api_cors();
+    if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') { http_response_code(204); exit; }
+    $key = trim((string)($_GET['key'] ?? ($_SERVER['HTTP_X_API_KEY'] ?? '')));
+    if ($key === '') { $h = $_SERVER['HTTP_AUTHORIZATION'] ?? ''; if (stripos($h, 'Bearer ') === 0) $key = trim(substr($h, 7)); }
+    if ($key === '' || strlen($key) > 80) { http_response_code(401); echo jEnc(['ok' => false, 'error' => 'API key chahiye: ?key=YOUR_KEY']); exit; }
+    $keys = api_keys_load();
+    if ($keys === null) { http_response_code(503); echo jEnc(['ok' => false, 'error' => 'Key list abhi load nahi hui, thodi der baad try karo']); exit; }
+    $hh = hash('sha256', $key); $found = null;
+    foreach ($keys as $kk) { if (is_array($kk) && isset($kk['h']) && hash_equals((string)$kk['h'], $hh)) { $found = $kk; break; } }
+    if (!$found) { http_response_code(401); echo jEnc(['ok' => false, 'error' => 'API key galat hai']); exit; }
+    if (!empty($found['off'])) { http_response_code(403); echo jEnc(['ok' => false, 'error' => 'Ye API key disable kar di gayi hai']); exit; }
+    if (!empty($found['exp']) && strtotime((string)$found['exp']) < time()) { http_response_code(403); echo jEnc(['ok' => false, 'error' => 'Ye API key expire ho chuki hai']); exit; }
+    if (!rate_ok('api' . substr($hh, 0, 8), 1)) { http_response_code(429); echo jEnc(['ok' => false, 'error' => 'Bahut tez requests, 1 second ruko']); exit; }
+    $type = preg_replace('/[^a-z]/', '', strtolower((string)($_GET['type'] ?? 'all')));
+    if (!in_array($type, ['all', 'catalog', 'comments', 'votes', 'analytics', 'users'], true)) { http_response_code(400); echo jEnc(['ok' => false, 'error' => 'type: all, catalog, comments, votes, analytics, users']); exit; }
+    $cat = preg_replace('/[^a-z]/', '', strtolower((string)($_GET['cat'] ?? '')));
+    $slug = preg_replace('/[^A-Za-z0-9_\-]/', '', (string)($_GET['slug'] ?? ''));
+    $data = []; $errs = [];
+    if ($type === 'all' || $type === 'catalog') $data['catalog'] = api_catalog($cat, $slug);
+    if ($type === 'all' || $type === 'comments') {
+        $r = fb('GET', 'comments');
+        if ($r['ok']) {
+            $cm = [];
+            foreach ((is_array($r['d']) ? $r['d'] : []) as $vk => $list) {
+                if (!is_array($list)) continue;
+                foreach ($list as $c) if (is_array($c) && !empty($c['t'])) $cm[$vk][] = ['n' => clean_txt($c['n'] ?? 'User', 30), 't' => clean_txt($c['t'], 500), 'ts' => (int)($c['ts'] ?? 0)];
+            }
+            $data['comments'] = $cm;
+        } else $errs[] = 'comments: ' . ($r['err'] ?? 'error');
+    }
+    if ($type === 'all' || $type === 'votes') {
+        $r = fb('GET', 'votes');
+        if ($r['ok']) $data['votes'] = is_array($r['d']) ? $r['d'] : []; else $errs[] = 'votes: ' . ($r['err'] ?? 'error');
+    }
+    if ($type === 'all' || $type === 'analytics') {
+        $an = [];
+        foreach (['days', 'watch', 'os', 'br', 'ref', 'clk'] as $n) {
+            $r = fb('GET', 'track/' . $n);
+            if ($r['ok']) $an[$n] = is_array($r['d']) ? $r['d'] : []; else $errs[] = 'analytics/' . $n . ': ' . ($r['err'] ?? 'error');
+        }
+        $data['analytics'] = $an;
+    }
+    if ($type === 'users') {
+        $r = fb('GET', 'track/users');
+        if ($r['ok']) $data['users'] = is_array($r['d']) ? $r['d'] : []; else $errs[] = 'users: ' . ($r['err'] ?? 'error');
+    }
+    $res = ['ok' => true, 'time' => gmdate('c'), 'key' => ['name' => (string)($found['name'] ?? ''), 'expires' => $found['exp'] ?? null], 'data' => $data];
+    if ($errs) $res['warnings'] = $errs;
+    echo jEnc($res);
+    exit;
+}
+
+/* ============ PROXY ============ */  
+$__act = $_GET['action'] ?? '';  
+if ($__act === 'proxy') {  
+    $url = $_GET['url'] ?? '';  
+    if (!$url) { http_response_code(403); exit('forbidden'); }  
+    if (!preg_match('#^https?://#i', $url)) { http_response_code(403); exit('forbidden'); }  
+    $phost = parse_url($url, PHP_URL_HOST);  
+    if (!$phost || !preg_match('/(^|\.)rumble\.(cloud|com)$/i', $phost)) { http_response_code(403); exit('forbidden'); }  
+    while (ob_get_level()) ob_end_clean();  
+    $sendH = [  
+        'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36',  
+        'Referer: https://blakiteapi.xyz/',  
+        'Origin: https://blakiteapi.xyz',  
+    ];  
+    if (!empty($_SERVER['HTTP_RANGE'])) $sendH[] = 'Range: ' . $_SERVER['HTTP_RANGE'];  
+    header('Access-Control-Allow-Origin: *');  
+    header('Accept-Ranges: bytes');  
+    $ch = curl_init($url);  
+    curl_setopt_array($ch, [  
+        CURLOPT_FOLLOWLOCATION => true,  
+        CURLOPT_MAXREDIRS => 3,  
+        CURLOPT_SSL_VERIFYPEER => false,  
+        CURLOPT_SSL_VERIFYHOST => false,  
+        CURLOPT_TIMEOUT => 0,  
+        CURLOPT_CONNECTTIMEOUT => 10,  
+        CURLOPT_HTTPHEADER => $sendH,  
+        CURLOPT_HEADERFUNCTION => function($ch, $h) {  
+            $len = strlen($h);  
+            $t = trim($h);  
+            if ($t === '' || stripos($t, 'HTTP/') === 0) return $len;  
+            $parts = explode(':', $t, 2);  
+            if (count($parts) === 2) {  
+                $n = strtolower(trim($parts[0]));  
+                $v = trim($parts[1]);  
+                if (in_array($n, ['content-type','content-length','content-range','accept-ranges'])) {  
+                    header($parts[0] . ': ' . $v);  
+                }  
+            }  
+            return $len;  
+        },  
+        CURLOPT_WRITEFUNCTION => function($ch, $data) {  
+            echo $data;  
+            flush();  
+            return strlen($data);  
+        },  
+    ]);  
+    if (defined('CURLOPT_REDIR_PROTOCOLS') && defined('CURLPROTO_HTTP')) {  
+        curl_setopt($ch, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);  
+    }  
+    curl_exec($ch);  
+    curl_close($ch);  
+    exit;  
+}  
+
+/* ============ STREAM ============ */  
+if ($__act === 'stream') {  
+    header('Content-Type: application/json; charset=utf-8');  
+    $tmdbId   = preg_replace('/[^a-zA-Z0-9_\-]/', '', $_GET['tmdbId'] ?? '');  
+    $uniqueId = preg_replace('/[^a-zA-Z0-9_\-]/', '', $_GET['uniqueId'] ?? '');  
+    $isMovie  = empty($uniqueId);  
+    if (!$tmdbId) { echo jEnc(['ok'=>false, 'error'=>'no tmdbId']); exit; }  
+
+    $variants = array_values(array_unique(array_filter([  
+        $tmdbId,  
+        ltrim($tmdbId, '0'),  
+        str_pad(ltrim($tmdbId, '0'), 6, '0', STR_PAD_LEFT),  
+        str_pad(ltrim($tmdbId, '0'), 7, '0', STR_PAD_LEFT),  
+        str_pad(ltrim($tmdbId, '0'), 10, '0', STR_PAD_LEFT),  
+    ])));  
+
+    $uidVariants = $isMovie ? [null] : [$uniqueId];  
+    $apiData = null;  
+    $usedTmdb = $tmdbId;  
+    $usedUid = $uniqueId;  
+    $lastRaw = '';  
+
+    foreach ($variants as $v) {  
+        foreach ($uidVariants as $u) {  
+            $apiUrl = $u  
+                ? "$BK_EMBED/api/get.php?id=" . urlencode($u) . "&tmdbId=" . urlencode($v)  
+                : "$BK_EMBED/api/get.php?tmdbId=" . urlencode($v);  
+            $raw = cGet($apiUrl, 12, "$BK_EMBED/");  
+            $lastRaw = $raw ?: $lastRaw;  
+            if (!$raw) continue;  
+            $j = json_decode($raw, true);  
+            if ($j && !empty($j['data']['dataId'])) {  
+                $apiData = $j['data'];  
+                $usedTmdb = $v;  
+                $usedUid = $u;  
+                break 2;  
+            }  
+        }  
+    }  
+
+    if (!$apiData) {  
+        if ($lastRaw) {  
+            @error_log('[Stream] no data tmdbId=' . $tmdbId . ' uid=' . $uniqueId . ' raw=' . substr($lastRaw, 0, 300));  
+        }  
+        echo jEnc(['ok' => false, 'error' => 'Stream not found']);  
+        exit;  
+    }  
+
+    $dataId = $apiData['dataId'];  
+    $format = strtoupper($apiData['format'] ?? 'M3U8');  
+    $baseDURL = "https://hugh.cdn.rumble.cloud/video/";  
+    $codeMap = ['240p'=>'oaa','360p'=>'baa','480p'=>'caa','720p'=>'gaa','1080p'=>'haa'];  
+    $streams = [];  
+
+    if ($format === 'M3U8') {  
+        $ranges = [];  
+        if (!empty($apiData['ranges'])) {  
+            foreach (explode("\n", $apiData['ranges']) as $line) {  
+                $line = trim($line);  
+                if (preg_match('/(\d+\s*-\s*\d+)\s*\((\d+)\s*p\)/i', $line, $m)) {  
+                    $ranges[(int)$m[2].'p'] = preg_replace('/\s+/', '', $m[1]);  
+                }  
+            }  
+        }  
+        foreach ($codeMap as $label => $code) {  
+            if (!isset($ranges[$label])) continue;  
+            $rng = urlencode($ranges[$label]);  
+            $url = "{$baseDURL}{$dataId}.{$code}.tar?r_file=chunklist.m3u8&r_type=application%2Fvnd.apple.mpegurl&r_range={$rng}";  
+            $streams[] = ['quality'=>$label, 'url'=>$url, 'type'=>'hls'];  
+        }  
+    }  
+
+    if ($format === 'MP4' || empty($streams)) {  
+        $qid = (int)($apiData['qid'] ?? 0);  
+        $count = $qid > 0 ? min($qid, 5) : 4;  
+        $codes = array_slice($codeMap, 0, $count, true);  
+        foreach ($codes as $label => $code) {  
+            $url = "{$baseDURL}{$dataId}.{$code}.mp4";  
+            $streams[] = ['quality'=>$label, 'url'=>$url, 'type'=>'mp4'];  
+        }  
+    }  
+
+    if (empty($streams)) {  
+        echo jEnc(['ok'=>false, 'error'=>'No streams', 'format'=>$format]);  
+        exit;  
+    }  
+
+    usort($streams, fn($a,$b) => (int)$a['quality'] - (int)$b['quality']);  
+    $default = $apiData['quality'] ?? null;  
+    if (!$default || !in_array($default, array_column($streams, 'quality'))) {  
+        $default = $streams[count($streams)-1]['quality'];  
+    }  
+
+    echo jEnc([  
+        'ok' => true,  
+        'title' => $apiData['animeTitle'] ?? '',  
+        'format' => $format,  
+        'streams' => $streams,  
+        'default' => $default,  
+        'poster' => $apiData['poster'] ?? '',  
+        'usedTmdb' => $usedTmdb,  
+        'usedUid' => $usedUid,  
+        'dataId' => $dataId,  
+    ]);  
+    exit;  
+}  
+
+/* ============ ANIMESALT ENGINE (Multi Language Anime) ============ */
+const AS_BASE  = 'https://animesalt.cx';
+const AS_RAVOK = 'https://ravok.buzz';
+const AS_UA    = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36';
+
+function as_self() {
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+    return ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
+}
+
+function as_site_url($u) {
+    $u = trim((string)$u);
+    if (!preg_match('#^https?://#i', $u)) return '';
+    $p  = parse_url($u);
+    $bh = parse_url(AS_BASE, PHP_URL_HOST);
+    $hh = isset($p['host']) ? strtolower($p['host']) : '';
+    return ($hh === $bh || $hh === 'www.' . $bh) ? $u : '';
+}
+
+function as_abs($href) {
+    $href = trim((string)$href);
+    if ($href === '') return '';
+    if (strpos($href, '//') === 0) return 'https:' . $href;
+    if (preg_match('#^https?://#i', $href)) return $href;
+    return AS_BASE . '/' . ltrim($href, '/');
+}
+
+function as_http($url, $extraHeaders = array()) {
+    if (!function_exists('curl_init')) return array('body' => '', 'code' => 0);
+    $ch = curl_init($url);
+    curl_setopt_array($ch, array(
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_ENCODING       => '',
+        CURLOPT_TIMEOUT        => 10,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_USERAGENT      => AS_UA,
+        CURLOPT_HTTPHEADER     => array_merge(array('Accept-Language: en-US,en;q=0.9'), $extraHeaders),
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+    ));
+    $body = curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return array('body' => $body ? $body : '', 'code' => $code);
+}
+
+function as_resolve($u, $base_url) {
+    if (preg_match('#^https?://#i', $u)) return $u;
+    if (strpos($u, '//') === 0) return 'https:' . $u;
+    if ($u !== '' && $u[0] === '/') return AS_RAVOK . $u;
+    return $base_url . $u;
+}
+
+function as_ravok_id($src) {
+    if (!$src) return '';
+    if (preg_match('#[?&]data=([A-Za-z0-9]+)#', $src, $m)) return $m[1];
+    if (preg_match('#ravok[^/]*/(?:[A-Za-z_]+/)*([A-Za-z0-9]{16,})#i', $src, $m)) return $m[1];
+    return '';
+}
+
+function as_safe_target($url) {
+    $p = parse_url($url);
+    if (!$p || empty($p['host']) || !in_array(strtolower(isset($p['scheme']) ? $p['scheme'] : ''), array('http', 'https'))) return false;
+    $ip = filter_var($p['host'], FILTER_VALIDATE_IP) ? $p['host'] : gethostbyname($p['host']);
+    if (!filter_var($ip, FILTER_VALIDATE_IP)) return true;
+    return (bool)filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+}
+
+function as_ravok_source($video_id) {
+    $video_id = preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$video_id);
+    if ($video_id === '') return '';
+    $ch = curl_init(AS_RAVOK . "/player/index.php?data=$video_id&do=getVideo");
+    curl_setopt_array($ch, array(
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => http_build_query(array('hash' => $video_id, 'r' => AS_BASE . '/')),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => 0,
+        CURLOPT_TIMEOUT        => 12,
+        CURLOPT_ENCODING       => '',
+        CURLOPT_HTTPHEADER     => array(
+            'Accept: application/json, text/javascript, */*; q=0.01',
+            'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With: XMLHttpRequest',
+            'Referer: ' . AS_RAVOK . "/video/$video_id",
+            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0',
+        ),
+    ));
+    $body = curl_exec($ch);
+    curl_close($ch);
+    if ($body === false) return '';
+    $j = json_decode($body, true);
+    return (is_array($j) && isset($j['videoSource'])) ? (string)$j['videoSource'] : '';
+}
+
+function as_cards($html) {
+    $items = []; $seen = [];
+    preg_match_all('/<article[^>]*>(.*?)<\/article>/is', $html, $matches);
+    foreach ($matches[1] as $block) {
+        $title = ''; $thumb = ''; $link = '';
+        if (preg_match('/href="([^"]+)"/i', $block, $m)) $link = as_abs($m[1]);
+        if (!$link || !preg_match('#/(series|movies)/#i', $link) || !as_site_url($link)) continue;
+        if (preg_match('/<h[23][^>]*>(.*?)<\/h[23]>/is', $block, $m)) $title = trim(strip_tags($m[1]));
+        if (empty($title) || strpos($title, '${') !== false || strpos($title, '{item.') !== false) {
+            if (preg_match('/alt="([^"]+)"/i', $block, $m)) $title = trim($m[1]);
+        }
+        if (empty($title) || strpos($title, '${') !== false || strpos($title, '{item.') !== false) continue;
+        if (preg_match('/data-src="([^"]+)"/i', $block, $m)) {
+            $thumb = as_abs($m[1]);
+        } elseif (preg_match('/src="([^"]+)"/i', $block, $m) && strpos($m[1], 'data:image') === false) {
+            $thumb = as_abs($m[1]);
+        }
+        if (isset($seen[$link])) continue;
+        $seen[$link] = true;
+        $items[] = ['title' => $title, 'thumb' => $thumb, 'link' => $link];
+    }
+    return $items;
+}
+
+function as_home($page) {
+    $res = as_http(AS_BASE . ($page > 1 ? "/page/{$page}/" : '/'));
+    if ($res['code'] !== 200) return ['ok' => false, 'error' => 'Homepage load nahi ho paya'];
+    return ['ok' => true, 'items' => as_cards($res['body'])];
+}
+
+function as_search($q, $page) {
+    $res = as_http(AS_BASE . ($page > 1 ? "/page/{$page}/" : '/') . '?s=' . urlencode($q));
+    if ($res['code'] !== 200) return ['ok' => false, 'error' => 'Search fail'];
+    return ['ok' => true, 'items' => as_cards($res['body'])];
+}
+
+function as_series($url) {
+    $res = as_http($url);
+    if ($res['code'] !== 200) return ['ok' => false, 'error' => 'Page load nahi hua (HTTP ' . $res['code'] . ')'];
+    $raw = $res['body'];
+
+    $title = 'Unknown';
+    if (preg_match('/<h1[^>]*>(.*?)<\/h1>/is', $raw, $m)) $title = trim(strip_tags($m[1]));
+    elseif (preg_match('/<meta property="og:title" content="([^"]+)"/i', $raw, $m)) $title = trim($m[1]);
+
+    $thumb = '';
+    if (preg_match('/(\/\/image\.tmdb\.org\/[^"]+)/i', $raw, $m)) $thumb = 'https:' . $m[1];
+    elseif (preg_match('/<meta property="og:image" content="([^"]+)"/i', $raw, $m)) $thumb = as_abs($m[1]);
+
+    $desc = '';
+    if (preg_match('/<meta property="og:description" content="([^"]+)"/i', $raw, $m)) $desc = trim($m[1]);
+
+    $seasons = []; $seen = [];
+    $post_id = '';
+    if (preg_match('/data-post="(\d+)"/', $raw, $m)) $post_id = $m[1];
+    elseif (preg_match('/postid-(\d+)/', $raw, $m)) $post_id = $m[1];
+
+    $available_seasons = [];
+    if (preg_match_all('/data-season="(\d+)"/', $raw, $m)) $available_seasons = array_unique($m[1]);
+    sort($available_seasons);
+
+    if ($post_id && !empty($available_seasons)) {
+        foreach ($available_seasons as $s_num) {
+            $ajax_url = AS_BASE . '/wp-admin/admin-ajax.php?action=action_select_season&season=' . $s_num . '&post=' . $post_id;
+            $ajax_res = as_http($ajax_url);
+            if ($ajax_res['code'] === 200 && !empty($ajax_res['body'])) {
+                preg_match_all('/href=["\']([^"\']*\/episode\/[^"\']*)["\']/i', $ajax_res['body'], $ep_matches);
+                if (!empty($ep_matches[1])) {
+                    foreach (array_unique($ep_matches[1]) as $link) {
+                        $link = as_abs($link);
+                        if (isset($seen[$link])) continue;
+                        $seen[$link] = true;
+                        $s = (int)$s_num; $e = 0;
+                        if (preg_match('/-(\d+)x(\d+)/i', $link, $m)) { $s = (int)$m[1]; $e = (int)$m[2]; }
+                        if ($e === 0) $e = isset($seasons[$s]) ? count($seasons[$s]) + 1 : 1;
+                        if (!isset($seasons[$s])) $seasons[$s] = [];
+                        $seasons[$s][] = ['ep_num' => $e, 'title' => 'Episode ' . $e, 'link' => $link];
+                    }
+                }
+            }
+        }
+    }
+
+    if (empty($seasons)) {
+        if (strpos($url, '/movies/') !== false) {
+            $seasons[1][] = ['ep_num' => 1, 'title' => 'Full Movie', 'link' => $url];
+        } else {
+            preg_match_all('/href=["\']([^"\']*(?:episode|watch)\/[^"\']*)["\']/i', $raw, $ep_matches);
+            if (!empty($ep_matches[1])) {
+                $seasons[1][] = ['ep_num' => 1, 'title' => 'Full Movie', 'link' => as_abs($ep_matches[1][0])];
+            }
+        }
+    }
+
+    ksort($seasons);
+    $total = 0;
+    foreach ($seasons as $k => $eps) {
+        usort($eps, function ($a, $b) { return $a['ep_num'] - $b['ep_num']; });
+        $seasons[$k] = $eps;
+        $total += count($eps);
+    }
+    return ['ok' => true, 'title' => $title, 'thumb' => $thumb, 'desc' => $desc, 'url' => $url, 'seasons' => $seasons, 'total' => $total];
+}
+
+function as_video($url) {
+    $res = as_http($url);
+    if ($res['code'] !== 200) return ['ok' => false, 'error' => 'Episode page load nahi hua'];
+    $raw = $res['body'];
+    $vid = '';
+    if (preg_match_all('#https?://[^"\'\s<>]*ravok[^"\'\s<>]*#i', str_replace('\\/', '/', $raw), $mm)) {
+        foreach ($mm[0] as $u) { $vid = as_ravok_id($u); if ($vid) break; }
+    }
+    return ['ok' => true, 'vid' => $vid];
+}
+
+/* ---- list (home / search) ---- */
+if ($__act === 'as_list') {
+    header('Content-Type: application/json; charset=utf-8');
+    $pg = max(1, (int)($_GET['page'] ?? 1));
+    $q  = trim((string)($_GET['q'] ?? ''));
+    $r  = $q !== '' ? as_search($q, $pg) : as_home($pg);
+    if (empty($r['ok'])) { echo jEnc(['ok' => false, 'error' => $r['error'] ?? 'fail']); exit; }
+    $items = [];
+    foreach ($r['items'] as $it) {
+        $t = trim(html_entity_decode($it['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        if ($t === '') continue;
+        $items[] = ['title' => $t, 'thumb' => $it['thumb'], 'link' => $it['link'], 'vk' => vote_key('Multi|' . $t)];
+    }
+    echo jEnc(['ok' => true, 'page' => $pg, 'items' => $items]);
+    exit;
+}
+
+/* ---- series / movie: seasons + episodes ---- */
+if ($__act === 'as_series') {
+    header('Content-Type: application/json; charset=utf-8');
+    $u = as_site_url($_GET['url'] ?? '');
+    if (!$u) { echo jEnc(['ok' => false, 'error' => 'bad url']); exit; }
+    $r = as_series($u);
+    if (empty($r['ok'])) { echo jEnc(['ok' => false, 'error' => $r['error'] ?? 'fail']); exit; }
+    $out = [];
+    foreach ($r['seasons'] as $sn => $eps) {
+        $list = [];
+        foreach ($eps as $ep) $list[] = ['e' => (int)$ep['ep_num'], 'link' => $ep['link']];
+        if ($list) $out[] = ['s' => (int)$sn, 'eps' => $list];
+    }
+    echo jEnc(['ok' => true, 'title' => html_entity_decode($r['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), 'thumb' => $r['thumb'], 'desc' => $r['desc'], 'seasons' => $out]);
+    exit;
+}
+
+/* ---- episode -> proxied m3u8 url ---- */
+if ($__act === 'as_stream') {
+    header('Content-Type: application/json; charset=utf-8');
+    $u = as_site_url($_GET['url'] ?? '');
+    if (!$u) { echo jEnc(['ok' => false, 'error' => 'bad url']); exit; }
+    $src = ''; $vid = '';
+    for ($__t = 0; $__t < 3 && $src === ''; $__t++) {
+        if ($__t) usleep(500000);
+        if ($vid === '') { $v = as_video($u); $vid = !empty($v['ok']) && !empty($v['vid']) ? $v['vid'] : ''; }
+        if ($vid !== '') $src = as_ravok_source($vid);
+    }
+    if ($vid === '') { echo jEnc(['ok' => false, 'error' => 'Video id nahi mila']); exit; }
+    if ($src === '') { echo jEnc(['ok' => false, 'error' => 'Video URL nahi mila']); exit; }
+    echo jEnc(['ok' => true, 'url' => as_self() . '?action=as_proxy&url=' . rawurlencode($src) . '&f=.m3u8']);
+    exit;
+}
+
+/* ---- HLS proxy (m3u8 rewrite + segments) ---- */
+if ($__act === 'as_proxy') {
+    $SELF   = as_self();
+    $target = $_GET['url'] ?? '';
+    if ($target === '') { http_response_code(400); exit; }
+    if (!preg_match('#^https?://#i', $target)) {
+        $target = $target[0] === '/' ? AS_RAVOK . $target : AS_RAVOK . '/' . $target;
+    }
+    if (!as_safe_target($target)) { http_response_code(403); exit; }
+
+    while (ob_get_level()) ob_end_clean();
+    @ini_set('zlib.output_compression', '0');
+    set_time_limit(0);
+
+    $isM3u8 = null;
+    $buffer = '';
+    $ctype  = '';
+
+    $ch = curl_init($target);
+    curl_setopt_array($ch, array(
+        CURLOPT_FOLLOWLOCATION  => true,
+        CURLOPT_MAXREDIRS       => 5,
+        CURLOPT_SSL_VERIFYPEER  => false,
+        CURLOPT_SSL_VERIFYHOST  => 0,
+        CURLOPT_TIMEOUT         => 0,
+        CURLOPT_CONNECTTIMEOUT  => 10,
+        CURLOPT_ENCODING        => '',
+        CURLOPT_HTTPHEADER      => array('Referer: ' . AS_RAVOK . '/', 'Origin: ' . AS_RAVOK, 'User-Agent: Mozilla/5.0'),
+        CURLOPT_HEADERFUNCTION  => function ($ch, $hd) use (&$ctype) {
+            if (stripos($hd, 'Content-Type:') === 0) $ctype = strtolower(trim(substr($hd, 13)));
+            return strlen($hd);
+        },
+        CURLOPT_WRITEFUNCTION   => function ($ch, $chunk) use (&$isM3u8, &$buffer, &$ctype, $target) {
+            if ($isM3u8 === null) {
+                $upCode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+                if ($upCode >= 400) {
+                    $isM3u8 = false; http_response_code($upCode);
+                    header('Content-Type: text/plain; charset=utf-8'); echo "Upstream HTTP $upCode\n"; return strlen($chunk);
+                }
+                $isM3u8 = strpos($ctype, 'mpegurl') !== false || strpos($target, '.m3u8') !== false || strncmp(ltrim($chunk), '#EXTM3U', 7) === 0;
+                if (!$isM3u8) { header('Content-Type: video/mp2t'); header('Cache-Control: public, max-age=3600'); header('Access-Control-Allow-Origin: *'); }
+            }
+            if ($isM3u8) { $buffer .= $chunk; } else { echo $chunk; flush(); }
+            return strlen($chunk);
+        },
+    ));
+    curl_exec($ch);
+    $actual = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+    curl_close($ch);
+
+    if ($isM3u8) {
+        $parts    = explode('?', $actual);
+        $base_url = substr($parts[0], 0, strrpos($parts[0], '/') + 1);
+        $out      = array(); $seen = false;
+        foreach (preg_split('/\r\n|\r|\n/', $buffer) as $line) {
+            $line = trim($line);
+            if ($line === '') continue;
+            if ($line === '#EXTM3U') { if (!$seen) { $out[] = $line; $seen = true; } continue; }
+            if ($line === '#') continue;
+            if (strpos($line, 'URI="') !== false) {
+                $s = strpos($line, 'URI="') + 5; $e = strpos($line, '"', $s);
+                $uri = as_resolve(substr($line, $s, $e - $s), $base_url);
+                $line = substr($line, 0, $s) . $SELF . '?action=as_proxy&url=' . rawurlencode($uri) . substr($line, $e);
+            } elseif ($line[0] !== '#') {
+                $line = $SELF . '?action=as_proxy&url=' . rawurlencode(as_resolve($line, $base_url));
+            }
+            $out[] = $line;
+        }
+        header('Content-Type: application/vnd.apple.mpegurl');
+        header('Access-Control-Allow-Origin: *');
+        echo implode("\n", $out);
+    }
+    exit;
+}
+
+/* ============ HOTXV ENGINE (Hentai page) ============ */
+const HX_BASE = 'https://hotxv.com';
+const HX_SEARCH_PATH = '/search/';
+const HX_TAG = 'russian';
+const HX_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+const HX_TTL = 2592000;
+function hx_cache_dir() {
+    static $d = null;
+    if ($d === null) { $d = sys_get_temp_dir() . '/hxv_' . substr(md5(__DIR__), 0, 12); if (!is_dir($d)) @mkdir($d, 0755, true); }
+    return $d;
+}
+
+function hx_http_get(string $url, string $referer = HX_BASE, int $retries = 2): ?string {
+    for ($attempt = 0; $attempt <= $retries; $attempt++) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS      => 5,
+            CURLOPT_TIMEOUT        => 20,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_ENCODING       => '',
+            CURLOPT_USERAGENT      => HX_UA,
+            CURLOPT_HTTPHEADER     => [
+                'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language: en-US,en;q=0.9',
+                "Referer: $referer",
+            ],
+        ]);
+        $html = curl_exec($ch);
+        $code = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        $err  = curl_errno($ch);
+        curl_close($ch);
+
+        if ($html !== false && $err === 0 && $code >= 200 && $code < 400) {
+            return $html;
+        }
+        if ($attempt < $retries) usleep(400000 * ($attempt + 1));
+    }
+    return null;
+}
+
+function hx_cache_get(string $key, int $ttl): ?string {
+    $f = hx_cache_dir() . '/' . md5($key) . '.cache';
+    if (!is_file($f)) return null;
+    $mtime = @filemtime($f);
+    if ($mtime === false) return null;
+    if (time() - $mtime > $ttl) return null;
+    $data = @file_get_contents($f);
+    return $data ?: null;
+}
+function hx_cache_get_stale(string $key): ?string {
+    $f = hx_cache_dir() . '/' . md5($key) . '.cache';
+    if (!is_file($f)) return null;
+    $data = @file_get_contents($f);
+    return $data ?: null;
+}
+function hx_cache_set(string $key, string $data): void {
+    @file_put_contents(hx_cache_dir() . '/' . md5($key) . '.cache', $data, LOCK_EX);
+}
+
+function hx_is_generic_text(string $t): bool {
+    $t = trim($t);
+    if ($t === '' || strlen($t) < 3) return true;
+    $l = strtolower($t);
+    if (preg_match('/^(hd|sd|4k|uhd|new|free|watch|play|view|preview|click|here|video|image|photo|thumbnail|untitled|loading|ad|ads|sponsor|advertisement|hotxv|hot xv|home|menu|close|open|next|prev|previous|more|less)$/', $l)) return true;
+    if (preg_match('/^[\d\s\.\-:\/,%]+$/', $t)) return true;
+    return false;
+}
+
+function hx_extract_title_from_anchor(DOMXPath $xp, DOMNode $a): string {
+    // 1) <img alt="...">
+    foreach ($xp->query('.//img', $a) as $img) {
+        $alt = trim($img->getAttribute('alt'));
+        if (strlen($alt) >= 5 && !hx_is_generic_text($alt)) return $alt;
+        $ti = trim($img->getAttribute('title'));
+        if (strlen($ti) >= 5 && !hx_is_generic_text($ti)) return $ti;
+    }
+    // 2) attributes on the <a> itself
+    foreach (['title','aria-label','data-title','data-name','data-video-title','data-original-title'] as $at) {
+        $v = trim($a->getAttribute($at));
+        if (strlen($v) >= 5 && !hx_is_generic_text($v)) return $v;
+    }
+    // 3) text inside <a>
+    $txt = trim(preg_replace('/\s+/', ' ', $a->textContent));
+    if (strlen($txt) >= 5 && !hx_is_generic_text($txt)) return $txt;
+
+    // 4) title-ish child elements inside <a>
+    $childSels = [
+        './/*[contains(@class,"title")]',
+        './/*[contains(@class,"name")]',
+        './/*[contains(@class,"caption")]',
+        './/*[contains(@class,"desc")]',
+        './/h1','.//h2','.//h3','.//h4','.//h5','.//p','.//span',
+    ];
+    foreach ($childSels as $sel) {
+        $n = $xp->query($sel, $a)->item(0);
+        if (!$n) continue;
+        $t = trim($n->getAttribute('title'));
+        if (strlen($t) < 5 || hx_is_generic_text($t)) $t = trim(preg_replace('/\s+/', ' ', $n->textContent));
+        if (strlen($t) >= 5 && !hx_is_generic_text($t)) return $t;
+    }
+
+    // 5) Walk up parent chain (max 5 levels) — try data attrs, title-ish els, then raw textContent
+    $node = $a->parentNode;
+    for ($depth = 0; $depth < 5 && $node; $depth++, $node = $node->parentNode) {
+        if ($node instanceof DOMElement) {
+            foreach (['data-title','data-name','title','aria-label'] as $at) {
+                $t = trim($node->getAttribute($at));
+                if (strlen($t) >= 5 && !hx_is_generic_text($t)) return $t;
+            }
+        }
+        $parentSels = [
+            './/*[contains(@class,"title")]',
+            './/*[contains(@class,"name")]',
+            './/*[contains(@class,"caption")]',
+            './/*[contains(@class,"desc")]',
+            './/h1','.//h2','.//h3','.//h4',
+        ];
+        foreach ($parentSels as $sel) {
+            foreach ($xp->query($sel, $node) as $n) {
+                $t = trim($n->getAttribute('title'));
+                if (strlen($t) < 5 || hx_is_generic_text($t)) $t = trim(preg_replace('/\s+/', ' ', $n->textContent));
+                if (strlen($t) >= 5 && !hx_is_generic_text($t)) return $t;
+            }
+        }
+        // Last resort at this level: raw text of the wrapper (short enough to be a title)
+        $raw = trim(preg_replace('/\s+/', ' ', $node->textContent));
+        if (strlen($raw) >= 5 && strlen($raw) <= 200 && !hx_is_generic_text($raw)) return $raw;
+    }
+    return '';
+}
+
+function hx_parse_video_listing(string $html): array {
+    $videos = [];
+    try {
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument();
+        @$dom->loadHTML('<?xml encoding="utf-8" ?>' . $html);
+        libxml_clear_errors();
+        $xp = new DOMXPath($dom);
+
+        // Grab BOTH /video- and /v/ style anchors so we don't miss any card
+        $anchors = $xp->query('//a[contains(@href, "/video-") or contains(@href, "/v/")]');
+        if (!$anchors || $anchors->length === 0) return [];
+
+        $byId = [];
+        foreach ($anchors as $a) {
+            $href = $a->getAttribute('href');
+            if (!preg_match('~/(?:video-|v/)([a-z0-9]+)(?:[/?#]|$)~i', $href, $m)) continue;
+            $id = $m[1];
+
+            if (!isset($byId[$id])) {
+                $byId[$id] = [
+                    'id' => $id,
+                    'url' => strpos($href, '/') === 0 ? HX_BASE . $href : $href,
+                    'href_raw' => $href,
+                    'titles' => [],
+                    'thumb' => '',
+                    'node' => $a, // remember first anchor for second-pass walk
+                ];
+            }
+
+            $t = hx_extract_title_from_anchor($xp, $a);
+            if ($t !== '') $byId[$id]['titles'][] = $t;
+
+            if ($byId[$id]['thumb'] === '') {
+                $img = $xp->query('.//img', $a)->item(0)
+                    ?: $xp->query('following-sibling::img[1]', $a)->item(0)
+                    ?: $xp->query('preceding-sibling::img[1]', $a)->item(0);
+                if (!$img && $a->parentNode) {
+                    $img = $xp->query('.//img', $a->parentNode)->item(0);
+                }
+                if ($img) {
+                    foreach (['src','data-src','data-original','data-lazy-src','data-thumb'] as $attr) {
+                        $v = $img->getAttribute($attr);
+                        if ($v && stripos($v, 'data:image') !== 0) { $byId[$id]['thumb'] = $v; break; }
+                    }
+                }
+            }
+        }
+
+        // SECOND PASS: for videos without a strong title, walk up from the anchor node
+        foreach ($byId as &$info) {
+            $best = '';
+            foreach ($info['titles'] as $t) {
+                $t = trim(preg_replace('/\s+/', ' ', $t));
+                if (strlen($t) >= 5 && !hx_is_generic_text($t) && strlen($t) > strlen($best)) $best = $t;
+            }
+            if (strlen($best) >= 8) continue; // good enough already
+
+            $node = $info['node'];
+            for ($depth = 0; $depth < 5 && $node; $depth++, $node = $node->parentNode) {
+                if (!$node instanceof DOMElement) continue;
+                $found = false;
+                foreach (['data-title','data-name','title','aria-label'] as $at) {
+                    $t = trim($node->getAttribute($at));
+                    if (strlen($t) >= 5 && !hx_is_generic_text($t)) { $info['titles'][] = $t; $found = true; break; }
+                }
+                if ($found) break;
+
+                foreach ($xp->query('.//*[contains(@class,"title") or contains(@class,"name") or contains(@class,"caption") or contains(@class,"desc")]', $node) as $n) {
+                    $t = trim($n->getAttribute('title'));
+                    if (strlen($t) < 5 || hx_is_generic_text($t)) $t = trim(preg_replace('/\s+/', ' ', $n->textContent));
+                    if (strlen($t) >= 5 && !hx_is_generic_text($t)) { $info['titles'][] = $t; $found = true; }
+                }
+                if ($found) break;
+
+                $raw = trim(preg_replace('/\s+/', ' ', $node->textContent));
+                if (strlen($raw) >= 5 && strlen($raw) <= 200 && !hx_is_generic_text($raw)) {
+                    $info['titles'][] = $raw; break;
+                }
+            }
+        }
+        unset($info);
+
+        // FINALIZE
+        foreach ($byId as $id => $info) {
+            $title = '';
+            $best = '';
+            foreach ($info['titles'] as $t) {
+                $t = trim(preg_replace('/\s+/', ' ', $t));
+                if (strlen($t) >= 5 && !hx_is_generic_text($t) && strlen($t) > strlen($best)) $best = $t;
+            }
+            $title = $best;
+
+            // Slug fallback from URL: /video-abc/some-title-here/ → "Some Title Here"
+            if ($title === '' && preg_match('~/(?:video-|v/)[a-z0-9]+/([^/?#]+)~i', $info['href_raw'], $sm)) {
+                $slug = preg_replace('/[-_]+/', ' ', urldecode($sm[1]));
+                $slug = trim($slug);
+                if (strlen($slug) >= 3 && !hx_is_generic_text($slug)) $title = ucwords($slug);
+            }
+            if ($title === '') $title = 'Video ' . $id;
+
+            $thumb = $info['thumb'];
+            if ($thumb === '') $thumb = HX_BASE . '/thumbs/xv/med/' . $id . '.jpg';
+            if (strpos($thumb, '//') === 0) $thumb = 'https:' . $thumb;
+            elseif (strpos($thumb, '/') === 0) $thumb = HX_BASE . $thumb;
+
+            $videos[] = [
+                'id' => $id,
+                'title' => $title,
+                'thumbnail' => $thumb,
+                'url' => $info['url'],
+            ];
+        }
+    } catch (Throwable $e) {}
+    return $videos;
+}
+
+function hx_scrape_generic(string $url, string $cacheKey, array $meta): array {
+    $force = isset($_GET['refresh']);
+    if (!$force && ($c = hx_cache_get($cacheKey, HX_TTL))) {
+        $d = json_decode($c, true);
+        if (is_array($d) && !empty($d['videos'])) return $d;
+    }
+    $html = hx_http_get($url);
+    if (!$html) {
+        if ($c = hx_cache_get_stale($cacheKey)) {
+            $d = json_decode($c, true);
+            if (is_array($d) && !empty($d['videos'])) { $d['stale'] = true; return $d; }
+        }
+        return array_merge(['error' => 'Fetch failed. Check connection / try again.', 'videos' => [], 'total' => 0], $meta);
+    }
+    $videos = hx_parse_video_listing($html);
+    if (empty($videos)) {
+        if ($c = hx_cache_get_stale($cacheKey)) {
+            $d = json_decode($c, true);
+            if (is_array($d) && !empty($d['videos'])) { $d['stale'] = true; return $d; }
+        }
+        return array_merge(['error' => 'No videos parsed. Site layout may have changed.', 'videos' => [], 'total' => 0], $meta);
+    }
+    $result = array_merge(['total' => count($videos), 'videos' => $videos], $meta);
+    hx_cache_set($cacheKey, json_encode($result));
+    return $result;
+}
+
+function hx_scrape_listing(string $tag, int $page = 1): array {
+    $url = HX_BASE . '/tags/' . urlencode($tag) . '/';
+    if ($page > 1) $url .= '?page=' . $page;
+    return hx_scrape_generic($url, "list_{$tag}_{$page}", ['tag' => $tag, 'page' => $page, 'mode' => 'tag']);
+}
+function hx_scrape_search(string $query, int $page = 1): array {
+    $url = HX_BASE . HX_SEARCH_PATH . urlencode($query) . '/';
+    if ($page > 1) $url .= '?page=' . $page;
+    return hx_scrape_generic($url, "search_{$query}_{$page}", ['query' => $query, 'page' => $page, 'mode' => 'search']);
+}
+
+function hx_extract_direct_video(string $pageUrl): array {
+    $cacheKey = 'vid_' . $pageUrl;
+    $force = isset($_GET['refresh']);
+    if (!$force && ($c = hx_cache_get($cacheKey, HX_TTL))) {
+        $d = json_decode($c, true);
+        if (is_array($d) && (!empty($d['streams']) || !empty($d['iframe']))) return $d;
+    }
+    $html = hx_http_get($pageUrl);
+    if (!$html) {
+        if ($c = hx_cache_get_stale($cacheKey)) {
+            $d = json_decode($c, true);
+            if (is_array($d) && (!empty($d['streams']) || !empty($d['iframe']))) return $d;
+        }
+        return ['error' => 'Fetch failed', 'streams' => [], 'page_url' => $pageUrl];
+    }
+
+    $streams = []; $type = 'unknown'; $iframe = null;
+
+    if (preg_match_all('/<video[^>]*>.*?<source[^>]+src=["\']([^"\']+)["\'][^>]*>/is', $html, $m)) {
+        foreach ($m[1] as $s) $streams[] = $s; $type = 'html5_source';
+    }
+    if (empty($streams) && preg_match('/<video[^>]+src=["\']([^"\']+)["\']/i', $html, $m)) {
+        $streams[] = $m[1]; $type = 'html5_video';
+    }
+    if (empty($streams)) {
+        foreach (['og:video:secure_url','og:video:url','og:video'] as $prop) {
+            $p = preg_quote($prop, '/');
+            if (preg_match("/<meta[^>]+property=[\"']{$p}[\"'][^>]+content=[\"']([^\"']+)[\"']/i", $html, $m)) {
+                $streams[] = $m[1]; $type = 'og_meta'; break;
+            }
+        }
+    }
+    if (empty($streams) && preg_match('/"contentUrl"\s*:\s*"([^"]+)"/i', $html, $m)) {
+        $streams[] = $m[1]; $type = 'json_ld';
+    }
+    if (empty($streams) && preg_match_all('/["\'](?:file|hls|src|videoUrl|video_url|stream)["\']\s*:\s*["\']([^"\']+\.(?:mp4|m3u8)[^"\']*)["\']/i', $html, $m)) {
+        foreach ($m[1] as $s) $streams[] = $s; $type = 'js_config';
+    }
+    if (empty($streams) && preg_match_all('/data-(?:video-)?src=["\']([^"\']+\.(?:mp4|m3u8)[^"\']*)["\']/i', $html, $m)) {
+        foreach ($m[1] as $s) $streams[] = $s; $type = 'data_attr';
+    }
+    if (empty($streams) && preg_match_all('~https?://[^"\'\s<>]+\.(?:mp4|m3u8)[^"\'\s<>]*~i', $html, $m)) {
+        $streams = array_unique($m[0]); $type = 'raw_url';
+    }
+    if (preg_match('/<iframe[^>]+src=["\']([^"\']+)["\']/i', $html, $m)) {
+        $iframe = trim($m[1]);
+    }
+
+    $clean = [];
+    foreach ($streams as $s) {
+        $s = html_entity_decode(str_replace('\/', '/', trim($s)));
+        if (strpos($s, '//') === 0) $s = 'https:' . $s;
+        elseif (strpos($s, '/') === 0) $s = HX_BASE . $s;
+        if (filter_var($s, FILTER_VALIDATE_URL)) $clean[] = $s;
+    }
+    if ($iframe && strpos($iframe, '//') === 0) $iframe = 'https:' . $iframe;
+
+    $result = [
+        'streams' => array_values(array_unique($clean)),
+        'type' => $type,
+        'iframe' => $iframe,
+        'page_url' => $pageUrl,
+    ];
+    if (!empty($result['streams']) || !empty($result['iframe'])) {
+        hx_cache_set($cacheKey, json_encode($result));
+    }
+    return $result;
+}
+
+/* ---- list (hentai tag / search) ---- */
+if ($__act === 'hx_list') {
+    header('Content-Type: application/json; charset=utf-8');
+    $pg = max(1, (int)($_GET['page'] ?? 1));
+    $q  = trim((string)($_GET['q'] ?? ''));
+    $r  = $q !== '' ? hx_scrape_search($q, $pg) : hx_scrape_listing(HX_TAG, $pg);
+    if (empty($r['videos'])) { echo jEnc(['ok' => false, 'error' => $r['error'] ?? 'fail']); exit; }
+    $items = [];
+    foreach ($r['videos'] as $v) {
+        $t = trim(html_entity_decode((string)$v['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        if ($t === '') continue;
+        $items[] = ['title' => $t, 'thumb' => $v['thumbnail'], 'link' => $v['url'], 'vk' => vote_key('Hentai|' . $t)];
+    }
+    echo jEnc(['ok' => true, 'page' => $pg, 'items' => $items]);
+    exit;
+}
+
+/* ---- video page -> direct stream url ---- */
+if ($__act === 'hx_stream') {
+    header('Content-Type: application/json; charset=utf-8');
+    $u = (string)($_GET['url'] ?? '');
+    if (!preg_match('~^https?://(?:www\.)?hotxv\.com/video-~i', $u)) { echo jEnc(['ok' => false, 'error' => 'bad url']); exit; }
+    $d = hx_extract_direct_video($u);
+    $s = null;
+    foreach ($d['streams'] ?? [] as $x) { if (stripos($x, '.mp4') !== false) { $s = $x; break; } }
+    if (!$s) $s = $d['streams'][0] ?? null;
+    if (!$s) { echo jEnc(['ok' => false, 'error' => 'Video URL nahi mila']); exit; }
+    echo jEnc(['ok' => true, 'url' => $s]);
+    exit;
+}
+
+/* ============ LOAD CATALOG ============ */    
+$raw = null;    
+if (is_file($CACHE_FILE) && (time() - filemtime($CACHE_FILE)) < $CACHE_TTL) {    
+    $raw = file_get_contents($CACHE_FILE);    
+}    
+if (!$raw) {    
+    $merged = ['version' => 1, 'updated_at' => date('c'), 'anime' => []];    
+    $any = false;    
+    foreach ($GH_PATHS as $p) {    
+        $url = 'https://raw.githubusercontent.com/' . rawurlencode($GH_OWNER) . '/' . rawurlencode($GH_REPO)    
+             . '/' . rawurlencode($GH_BRANCH) . '/' . implode('/', array_map('rawurlencode', explode('/', $p))) . '?nocache=' . time();    
+        $fresh = fetch_catalog($url, $GH_TOKEN);    
+        if ($fresh !== null && ($parsed = json_decode($fresh, true)) !== null) {    
+            $any = true;    
+            $list = isset($parsed['anime']) && is_array($parsed['anime']) ? $parsed['anime'] : (is_array($parsed) ? $parsed : []);    
+            $merged['anime'] = array_merge($merged['anime'], $list);    
+        }    
+    }    
+    $bk = blk_catalog($merged['anime']);    
+    if ($bk) { $any = true; $merged['anime'] = array_merge($merged['anime'], $bk); }    
+    if ($any) { $raw = json_encode($merged); @file_put_contents($CACHE_FILE, $raw, LOCK_EX); }    
+    elseif (is_file($CACHE_FILE)) { $raw = file_get_contents($CACHE_FILE); }    
+}    
+$catalog = $raw ? json_decode($raw, true) : null;    
+if (isset($_GET['debug'])) {    
+    header('Content-Type: text/plain; charset=utf-8');    
+    echo "owner  : $GH_OWNER\nrepo   : $GH_REPO\nbranch : $GH_BRANCH\npaths  : " . implode(', ', $GH_PATHS) . "\n";    
+    echo "token  : " . ($GH_TOKEN ? 'set' : 'NOT set') . "\n";    
+    echo "fetch  : " . ($GH_DEBUG ?: 'cache used / not attempted') . "\n";    
+    echo "catalog: " . ($catalog ? count($catalog['anime'] ?? []) . ' titles' : 'EMPTY') . "\n";    
+    exit;    
+}    
+$VOTES_MAP = [];  
+if (is_array($catalog) && isset($catalog['anime']) && is_array($catalog['anime'])) {  
+    $__v = votes_load();  
+    foreach ($catalog['anime'] as &$__a) {  
+        if (!is_array($__a) || empty($__a['title'])) continue;  
+        $__c = $__a['category'] ?? '';  
+        $__t = $__c === 'movie' ? 'Movie' : ($__c === 'hentai' ? 'Hentai' : 'Anime');  
+        $__a['vk'] = vote_key($__t . '|' . trim((string)$__a['title']));  
+        if (isset($__v[$__a['vk']])) $VOTES_MAP[$__a['vk']] = [(int)$__v[$__a['vk']]['l'], (int)$__v[$__a['vk']]['d']];  
+    }  
+    unset($__a);  
+}  
+$__https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');  
+$SITE_URL = ($__https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . strtok($_SERVER['REQUEST_URI'] ?? '/', '?');  
+$SITE_NAME = 'Move Tok';  
+$SITE_TITLE = 'Move Tok - Hindi Movies & K-Dramas';  
+$SITE_DESC = 'Watch Hindi dubbed movies, K-Dramas and anime online in HD on Move Tok. Latest episodes, full movies and top rated anime in one place.';  
+$SITE_IMG = 'https://i.ibb.co/d4hNqPZX/move-tok-logo-black-transparent.png';  
+$h = fn($x) => htmlspecialchars($x, ENT_QUOTES, 'UTF-8');  
+?>  
+<!DOCTYPE html>  
+<html lang="en">    
+<head>    
+<meta charset="UTF-8">    
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">    
+<meta name="theme-color" content="#ffffff">    
+<meta name="referrer" content="no-referrer">    
+<title><?= $h($SITE_TITLE) ?></title>  
+<meta name="description" content="<?= $h($SITE_DESC) ?>">  
+<meta name="keywords" content="Move Tok, Hindi movies, Hindi dubbed anime, K-Dramas, Korean drama Hindi, watch anime online, full movies, top rated anime">  
+<meta name="author" content="Harsh Singh">  
+<meta name="robots" content="index, follow, max-image-preview:large">  
+<link rel="canonical" href="<?= $h($SITE_URL) ?>">  
+<link rel="icon" href="<?= $h($SITE_IMG) ?>">  
+<meta property="og:type" content="website">  
+<meta property="og:site_name" content="<?= $h($SITE_NAME) ?>">  
+<meta property="og:title" content="<?= $h($SITE_TITLE) ?>">  
+<meta property="og:description" content="<?= $h($SITE_DESC) ?>">  
+<meta property="og:url" content="<?= $h($SITE_URL) ?>">  
+<meta property="og:image" content="<?= $h($SITE_IMG) ?>">  
+<meta name="twitter:card" content="summary_large_image">  
+<meta name="twitter:title" content="<?= $h($SITE_TITLE) ?>">  
+<meta name="twitter:description" content="<?= $h($SITE_DESC) ?>">  
+<meta name="twitter:image" content="<?= $h($SITE_IMG) ?>">  
+<script type="application/ld+json"><?= json_encode(['@context'=>'https://schema.org','@type'=>'WebSite','name'=>$SITE_NAME,'url'=>$SITE_URL,'description'=>$SITE_DESC,'inLanguage'=>'hi','publisher'=>['@type'=>'Organization','name'=>$SITE_NAME,'logo'=>$SITE_IMG]], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_HEX_TAG) ?></script>    
+<link rel="preconnect" href="https://fonts.googleapis.com">    
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">    
+<style>  
+/* ============ BLACK & WHITE THEME ============ */
+:root{
+  --bg:#f5f6fa;
+  --bg2:#ffffff;
+  --text:#1a1a2e;
+  --muted:#64748b;
+  --red:#111111;
+  --pink:#111111;
+  --violet:#222222;
+  --stroke:rgba(0,0,0,.08);
+  --stroke2:rgba(0,0,0,.12);
+  --glass:linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,255,255,.85));
+  --glass2:rgba(255,255,255,.75);
+  --shadow:0 10px 30px rgba(20,20,50,.08),inset 0 1px 0 rgba(255,255,255,.95);
+  --shadow-sm:0 4px 14px rgba(20,20,50,.06);
+  --grad:linear-gradient(135deg, #111, #333);
+  --blur:blur(18px) saturate(150%);
+  --head:56px;
+  --img-overlay:linear-gradient(to top,rgba(6,6,12,.92) 5%,rgba(6,6,12,.55) 45%,transparent);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}  
+html{color-scheme:light}  
+body{margin:0;background:var(--bg);color:var(--text);font-family:Nunito,Arial,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}  
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 42% at 8% -4%,rgba(17,17,17,.08),transparent 70%),radial-gradient(48% 40% at 104% 18%,rgba(34,34,34,.08),transparent 70%),radial-gradient(70% 50% at 50% 108%,rgba(0,0,0,.04),transparent 70%)}  
+button,input,textarea{font:inherit}  
+button{cursor:pointer;touch-action:manipulation;color:inherit;background:none;border:0;padding:0}  
+[hidden]{display:none!important}  
+.ic{width:1em;height:1em;fill:currentColor;display:block;pointer-events:none}  
+::-webkit-scrollbar{width:8px;height:8px}  
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:8px}  
+.hero-track::-webkit-scrollbar,.filters::-webkit-scrollbar,.seasons::-webkit-scrollbar,.hrow::-webkit-scrollbar,.toptrack::-webkit-scrollbar{display:none}  
+
+/* ---------- header ---------- */
+header{position:relative;z-index:10;display:flex;align-items:center;gap:10px;margin:8px auto 0;width:calc(100% - 24px);max-width:1176px;padding:8px 12px;border-radius:22px;background:rgba(255,255,255,.9);border:1px solid var(--stroke);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow)}
+.logo{width:44px;height:44px;object-fit:cover;border-radius:50%;border:2px solid var(--stroke2);background:#fff;flex:0 0 auto;box-shadow:0 0 12px rgba(0,0,0,.1)}
+.brand{font-size:23px;font-weight:900;white-space:nowrap;letter-spacing:-.4px;color:var(--text)}
+.sbox{display:flex;align-items:center;margin-left:auto;gap:6px;padding:2px;border-radius:50px;background:rgba(0,0,0,.04);border:1px solid var(--stroke)}
+.sbtn{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;color:var(--text)}
+.sbtn svg{width:21px;height:21px;fill:none}
+.search{display:none;margin:0;width:0;flex:1;min-width:0;border:0;background:transparent;color:var(--text);padding:8px 6px;font-size:15px;outline:none}
+.search::placeholder{color:var(--muted);opacity:1}
+header.s-open .brand,header.s-open .logo{display:none}
+header.s-open .sbox{flex:1;margin-left:0}
+header.s-open .search{display:block;width:100%}
+
+/* 3 DOT MENU BUTTON */
+.menu-btn{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;color:var(--text);flex:0 0 auto;background:#fff;border:1px solid var(--stroke);box-shadow:var(--shadow-sm);transition:all .2s}
+.menu-btn:active{background:rgba(0,0,0,.05)}
+.menu-btn svg{width:24px;height:24px;fill:currentColor}
+
+@media(min-width:900px){
+.sbox{display:contents}
+.sbtn{display:none}
+.search{display:block;margin-left:auto;flex:1;width:100%;max-width:340px;border:1px solid var(--stroke);border-radius:14px;background:#fff;padding:11px 14px;font-size:14px;transition:border-color .2s,box-shadow .2s;box-shadow:var(--shadow-sm)}
+.search:focus{border-color:#111;box-shadow:0 0 0 3px rgba(0,0,0,.1)}
+}
+
+/* SIDE MENU */
+.side-menu{position:fixed;top:0;right:-100%;width:280px;height:100%;background:#fff;z-index:200;transition:right .3s;box-shadow:-5px 0 30px rgba(0,0,0,.15);padding:20px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.side-menu.open{right:0}
+.menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;display:none;opacity:0;transition:opacity .3s}
+.menu-overlay.open{display:block;opacity:1}
+.side-menu h2{font-size:18px;margin:0 0 15px;color:var(--text);display:flex;justify-content:space-between;align-items:center}
+.side-menu h2 button{font-size:22px;color:var(--muted);padding:5px}
+.side-menu a{display:block;padding:14px 16px;border-radius:12px;background:rgba(0,0,0,.03);color:var(--text);font-weight:700;font-size:15px;text-decoration:none;transition:all .2s}
+.side-menu a:hover,.side-menu a:active{background:#111;color:#fff}
+
+/* PAGE CONTENT (Privacy, Terms etc.) */
+.page-content{display:none;max-width:800px;margin:20px auto;padding:24px;background:#fff;border-radius:20px;border:1px solid var(--stroke);box-shadow:var(--shadow);min-height:60vh}
+.page-content h1{font-size:26px;margin-top:0;color:var(--text);margin-bottom:20px}
+.page-content p{line-height:1.7;color:var(--muted);margin-bottom:16px;font-size:15px}
+.page-content a{color:#111;font-weight:700;text-decoration:none}
+
+main{max-width:1200px;margin:auto;padding:6px 14px 40px}
+h2{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:900;color:var(--text);margin:22px 0 12px;letter-spacing:-.2px}
+h2::before{content:"";display:inline-block;width:4px;height:22px;border-radius:4px;background:#111;box-shadow:0 0 12px rgba(0,0,0,.2)}
+h2 svg{width:20px;height:20px;fill:var(--text)}
+.row-head{display:flex;align-items:center;justify-content:space-between}
+.row-head h2{margin:22px 0 12px}
+.card-sub{color:var(--muted);font-size:11.5px;font-weight:600}
+
+/* ---------- hero ---------- */
+.hero{position:relative;margin:14px 0 0;border-radius:26px;overflow:hidden;background:var(--glass);border:1px solid var(--stroke);box-shadow:var(--shadow)}
+.hero-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.hero-slide{flex:0 0 100%;scroll-snap-align:start;position:relative;height:min(64vh,520px);overflow:hidden}
+.hero-media{position:absolute;inset:0;background:#0b0b14;overflow:hidden}
+.hero-media .bg{display:none}
+.hero-media .fg{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center 30%}
+.hero-media::before{content:"";position:absolute;inset:-30px;background:var(--pimg) center/cover no-repeat;filter:blur(32px) brightness(.5) saturate(1.3)}
+.hero-media::after{content:"";position:absolute;inset:auto 0 0;height:65%;background:var(--img-overlay);pointer-events:none}
+.hero-body{position:absolute;left:0;right:0;bottom:0;padding:0 16px 16px;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center}
+.hero-kind{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.hero-kind i{display:none}
+.hero-kind span{padding:5px 12px;border-radius:50px;font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.hero-kind span:first-child{background:rgba(17,17,17,.85);border-color:rgba(0,0,0,.9)}
+.hero-title{margin:10px 0 14px;font-size:clamp(22px,6vw,34px);font-weight:900;line-height:1.2;color:#fff;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 2px 14px rgba(0,0,0,.85)}
+.hero-actions{display:flex;gap:10px;width:100%;max-width:380px}
+.hbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:50px;font-weight:800;font-size:15px;white-space:nowrap;color:#fff;border:1px solid transparent;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .15s,box-shadow .2s}
+.hbtn .ic{font-size:20px}
+.hbtn.play{background:var(--grad);border-color:rgba(255,255,255,.3);box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.hbtn.info{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3)}
+.hbtn:active{transform:scale(.95)}
+.dots{display:flex;justify-content:center;gap:6px;padding:12px 0;background:rgba(0,0,0,.04)}
+.dot{width:6px;height:6px;padding:0;border:0;border-radius:3px;background:rgba(0,0,0,.2);transition:all .25s}
+.dot.active{width:22px;background:#111}
+.hero-nav{display:none;position:absolute;top:50%;margin-top:-40px;z-index:3;width:44px;height:72px;color:#fff;font-size:28px;align-items:center;justify-content:center;border-radius:14px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.hero-nav.prev{left:12px}.hero-nav.next{right:12px}
+
+.as-more{display:flex;justify-content:center;padding:18px 0 6px}
+.as-more .hbtn{flex:none;min-width:170px}
+.as-more .hbtn:disabled{opacity:.6}
+.as-toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:99999;background:rgba(17,17,17,.92);color:#fff;padding:10px 18px;border-radius:24px;font-size:13px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:90%;text-align:center}
+/* ---------- filters ---------- */
+.filters{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 16px;scrollbar-width:none}
+.filter,.season-btn{flex:0 0 auto;padding:10px 18px;border-radius:30px;background:#fff;border:1px solid var(--stroke);color:var(--text);font-weight:800;font-size:13px;transition:all .2s;box-shadow:var(--shadow-sm)}
+.filter.active,.season-btn.active,.episode-btn.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+
+/* ---------- rows + grid ---------- */
+.hrow{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none;scroll-snap-type:x proximity}
+.rcard{flex:0 0 140px;scroll-snap-align:start;cursor:pointer;transition:transform .2s}
+.rcard .card-title{font-size:13.5px;margin-top:8px;padding:0 4px}
+.rcard .badge{font-size:11px;padding:5px 10px;bottom:8px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 14px}
+.card{min-width:0;cursor:pointer;background:none;border:0;transition:transform .22s}
+.card:active,.rcard:active{transform:scale(.97)}
+.poster{position:relative;aspect-ratio:3/4;border-radius:22px;background:#e8eaf0;overflow:hidden;border:1px solid var(--stroke);box-shadow:0 8px 24px rgba(20,20,50,.1),inset 0 1px 0 rgba(255,255,255,.8)}
+.poster .bg{display:none}
+.poster .fg{display:block;width:100%;height:100%;object-fit:cover}
+.poster::after{content:"";position:absolute;inset:auto 0 0;height:45%;background:linear-gradient(to top,rgba(0,0,0,.75),transparent);pointer-events:none}
+.badge{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:2;max-width:90%;padding:6px 12px;border-radius:20px;background:rgba(14,14,24,.72);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.new-tag{position:absolute;top:8px;left:8px;z-index:3;background:#111;color:#fff;font-size:10px;font-weight:900;padding:3px 9px;border-radius:10px;letter-spacing:.4px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.pbar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.3);z-index:3}
+.pbar i{display:block;height:100%;background:#111}
+.card-info{padding:10px 4px 0}
+.card-title{font-size:15px;font-weight:800;line-height:1.3;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.card-info .card-sub{display:none}
+.empty{grid-column:1/-1;padding:34px 10px;text-align:center;color:var(--muted)}
+
+/* ---------- watch page ---------- */
+.watch{display:none;position:fixed;inset:0;z-index:100;overflow-y:auto;background:radial-gradient(60% 40% at 8% 0%,rgba(17,17,17,.06),transparent 70%),radial-gradient(50% 40% at 100% 22%,rgba(34,34,34,.06),transparent 70%),var(--bg)}
+.watch-head{position:relative;z-index:7;height:var(--head);display:flex;align-items:center;padding:0 16px;background:rgba(255,255,255,.9);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border-bottom:1px solid var(--stroke)}
+.watch-head span{font-weight:800;font-size:15px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- video player ---------- */
+.video-box{position:relative;z-index:5;width:100%;aspect-ratio:16/9;max-height:70vh;overflow:hidden;user-select:none;-webkit-user-select:none;margin:0 auto;border-bottom:1px solid rgba(255,255,255,.1); background: #000 !important;}
+.video-box:fullscreen{max-height:none;max-width:none;aspect-ratio:auto;height:100%;margin:0;border-radius:0;background:#000}
+.video-box:-webkit-full-screen{max-height:none;max-width:none;aspect-ratio:auto;height:100%;margin:0;border-radius:0;background:#000}
+.video-box.idle{cursor:none}
+video{width:100%;height:100%;object-fit:contain;background:transparent;display:block}
+
+/* NEW NORMAL SPINNER */
+.v-spinner { display: none; position: absolute; top: 50%; left: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: vspin 1s linear infinite; z-index: 10; pointer-events: none; }
+@keyframes vspin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.loading .v-spinner { display: block; }
+.loading #big { opacity: 0; }
+.loading .center button { opacity: 0; pointer-events: none; }
+
+/* PLAYER B&W & TRANSPARENT CONTROLS */
+.bottom { position:absolute; left:0; right:0; bottom:0; z-index:3; padding:34px 14px 10px; background:linear-gradient(to top,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.6) 50%,transparent); transition:opacity .25s }
+.center { position:absolute; inset:0; z-index:2; display:flex; align-items:center; justify-content:center; gap:clamp(18px,8vw,60px); pointer-events:none; transition:opacity .25s }
+.center button { pointer-events:auto; color:#fff; background:rgba(0,0,0,0.15) !important; border:1px solid rgba(255,255,255,0.4) !important; border-radius:50%; width:46px; height:46px; font-size:28px; display:flex; align-items:center; justify-content:center; -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px); box-shadow: none !important; }
+.center #big { width:64px; height:64px; font-size:44px; background:rgba(0,0,0,0.2) !important; border:2px solid rgba(255,255,255,0.6) !important; box-shadow: none !important; }
+.center .ic { filter:drop-shadow(0 2px 6px rgba(0,0,0,.8)) }
+.idle .bottom,.idle .center{opacity:0;pointer-events:none}.idle .center button{pointer-events:none}
+
+.prog{position:relative;height:36px;display:flex;align-items:center;cursor:pointer;touch-action:none}
+.track{position:relative;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.2) !important;transition:height .15s}
+.prog:hover .track{height:6px}
+.buf,.bar{position:absolute;left:0;top:0;height:100%;border-radius:2px;width:0}
+.buf{background:rgba(255,255,255,.3) !important}
+.bar{background:#fff !important; box-shadow: none !important;}
+.bar::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;background:#fff !important;border:2px solid #fff !important;border-radius:50%; box-shadow: none !important;}
+.ctrls{display:flex;align-items:center;gap:6px;color:#fff}
+.ctrl-btn{color:#fff;font-size:26px;min-width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;transition:background .15s,color .15s}
+.ctrl-btn:hover{background:rgba(255,255,255,0.2) !important}
+.ctrl-btn:active{background:rgba(255,255,255,0.3) !important}
+.time{font-size:12px;font-weight:700;color:#fff;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.sp{flex:1}
+.menu{display:none;position:absolute;right:10px;bottom:62px;z-index:6;width:200px;max-height:75%;overflow-y:auto;padding:8px;border:1px solid #444 !important;border-radius:16px;background:rgba(20,20,20,0.95) !important;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:0 16px 38px rgba(0,0,0,.5) !important}
+.menu.open{display:block}
+.menu strong{display:block;padding:6px 10px 2px;font-size:11px;color:#fff !important;letter-spacing:.5px;text-transform:uppercase}
+.opts{display:flex;flex-wrap:wrap;gap:4px;padding:4px}
+.opt{padding:7px 11px;border-radius:9px;background:rgba(255,255,255,0.1) !important;color:#fff !important;font-size:12.5px;font-weight:700;border:1px solid transparent !important;}
+.opt.active{background:#fff !important;color:#000 !important;border-color:#fff !important;}
+.verr{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;background:rgba(0,0,0,0.9) !important;color:#fff;font-weight:700}
+
+/* ---------- details ---------- */
+.details{position:relative;padding:20px 16px 44px;overflow:hidden;min-height:60vh}
+.details::before{content:"";position:absolute;inset:-40px;background-image:var(--bg-image);background-size:cover;background-position:center;filter:blur(60px) saturate(1.2) brightness(.9);opacity:.3;pointer-events:none}
+.details-content{position:relative;max-width:1000px;margin:0 auto}
+.anime-info{display:flex;flex-direction:row;align-items:flex-start;gap:15px;margin-bottom:22px;padding:14px;border-radius:24px;background:rgba(255,255,255,.9);border:1px solid var(--stroke);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:var(--shadow)}
+.detail-poster{flex:0 0 auto;width:110px;max-width:110px;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:16px;border:1px solid var(--stroke);background:#e8eaf0;box-shadow:0 8px 25px rgba(20,20,50,.15)}
+.detail-text{flex:1;min-width:0}
+.detail-title{font-size:clamp(18px,5vw,28px);line-height:1.25;overflow-wrap:anywhere;color:var(--text);margin:0 0 12px}
+.tag{display:inline-block;padding:6px 12px;border-radius:25px;background:rgba(0,0,0,.05);border:1px solid rgba(0,0,0,.1);color:var(--text);font-size:12px;font-weight:800;margin:0 5px 8px 0}
+#episodeSection,#seasonSection,#commentSection{padding:0 14px 14px;margin-bottom:14px;border-radius:22px;background:rgba(255,255,255,.9);border:1px solid var(--stroke)}
+.seasons{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 4px;scrollbar-width:none}
+.season-btn{min-width:118px;padding:11px 16px}
+.episodes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.episode-btn{min-height:56px;border:1px solid var(--stroke);border-radius:14px;background:#fff;color:var(--text);font-size:18px;font-weight:800;transition:all .2s}
+#infoPlay{display:none;flex:none;margin-top:6px;padding:10px 20px}
+.info-mode #vbox{display:none}
+.info-mode #infoPlay{display:flex}
+
+/* ---------- comments ---------- */
+.cm-form{display:flex;flex-direction:column;gap:10px}
+.cm-form input,.cm-form textarea{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--stroke);background:#fff;color:var(--text);font-size:15px;font-weight:600;outline:none;resize:vertical;font-family:inherit}
+.cm-form input::placeholder,.cm-form textarea::placeholder{color:#94a3b8;opacity:1}
+.cm-form input:focus,.cm-form textarea:focus{border-color:#111;box-shadow:0 0 0 3px rgba(0,0,0,.1)}
+.cm-form .hbtn{flex:none;align-self:flex-start;padding:10px 26px;background:#111;color:#fff}
+.cm-form .hbtn:disabled{opacity:.6}
+.cm-err{color:#ef4444;font-size:13px;font-weight:700;min-height:0}
+.cm-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.cm-item{padding:12px 14px;border-radius:16px;background:rgba(0,0,0,.03);border:1px solid var(--stroke)}
+.cm-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.cm-top b{font-size:14px;color:var(--text);overflow-wrap:anywhere}
+.cm-top span{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap}
+.cm-text{margin:6px 0 0;font-size:14px;line-height:1.45;color:var(--text);overflow-wrap:anywhere;white-space:pre-wrap}
+.cm-empty{padding:10px 0;text-align:center;color:var(--muted);font-weight:700}
+
+/* ---------- footer ---------- */
+.foot{max-width:1176px;margin:10px auto 0;padding:18px 14px calc(26px + env(safe-area-inset-bottom));text-align:center;color:var(--muted);font-size:13px;font-weight:700;border-top:1px solid var(--stroke)}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+
+/* ---------- top rated slider ---------- */
+.toptrack{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 2px 10px;-webkit-overflow-scrolling:touch}
+.tslide{flex:0 0 86%;max-width:560px;scroll-snap-align:center;position:relative;height:min(58vh,440px);border-radius:26px;overflow:hidden;background:var(--glass);border:1px solid var(--stroke);box-shadow:var(--shadow);cursor:pointer;scroll-snap-stop:always}
+.trank{position:absolute;top:12px;left:12px;z-index:3;background:#111;color:#fff;font-weight:900;font-size:14px;padding:5px 13px;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.tbody{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 16px 16px;display:flex;flex-direction:column;align-items:flex-start;gap:8px;max-width:60%}
+.tbody .hero-title{margin:0}
+.tmeta{display:flex;flex-wrap:wrap;gap:8px}
+.tmeta span{padding:4px 11px;border-radius:50px;font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25)}
+.tbody .hbtn{flex:none;padding:10px 22px}
+
+/* ---------- video slider landscape ---------- */
+.hero-media .ban{display:none}
+@media(min-width:650px){
+.has-ban .bg,.has-ban .fg{display:none}
+.has-ban .ban{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 25%}
+.hero-nav{display:flex}
+.grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:24px 18px}
+.rcard{flex-basis:180px}
+.card:hover,.rcard:hover{transform:translateY(-4px)}
+.card:hover .poster,.rcard:hover .poster{border-color:rgba(0,0,0,.2);box-shadow:0 16px 38px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.8)}
+.episodes{grid-template-columns:repeat(8,minmax(0,1fr))}
+.detail-poster{width:150px;max-width:150px}
+.detail-title{font-size:clamp(22px,3vw,32px)}
+.video-box{max-width:1000px;margin-top:14px;border-radius:20px;max-height:calc(100vh - 120px);border:1px solid rgba(255,255,255,.1);box-shadow:0 22px 56px rgba(0,0,0,.5)}
+.hero-slide{height:clamp(320px,36vw,440px)}
+.hero-body{align-items:flex-start;text-align:left;width:56%;padding:0 40px 38px}
+.hero-kind{justify-content:flex-start}
+.hero-title{font-size:clamp(24px,3vw,38px)}
+.hero-actions{max-width:380px}
+.hero-media::after{height:100%;background:linear-gradient(to right,rgba(6,6,12,.95) 6%,rgba(6,6,12,.6) 40%,transparent 72%),linear-gradient(to top,rgba(6,6,12,.78),transparent 50%)}
+.hero-media:not(.has-ban)::before{inset:-40px;filter:blur(38px) brightness(.72) saturate(1.5)}
+.hero-media:not(.has-ban) .fg{left:auto;inset:auto;top:24px;right:clamp(28px,7vw,120px);width:auto;height:calc(100% - 48px);aspect-ratio:2/3;object-fit:cover;object-position:center;border-radius:18px;border:1px solid rgba(255,255,255,.22);box-shadow:0 18px 46px rgba(0,0,0,.65),0 0 0 4px rgba(255,255,255,.04)}
+.hero-media:not(.has-ban) .fg{z-index:1}
+.hero-media:not(.has-ban)::after{z-index:0;background:linear-gradient(to right,rgba(6,6,12,.92) 6%,rgba(6,6,12,.5) 38%,transparent 62%),linear-gradient(to top,rgba(6,6,12,.55),transparent 45%)}
+.has-ban .ban{object-position:center 22%}
+.tslide .hero-media::after{background:linear-gradient(to right,rgba(6,6,12,.95) 6%,rgba(6,6,12,.6) 42%,transparent 74%),linear-gradient(to top,rgba(6,6,12,.78),transparent 55%)}
+.tslide .hero-media:not(.has-ban) .fg{top:22px;right:22px;height:calc(100% - 44px);object-position:center;border-radius:16px}
+.tslide{flex-basis:520px;max-width:520px;height:360px}
+.tbody{max-width:56%;padding:0 22px 22px}
+}
+@media(min-width:900px){
+.hero-slide{height:clamp(300px,34vw,420px)}
+.tslide{flex-basis:640px;max-width:640px;height:400px}
+.tslide .hero-media .fg{object-position:right center}
+.tslide .hero-media::after{height:100%;background:linear-gradient(to right,rgba(6,6,12,.94) 8%,rgba(6,6,12,.55) 50%,transparent 78%),linear-gradient(to top,rgba(6,6,12,.8),transparent 55%)}
+.tbody{max-width:60%;padding:0 24px 24px}
+}
+@media(max-width:360px){.brand{font-size:19px}.logo{width:38px;height:38px}.episodes{gap:7px}.episode-btn{min-height:48px;font-size:16px}.ctrl-btn{min-width:34px}.detail-poster{width:96px;max-width:96px}}
+
+.fbar{max-width:1176px;margin:10px auto 0;padding:0 12px;display:flex;flex-direction:column;gap:8px}
+.fbar .filters{padding:2px 2px 4px}
+@media(min-width:650px){.fbar{flex-direction:row;align-items:center}.fbar .filters{flex:1;min-width:0}}
+/* ---- hotxv (hentai page): landscape thumbnails fit, no crop ---- */
+.card.hxc .poster .bg{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(16px) brightness(.55);transform:scale(1.15)}
+.card.hxc .poster .fg{position:relative;z-index:1;object-fit:contain}
+body.hxv .hero-media:not(.has-ban) .fg,body.hxv .tslide .hero-media:not(.has-ban) .fg{aspect-ratio:auto;width:auto;height:auto;max-width:62%;max-height:calc(100% - 48px);object-fit:contain}
+body.hxv .detail-poster{object-fit:contain}
+/* hentai slider (mobile): landscape frame on top, blurred backdrop, text at bottom */
+@media(max-width:649px){
+body.hxv .hero-slide .hero-media:not(.has-ban) .fg,body.hxv .tslide .hero-media:not(.has-ban) .fg{position:absolute;inset:0 0 auto 0;left:0;right:0;top:0;width:100%;height:auto;max-height:68%;max-width:100%;aspect-ratio:auto;object-fit:contain;object-position:center top;border:0;border-radius:0;box-shadow:none;z-index:1}
+body.hxv .hero-slide .hero-media::after,body.hxv .tslide .hero-media::after{z-index:2;background:linear-gradient(to top,rgba(6,6,12,.92) 8%,rgba(6,6,12,.55) 38%,transparent 62%)}
+body.hxv .tslide .tbody,body.hxv .hero-body{z-index:3}
+body.hxv .tbody{max-width:100%}
+}
+/* PC/tablet slider: poster hi poore slide ka background */
+@media(min-width:650px){
+.hero-slide .hero-media:not(.has-ban) .fg,.tslide .hero-media:not(.has-ban) .fg{inset:0;left:0;right:0;top:0;bottom:0;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:center 22%;border:0;border-radius:0;box-shadow:none;z-index:0}
+.hero-slide .hero-media:not(.has-ban)::after,.tslide .hero-media:not(.has-ban)::after{z-index:1;background:linear-gradient(to right,rgba(6,6,12,.94) 6%,rgba(6,6,12,.6) 40%,transparent 72%),linear-gradient(to top,rgba(6,6,12,.7),transparent 50%)}
+}
+/* slider arrows text ke upar na aayein (title cut ho raha tha) */
+@media(min-width:650px){
+.hero-nav{top:30%;margin-top:-36px;width:40px;height:64px}
+.hero-body{padding-left:56px;padding-right:56px;width:78%}
+}
+/* search filter chips */
+.sfilters{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 14px;scrollbar-width:none}
+.sfilters::-webkit-scrollbar{display:none}
+.sfilter{flex:0 0 auto;padding:9px 16px;border-radius:30px;background:#fff;border:1px solid var(--stroke);color:var(--text);font-weight:800;font-size:13px;box-shadow:var(--shadow-sm);cursor:pointer}
+.sfilter.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P7MV3W3G7X"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config","G-P7MV3W3G7X");</script>
+</head>    
+<body>    
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">    
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/></symbol>  
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>    
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></symbol>    
+  <symbol id="i-info" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>    
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M6 5l9 7-9 7zM17 5h2v14h-2z"/></symbol>    
+  <symbol id="i-vol" viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></symbol>    
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3zm13.6 3 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z"/></symbol>    
+  <symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></symbol>    
+  <symbol id="i-fs" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></symbol>    
+  <symbol id="i-fsx" viewBox="0 0 24 24"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></symbol>    
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></symbol>    
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></symbol>    
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></symbol>    
+  <symbol id="i-rew" viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/><text x="12" y="16.3" font-size="7.5" font-weight="800" text-anchor="middle" font-family="Nunito,Arial,sans-serif">10</text></symbol>    
+  <symbol id="i-fwd" viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8z"/><text x="12" y="16.3" font-size="7.5" font-weight="800" text-anchor="middle" font-family="Nunito,Arial,sans-serif">10</text></symbol>    
+  <symbol id="i-clock" viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></symbol>    
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></symbol>    
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol>    
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></symbol>    
+  <symbol id="i-playlist" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></symbol>    
+</svg>  
+<header>    
+  <img class="logo" src="https://i.ibb.co/d4hNqPZX/move-tok-logo-black-transparent.png" alt="Move Tok">    
+  <div class="brand">Move Tok</div>    
+  <div class="sbox">    
+    <button id="sBtn" class="sbtn" type="button" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>    
+    <input id="search" class="search" type="search" placeholder="Search movies, dramas, anime...">    
+  </div>    
+  <!-- 3 DOT MENU BUTTON -->
+  <button id="menuBtn" class="menu-btn" aria-label="Menu"><svg class="ic" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+</header>  
+
+<!-- SIDE MENU -->
+<div id="menuOverlay" class="menu-overlay"></div>
+<div id="sideMenu" class="side-menu">
+    <h2>Menu <button id="closeMenuBtn">✕</button></h2>
+    <a href="#" onclick="setView('home');return false;">Home</a>
+    <a href="#" onclick="setView('hentai');return false;">Hentai</a>
+    <hr style="border:0;border-top:1px solid #eee;margin:10px 0;">
+    <a href="#" onclick="setView('privacy');return false;">Privacy Policy</a>
+    <a href="#" onclick="setView('terms');return false;">Terms & Conditions</a>
+    <a href="#" onclick="setView('disclaimer');return false;">Disclaimer</a>
+    <a href="#" onclick="setView('contact');return false;">Contact Us</a>
+    <a href="https://t.me/movetok1" target="_blank">Telegram</a>
+</div>
+
+<nav class="fbar" aria-label="Filter" id="filterNav">  
+  <div class="filters">    
+    <button class="filter active" data-filter="all">All</button>    
+    <button class="filter" data-filter="Anime">Dramas &amp; Anime</button>    
+    <button class="filter" data-filter="Movie">Hindi Movies</button>
+    <button class="filter" data-filter="Multi">Multi Language Anime</button>  
+  </div>  
+</nav>  
+
+<main id="mainContent">  
+  <h1 class="sr-only">Move Tok - Watch Hindi Movies, K-Dramas &amp; Anime Online</h1>    
+  <section id="featuredSection" hidden>    
+    <div class="hero">    
+      <button id="heroPrev" class="hero-nav prev" aria-label="Previous"><svg class="ic"><use href="#i-left"/></svg></button>    
+      <div id="slider" class="hero-track"></div>    
+      <button id="heroNext" class="hero-nav next" aria-label="Next"><svg class="ic"><use href="#i-right"/></svg></button>    
+      <div id="dots" class="dots"></div>    
+    </div>    
+  </section>    
+  <section id="recentSection" hidden>    
+    <div class="row-head"><h2><svg><use href="#i-clock"/></svg> Recent Watch</h2></div>    
+    <div id="recentRow" class="hrow"></div>    
+  </section>    
+  <section id="latestSection" hidden>    
+    <div class="row-head"><h2><svg><use href="#i-bell"/></svg> Latest Update</h2></div>    
+    <div id="latestRow" class="hrow"></div>    
+  </section>    
+  <section id="topSection" hidden>  
+    <div class="row-head"><h2><svg><use href="#i-star"/></svg> <span id="topTitle">Top Rated</span></h2></div>  
+    <div id="topRow" class="toptrack"></div>  
+  </section>
+  <section id="topMovieSection" hidden>
+    <div class="row-head"><h2><svg><use href="#i-star"/></svg> Top Rated Movies</h2></div>
+    <div id="topMovieRow" class="toptrack"></div>
+  </section>  
+  <div class="row-head"><h2><svg><use href="#i-star"/></svg> Newest Drops</h2><span id="count" class="card-sub">0 titles</span></div>  
+  <div id="catalog" class="grid"><div class="empty">Loading...</div></div>
+  <div id="asMore" class="as-more" hidden><button id="asMoreBtn" class="hbtn play" type="button">Load More</button></div>    
+  <div id="hxMore" class="as-more" hidden><button id="hxMoreBtn" class="hbtn play" type="button">Load More</button></div>
+<noscript><ul><?php foreach (array_slice(is_array($catalog) ? ($catalog['anime'] ?? []) : [], 0, 60) as $__n) { if (!empty($__n['title']) && ($__n['category'] ?? '') !== 'hentai') echo '<li>' . $h($__n['title']) . '</li>'; } ?></ul></noscript>  
+</main>  
+
+<!-- DYNAMIC PAGE CONTENT -->
+<section id="pageContent" class="page-content">
+    <div id="pageText"></div>
+</section>
+
+<!-- SEARCH PAGE -->
+<section id="searchPage" style="display:none;">
+    <div style="max-width:1200px; margin:0 auto; padding:20px 14px;">
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <input id="searchPageInput" type="search" placeholder="Search movies, anime..." style="flex:1; width:100%; padding:14px 18px; border-radius:16px; border:1px solid var(--stroke); font-size:16px; outline:none; background:#fff; box-shadow:var(--shadow-sm);">
+        </div>
+        <div class="sfilters" id="sFilters">
+            <button class="sfilter active" type="button" data-sf="all">All</button>
+            <button class="sfilter" type="button" data-sf="anime">Anime Series</button>
+            <button class="sfilter" type="button" data-sf="movie">Movies</button>
+            <button class="sfilter" type="button" data-sf="hentai">Hentai</button>
+        </div>
+        <div class="row-head"><h2><svg><use href="#i-star"/></svg> Search Results</h2><span id="searchCount" class="card-sub">0 titles</span></div>
+        <div id="searchResults" class="grid"></div>
+    </div>
+</section>
+
+<footer class="foot">&copy; 2026 Move Tok. Made with ❤️ in India by Harsh Singh</footer>  
+
+<div id="asToast" class="as-toast" hidden></div>
+<section id="watch" class="watch">    
+  <div class="watch-head">    
+    <span id="vTitle"></span>    
+  </div>    
+  <div class="video-box" id="vbox">    
+    <video id="video" playsinline webkit-playsinline preload="auto" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></video>    
+    <!-- NORMAL SPINNER -->
+    <div class="v-spinner"></div>
+    
+    <div class="center">    
+      <button id="rew" aria-label="Back 10 seconds"><svg class="ic"><use href="#i-rew"/></svg></button>    
+      <button id="big" aria-label="Play/Pause"><svg class="ic"><use id="bigIc" href="#i-play"/></svg></button>    
+      <button id="fwd" aria-label="Forward 10 seconds"><svg class="ic"><use href="#i-fwd"/></svg></button>    
+    </div>    
+    <div class="bottom">    
+      <div class="prog" id="prog"><div class="track"><div class="buf" id="buf"></div><div class="bar" id="bar"></div></div></div>    
+      <div class="ctrls">    
+        <button id="playBtn" class="ctrl-btn" aria-label="Play/Pause"><svg class="ic"><use id="playIc" href="#i-play"/></svg></button>    
+        <button id="nextBtn" class="ctrl-btn" aria-label="Next episode" hidden><svg class="ic"><use href="#i-next"/></svg></button>    
+        <div class="time"><span id="cur">0:00</span> / <span id="tot">0:00</span></div>    
+        <div class="sp"></div>    
+        <button id="muteBtn" class="ctrl-btn" aria-label="Mute"><svg class="ic"><use id="muteIc" href="#i-vol"/></svg></button>    
+        <button id="audBtn" class="ctrl-btn" aria-label="Audio language" hidden><svg class="ic" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><path d="M4 15h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2v-3zM20 15h-3a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 0 2-2v-3z"/></svg></button>
+        <button id="setBtn" class="ctrl-btn" aria-label="Settings"><svg class="ic"><use href="#i-gear"/></svg></button>    
+        <button id="fsBtn" class="ctrl-btn" aria-label="Fullscreen"><svg class="ic"><use id="fsIc" href="#i-fs"/></svg></button>    
+      </div>    
+    </div>    
+    <div id="menu" class="menu">    
+      <strong>Quality</strong><div id="qOpts" class="opts"></div>    
+      <strong>Speed</strong><div id="sOpts" class="opts"></div>    
+    </div>    
+    <div id="aMenu" class="menu"><strong>Audio</strong><div id="aOpts" class="opts"></div></div>
+    <div id="verr" class="verr" hidden></div>    
+  </div>    
+
+  <div class="details" id="details">    
+    <div class="details-content">    
+      <div class="anime-info">    
+        <img id="detailPoster" class="detail-poster" alt="Poster">    
+        <div class="detail-text">    
+          <h1 id="detailTitle" class="detail-title"></h1>    
+          <div><span id="detailType" class="tag"></span><span id="episodeLabel" class="tag"></span><span id="infoLabel" class="tag"></span></div>  
+          <button id="infoPlay" class="hbtn play" type="button"><svg class="ic"><use href="#i-play"/></svg>Watch Now</button>    
+        </div>    
+      </div>    
+      <section id="seasonSection"><h2><svg><use href="#i-list"/></svg> Seasons</h2><div id="seasonButtons" class="seasons"></div></section>    
+      <section id="episodeSection"><h2><svg><use href="#i-playlist"/></svg> Episodes</h2><div id="episodeButtons" class="episodes"></div></section>  
+      <section id="commentSection">  
+        <h2><svg><use href="#i-chat"/></svg> Comments (<span id="cmCount">0</span>)</h2>  
+        <div class="cm-form">  
+          <input id="cmName" type="text" maxlength="30" placeholder="Apna naam likho" autocomplete="nickname">  
+          <textarea id="cmText" maxlength="500" rows="3" placeholder="Apna comment likho..."></textarea>  
+          <div id="cmErr" class="cm-err"></div>  
+          <button id="cmPost" class="hbtn play" type="button">Post Comment</button>  
+        </div>  
+        <div id="cmList" class="cm-list"></div>  
+      </section>    
+    </div>    
+  </div>    
+</section>  
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>  
+<script>    
+const CATALOG = <?= json_encode($catalog, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>;    
+
+const $ = id => document.getElementById(id);
+const LATEST_MS = 2*24*60*60*1000;
+const RECENT_MAX = 5;
+const HERO_MAX = 5;
+let currentView = 'home'; 
+let infoMode=false, holdPlay=false, allItems=[], groups=[], currentFilter="all", currentGroup=null, currentEpisode=null, currentSeason=1, currentQuality="", watchOpen=false, pendingSeek=0, lastSave=0, recorded="";
+
+/* ---------- MENU & PAGE ROUTING ---------- */
+function setView(view) {
+    if (!history.state || history.state.view !== view) {
+        history.pushState({ view }, '', location.href);
+    }
+    applyView(view);
+}
+
+function applyView(view, keep) {
+    currentView = view;
+    closeMenuUI();
+    
+    const mainC = $("mainContent");
+    const pageC = $("pageContent");
+    const searchP = $("searchPage");
+    const sBox = document.querySelector(".sbox");
+    const filterNav = $("filterNav");
+    const menuBtn = $("menuBtn");
+    
+    mainC.style.display = "none";
+    pageC.style.display = "none";
+    searchP.style.display = "none";
+    filterNav.style.display = "none";
+    
+    // Reset Header Layout
+    sBox.style.display = ""; 
+    menuBtn.style.marginLeft = "8px"; 
+
+    if (view === 'home' || view === 'hentai') {
+        mainC.style.display = "block";
+        filterNav.style.display = "flex";
+        if (view === 'hentai') {
+            $("topTitle").textContent = "Top Rated Hentai";
+            document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
+        } else {
+            $("topTitle").textContent = "Top Rated";
+            if (!keep) currentFilter = 'all';
+            document.querySelectorAll(".filter").forEach(b => b.classList.toggle("active", b.dataset.filter === currentFilter));
+        }
+        renderSlider();
+        render();
+        if (!keep) window.scrollTo(0, 0);
+    } else if (view === 'search') {
+        searchP.style.display = "block";
+        sBox.style.display = "none";
+        menuBtn.style.marginLeft = "auto";
+        $("searchPageInput").focus();
+        render();
+        window.scrollTo(0, 0);
+    } else {
+        pageC.style.display = "block";
+        sBox.style.display = "none";
+        menuBtn.style.marginLeft = "auto";
+        $("searchPageInput").value = "";
+        renderPage(view);
+        window.scrollTo(0, 0);
+    }
+}
+
+function renderPage(view) {
+    let html = "";
+    if (view === 'privacy') {
+        html = `<h1>Privacy Policy</h1>
+                <p>At Move Tok, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Move Tok and how we use it.</p>
+                <p>If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us.</p>
+                <h3>Log Files</h3>
+                <p>Move Tok follows a standard procedure of using log files. These files log visitors when they visit websites. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks.</p>
+                <h3>Cookies and Web Beacons</h3>
+                <p>Like any other website, Move Tok uses "cookies". These cookies are used to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited.</p>`;
+    } else if (view === 'terms') {
+        html = `<h1>Terms & Conditions</h1>
+                <p>Welcome to Move Tok!</p>
+                <p>These terms and conditions outline the rules and regulations for the use of Move Tok's Website.</p>
+                <p>By accessing this website we assume you accept these terms and conditions. Do not continue to use Move Tok if you do not agree to take all of the terms and conditions stated on this page.</p>
+                <h3>License</h3>
+                <p>Unless otherwise stated, Move Tok and/or its licensors own the intellectual property rights for all material on Move Tok. All intellectual property rights are reserved. You may access this from Move Tok for your own personal use subjected to restrictions set in these terms and conditions.</p>
+                <p>You must not: Republish material from Move Tok, Sell, rent or sub-license material from Move Tok, Reproduce, duplicate or copy material from Move Tok.</p>`;
+    } else if (view === 'disclaimer') {
+        html = `<h1>Disclaimer</h1>
+                <p>The information provided by Move Tok is for general informational purposes only. All information on the Site is provided in good faith, however we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the Site.</p>
+                <p>Under no circumstance shall we have any liability to you for any loss or damage of any kind incurred as a result of the use of the site or reliance on any information provided on the site.</p>
+                <p>This website does not host any files on its server. All contents are provided by non-affiliated third parties.</p>`;
+    } else if (view === 'contact') {
+        html = `<h1>Contact Us</h1>
+                <p>If you have any questions or suggestions about our website, do not hesitate to contact us.</p>
+                <p>Email: <a href="mailto:h4xzico1111@gmail.com">h4xzico1111@gmail.com</a></p>
+                <p>Telegram: <a href="https://t.me/movetok1" target="_blank">@movetok1</a></p>`;
+    }
+    $("pageText").innerHTML = html;
+}
+
+function openMenuUI(){
+    $("sideMenu").classList.add("open");
+    $("menuOverlay").classList.add("open");
+}
+function closeMenuUI(){
+    $("sideMenu").classList.remove("open");
+    $("menuOverlay").classList.remove("open");
+}
+$("menuBtn").onclick = openMenuUI;
+$("closeMenuBtn").onclick = closeMenuUI;
+$("menuOverlay").onclick = closeMenuUI;
+
+
+/* ---------- helpers ---------- */
+function safeUrl(v){
+  if(!v||typeof v!=="string")return "";
+  try{const u=new URL(v.trim());return(u.protocol==="https:"||u.protocol==="http:")?u.href:""}catch{return ""}
+}
+function mkImg(src,alt,cls){
+  const i=document.createElement("img");i.src=src;i.alt=alt||"";i.loading="lazy";
+  if(cls)i.className=cls;
+  i.onerror=()=>i.remove();return i;
+}
+function addPoster(box,src,alt){
+  if(!src)return;
+  const bg=mkImg(src,"","bg");bg.setAttribute("aria-hidden","true");
+  box.style.setProperty("--pimg",'url("'+src.replace(/["\\n()]/g,c=>encodeURIComponent(c))+'")');
+  box.append(bg,mkImg(src,alt,"fg"));
+}
+function addBanner(media,g){
+  if(!g.banner||g.banner===g.poster)return;
+  const i=mkImg(g.banner,"","ban");i.decoding="async";
+  i.onerror=()=>{i.remove();media.classList.remove("has-ban")};
+  media.classList.add("has-ban");media.appendChild(i);
+}
+function icon(id){
+  const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("class","ic");
+  const u=document.createElementNS("http://www.w3.org/2000/svg","use");u.setAttribute("href","#"+id);
+  s.appendChild(u);return s;
+}
+function setIc(el,id){el.setAttribute("href","#"+id)}
+function fmt(s){
+  if(!isFinite(s)||s<0)s=0;
+  const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=Math.floor(s%60);
+  return(h?h+":"+String(m).padStart(2,"0"):m)+":"+String(sec).padStart(2,"0");
+}
+const store={
+  get(k){try{return Number(localStorage.getItem(k))||0}catch{return 0}},
+  set(k,v){try{localStorage.setItem(k,v)}catch{}},
+  del(k){try{localStorage.removeItem(k)}catch{}}
+};
+const gkey=g=>g.type+"|"+g.title.toLowerCase();
+const kindLabel=g=>isMulti(g)?(g.isMov?"Multi Language Movie":"Multi Language Anime"):isMovG(g)?"Hindi Movie":g.type==="Hentai"?"Hindi Hentai":"Drama / Anime";
+const isHentai=g=>g.type==="Hentai";
+function isMulti(g){return g.type==="Multi"}
+function isMovG(g){return g.type==="Movie"||!!g.isMov}
+
+/* ---------- recent ---------- */
+const WEEK_MS=7*24*60*60*1000;
+function getRecent(){
+  let r;try{r=JSON.parse(localStorage.getItem("zt:recent"))||[]}catch{r=[]}
+  if(!r.length)return r;
+  let ws=store.get("zt:wk");
+  if(!ws){ws=Math.min(...r.map(x=>x.t||Date.now()));store.set("zt:wk",ws)}
+  if(Date.now()-ws>=WEEK_MS){
+    r.forEach(x=>{store.del("zt:"+x.e);store.del("ztd:"+x.e)});
+    try{localStorage.setItem("zt:recent","[]")}catch{}
+    store.del("zt:wk");return [];
+  }
+  return r;
+}
+function pushRecent(g,ep){
+  const cur=getRecent();if(!cur.length)store.set("zt:wk",Date.now());
+  const r=cur.filter(x=>x.g!==gkey(g));
+  r.unshift({g:gkey(g),e:ep.id,t:Date.now()});
+  const keep=r.slice(0,RECENT_MAX);
+  try{localStorage.setItem("zt:recent",JSON.stringify(keep))}catch{}
+}
+
+/* ---------- search ---------- */
+const SYN=[
+  ["movie","movies","film","films","picture","cinema"],
+  ["kdrama","kdramas","korean","drama","dramas","serial","series"],
+  ["hindi","dubbed","dub"],
+  ["hentai","ecchi"]
+];
+const norm=s=>String(s||"").toLowerCase().replace(/[-']/g,"").replace(/[^a-z0-9\u0900-\u097f\s]/g," ").replace(/\s+/g," ").trim();
+const synOf=t=>{const g=SYN.find(x=>x.includes(t));return g?g:[t]};
+const tolerance=t=>t.length<4?0:t.length<7?1:2;
+function lev(a,b){
+  const m=a.length,n=b.length;if(!m)return n;if(!n)return m;
+  let p=Array.from({length:n+1},(_,j)=>j);
+  for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}
+  return p[n];
+}
+function tokCost(t,g){
+  let best=Infinity;
+  for(const v of synOf(t)){
+    if(g.hay.includes(v))return 0;
+    for(const w of g.words){
+      let d=lev(v,w);
+      if(w.length>v.length)d=Math.min(d,lev(v,w.slice(0,v.length)));
+      if(d<best)best=d;
+    }
+  }
+  return best;
+}
+function searchGroups(q,pool){
+  const toks=norm(q).split(" ").filter(Boolean);
+  if(!toks.length)return{list:pool,sugg:[]};
+  const scored=pool.map(g=>{
+    const c=toks.map(t=>tokCost(t,g));
+    return{g,ok:c.every((x,i)=>x<=tolerance(toks[i])),cost:c.reduce((a,b)=>a+b,0),ratio:c.reduce((a,x,i)=>a+Math.min(1,x/toks[i].length),0)/toks.length};
+  });
+  const list=scored.filter(x=>x.ok).sort((a,b)=>a.cost-b.cost||b.g.ts-a.g.ts).map(x=>x.g);
+  const sugg=list.length?[]:scored.sort((a,b)=>a.ratio-b.ratio||b.g.ts-a.g.ts).slice(0,6).map(x=>x.g);
+  return{list,sugg};
+}
+
+/* ---------- build data ---------- */
+function toTime(v){const d=Date.parse(v||"");return isNaN(d)?0:d}
+function buildItems(){
+  const out=[];
+  const list=CATALOG&&Array.isArray(CATALOG.anime)?CATALOG.anime:[];
+  list.forEach(a=>{
+    if(!a||!a.slug||!a.title)return;
+    const type=a.category==="movie"?"Movie":a.category==="hentai"?"Hentai":"Anime";
+    const poster=safeUrl(a.poster)||safeUrl(a.banner);
+    (Array.isArray(a.seasons)?a.seasons:[]).forEach(s=>{
+      (Array.isArray(s.episodes)?s.episodes:Array.from({length:s.count||0},(_,i)=>({number:i+1}))).forEach(e=>{
+        const q={};
+        (e.sources||[]).forEach(x=>{const u=safeUrl(x&&x.url);if(u)q[x.quality||"Default"]=u});
+        const eu=safeUrl(e.url);
+        if(eu&&!Object.values(q).includes(eu))q[e.quality||"Default"]=eu;
+        out.push({
+          id:a.slug+"|"+s.number+"|"+e.number,title:String(a.title).trim(),type,poster,
+          season:Number(s.number)||1,episode:Number(e.number)||1,qualities:q,mp4Url:"",
+          blk:a.blk?{t:a.blk,u:a.category==="movie"?"":(s.key||s.number)+"-"+e.number}:null,
+          rating:Number(a.rating)||0,vk:a.vk||"",banner:safeUrl(a.banner),ts:toTime(e.added_at)||toTime(a.added_at)
+        });
+      });
+    });
+  });
+  return out;
+}
+function getQualities(item){return Object.assign({},item.qualities||{})}
+function buildGroups(){
+  const map=new Map();
+  allItems.forEach(item=>{
+    const key=item.type+"|"+item.title.toLowerCase();
+    if(!map.has(key))map.set(key,{title:item.title,type:item.type,poster:item.poster,vk:item.vk,banner:item.banner,rating:0,items:[]});
+    const g=map.get(key);
+    if(!g.poster&&item.poster)g.poster=item.poster;
+    if(!g.banner&&item.banner)g.banner=item.banner;
+    g.items.push(item);
+  });
+  groups=[...map.values()];
+  groups.forEach(g=>{
+    g.items.sort((a,b)=>a.season-b.season||a.episode-b.episode);
+    g.ts=Math.max(0,...g.items.map(x=>x.ts));
+    g.rating=Math.max(0,...g.items.map(x=>x.rating||0));
+    g.hay=norm(g.title+" "+kindLabel(g));
+    g.words=g.hay.split(" ");
+  });
+  groups.sort((a,b)=>b.ts-a.ts);
+}
+
+/* ---------- home render ---------- */
+function metaText(g){
+  if(isMulti(g))return (g.isMov?"Multi Language Movie":"Multi Language Anime")+(g.loaded&&!g.isMov?" • "+g.items.length+" Episodes":"");
+  if(isMovG(g))return "Hindi Movie";
+  const n=new Set(g.items.map(x=>x.season)).size;
+  return n+(n===1?" Season":" Seasons")+" • "+g.items.length+" Episodes";
+}
+function badgeText(g){
+  if(isMulti(g))return g.isMov?"Movie":"Multi Audio";
+  if(isMovG(g))return "Movie";
+  const last=g.items[g.items.length-1],s=last.season;
+  const eps=g.items.filter(x=>x.season===s).map(x=>x.episode);
+  const a=Math.min(...eps),b=Math.max(...eps);
+  return "Season "+s+" • EP:"+(a===b?a:a+"-"+b);
+}
+function makeCard(g){
+  const card=document.createElement("article");card.className="card";
+  const poster=document.createElement("div");poster.className="poster";
+  addPoster(poster,g.poster,g.title);
+  const badge=document.createElement("span");badge.className="badge";
+  badge.textContent=badgeText(g);poster.appendChild(badge);
+  const info=document.createElement("div");info.className="card-info";
+  const t=document.createElement("div");t.className="card-title";t.textContent=g.title;
+  const s=document.createElement("div");s.className="card-sub";s.textContent=metaText(g);
+  info.append(t,s);card.append(poster,info);card.onclick=()=>openGroup(g);return card;
+}
+function rowCard(g,item,opts){
+  const card=document.createElement("article");card.className="rcard";
+  const poster=document.createElement("div");poster.className="poster";
+  addPoster(poster,g.poster,g.title);
+  if(opts.isNew){const n=document.createElement("span");n.className="new-tag";n.textContent="NEW";poster.appendChild(n)}
+  const badge=document.createElement("span");badge.className="badge";
+  badge.textContent=isMovG(g)?"Movie":"S"+item.season+" • EP:"+item.episode;poster.appendChild(badge);
+  if(opts.progress>0){const p=document.createElement("div");p.className="pbar";const i=document.createElement("i");i.style.width=Math.min(100,opts.progress)+"%";p.appendChild(i);poster.appendChild(p)}
+  const t=document.createElement("div");t.className="card-title";t.textContent=g.title;
+  card.append(poster,t);card.onclick=()=>openGroup(g,item);return card;
+}
+function topCmp(a,b){return (b.rating||0)-(a.rating||0)||b.ts-a.ts}
+function renderTop(searching){
+  const row=$("topRow"),keep=row.scrollLeft;row.replaceChildren();
+  const list=groups.filter(g=>currentView==='hentai' ? isHentai(g) : (!isHentai(g)&&!isMulti(g)&&!isMovG(g))).sort(topCmp).slice(0,100);
+  list.forEach((g,i)=>{
+    const sl=document.createElement("article");sl.className="tslide";
+    const media=document.createElement("div");media.className="hero-media";addPoster(media,g.poster,g.title);addBanner(media,g);
+    media.querySelectorAll("img:not(.ban)").forEach(im=>{im.loading=i<2?"eager":"lazy"});
+    const rk=document.createElement("span");rk.className="trank";rk.textContent="#"+(i+1);
+    const body=document.createElement("div");body.className="tbody";
+    const t=document.createElement("div");t.className="hero-title";t.textContent=g.title;
+    const meta=document.createElement("div");meta.className="tmeta";
+    if(g.rating){const r=document.createElement("span");r.textContent="★ "+g.rating.toFixed(1);meta.appendChild(r)}
+    const sn=new Set(g.items.map(x=>x.season)).size;
+    const m2=document.createElement("span");m2.textContent=sn+(sn===1?" Season":" Seasons")+" • "+g.items.length+" EP";meta.appendChild(m2);
+    const pb=document.createElement("button");pb.className="hbtn play";pb.append(icon("i-play"),document.createTextNode("Watch Now"));
+    body.append(t,meta,pb);sl.append(media,rk,body);sl.onclick=()=>openGroup(g);row.appendChild(sl);
+  });
+  row.scrollLeft=keep;
+  $("topSection").hidden=searching||!list.length;
+}
+function renderRows(){
+  const searching=$("search").value.trim()!=="";
+  
+  // Recent Watch
+  const rr=$("recentRow");rr.replaceChildren();
+  if(currentView === 'home'){
+      getRecent().forEach(r=>{
+        const g=groups.find(x=>gkey(x)===r.g);if(!g || isHentai(g))return;
+        const item=g.items.find(x=>x.id===r.e);if(!item)return;
+        const pos=store.get("zt:"+item.id),dur=store.get("ztd:"+item.id);
+        rr.appendChild(rowCard(g,item,{progress:dur?pos/dur*100:0}));
+      });
+  }
+  $("recentSection").hidden=searching||currentView==='hentai'||!rr.children.length;
+
+  // Latest Update
+  const lr=$("latestRow");lr.replaceChildren();
+  const now=Date.now(),cand=[];
+  groups.forEach(g=>{
+    if(currentView==='home' && (isHentai(g)||isMulti(g)))return; // Exclude Hentai from Home
+    if(currentView==='hentai' && !isHentai(g))return;
+    
+    if(!g.ts||now-g.ts>=LATEST_MS)return;
+    let best=null;
+    g.items.forEach(x=>{if(x.ts&&now-x.ts<LATEST_MS&&(!best||x.ts>best.ts||(x.ts===best.ts&&(x.season>best.season||(x.season===best.season&&x.episode>best.episode)))))best=x});
+    if(best)cand.push([g,best]);
+  });
+  cand.sort((a,b)=>b[1].ts-a[1].ts).slice(0,20).forEach(c=>lr.appendChild(rowCard(c[0],c[1],{isNew:true})));
+  $("latestSection").hidden=searching||!lr.children.length;
+  
+  renderTop(searching);
+}
+function render(){
+  if (currentView === 'search') {
+      const q=$("searchPageInput").value.trim();
+      const base = groups.filter(sfOk); // search filter chips (All/Anime/Movie/Hentai)
+      let list = [], sugg = [];
+      if(q) {
+          const r = searchGroups(q, base);
+          list = r.list;
+          sugg = r.sugg;
+      }
+      const cat = $("searchResults");
+      cat.replaceChildren();
+      $("searchCount").textContent = list.length + (list.length===1?" title":" titles");
+      if(!list.length){
+          const e=document.createElement("div");e.className="empty";
+          e.textContent=q?"\""+q+"\" nahi mila.":"Type something to search...";
+          cat.appendChild(e);
+          sugg.forEach(g=>cat.appendChild(makeCard(g)));
+      } else {
+          list.forEach(g=>cat.appendChild(makeCard(g)));
+      }
+      return;
+  }
+
+  if (currentView === 'home' || currentView === 'hentai') {
+      const q=$("search").value.trim();
+      const base=groups.filter(g=>{
+          if (currentView === 'hentai') return isHentai(g);
+          if (currentFilter === 'all') return !isHentai(g); // Exclude Hentai from Home "All"
+          if (currentFilter === 'Multi') return isMulti(g);
+          if (currentFilter === 'Movie') return g.type === 'Movie' || (isMulti(g) && g.isMov);
+          if (currentFilter === 'Anime') return g.type === 'Anime' || (isMulti(g) && !g.isMov);
+          return g.type === currentFilter;
+      });
+      let list=base,sugg=[];
+      if(q){const r=searchGroups(q,base);list=r.list;sugg=r.sugg}
+      const cat=$("catalog");cat.replaceChildren();
+      $("count").textContent=list.length+(list.length===1?" title":" titles");
+      if(!list.length){
+        const e=document.createElement("div");e.className="empty";
+        e.textContent=currentFilter==="Multi"?(AS.err?"Load nahi hua. Retry dabao.":"Loading..."):!allItems.length?"Nothing published yet.":q?"\""+q+"\" nahi mila."+(sugg.length?" Shayad ye dhundh rahe the:":""):"Nothing found.";
+        cat.appendChild(e);
+        sugg.forEach(g=>cat.appendChild(makeCard(g)));
+      }else list.forEach(g=>cat.appendChild(makeCard(g)));
+      $("featuredSection").hidden=!heroList.length;
+      renderRows();
+      if(currentFilter==="Multi")["featuredSection","recentSection","latestSection","topSection"].forEach(id=>{$(id).hidden=true});
+      asMoreUI();
+      hxMoreUI();
+  }
+}
+
+/* ---------- hero ---------- */
+let heroTimer=null,heroList=[];
+function heroGo(i){
+  const s=$("slider"),n=heroList.length;if(!n)return;
+  i=(i+n)%n;s.scrollTo({left:i*s.clientWidth,behavior:"smooth"});
+}
+function heroIndex(){const s=$("slider");return s.clientWidth?Math.round(s.scrollLeft/s.clientWidth):0}
+function heroAuto(){
+  clearInterval(heroTimer);
+  if(heroList.length<2)return;
+  heroTimer=setInterval(()=>{if(!watchOpen)heroGo(heroIndex()+1)},5000);
+}
+function renderSlider(){
+  const slider=$("slider"),dots=$("dots");
+  slider.replaceChildren();dots.replaceChildren();
+  
+  heroList = groups.filter(g => currentView === 'hentai' ? isHentai(g) : (!isHentai(g)&&!isMulti(g))).slice(0, HERO_MAX);
+  
+  $("featuredSection").hidden=!heroList.length;
+  heroList.forEach((g,i)=>{
+    const slide=document.createElement("div");slide.className="hero-slide";
+    const media=document.createElement("div");media.className="hero-media";
+    addPoster(media,g.poster,g.title);addBanner(media,g);
+    const body=document.createElement("div");body.className="hero-body";
+    const kind=document.createElement("div");kind.className="hero-kind";
+    const k1=document.createElement("span");k1.textContent=kindLabel(g);
+    const dot=document.createElement("i");
+    const k2=document.createElement("span");k2.textContent=isMovG(g)?"Full Movie":g.items.length+(g.items.length===1?" Episode":" Episodes");
+    kind.append(k1,dot,k2);
+    if(!isMovG(g)){const sn=new Set(g.items.map(x=>x.season)).size;const k3=document.createElement("span");k3.textContent=sn+(sn===1?" Season":" Seasons");kind.insertBefore(k3,dot)}
+    media.querySelectorAll("img:not(.ban)").forEach(im=>{im.loading=i<2?"eager":"lazy";im.decoding="async"});
+    const t=document.createElement("div");t.className="hero-title";t.textContent=g.title;
+    const act=document.createElement("div");act.className="hero-actions";
+    const pb=document.createElement("button");pb.className="hbtn play";pb.append(icon("i-play"),document.createTextNode("Watch Now"));
+    pb.onclick=()=>openGroup(g);
+    const ib=document.createElement("button");ib.className="hbtn info";ib.append(icon("i-info"),document.createTextNode("More Info"));
+    ib.onclick=()=>openGroup(g,null,true);
+    act.append(pb,ib);body.append(kind,t,act);
+    slide.append(media,body);slider.appendChild(slide);
+    const d=document.createElement("button");d.className="dot"+(i===0?" active":"");d.setAttribute("aria-label","Slide "+(i+1));
+    d.onclick=()=>{heroGo(i);heroAuto()};dots.appendChild(d);
+  });
+  slider.scrollLeft=0;heroAuto();
+}
+$("slider").addEventListener("scroll",()=>{
+  const i=heroIndex();
+  document.querySelectorAll("#dots .dot").forEach((d,x)=>d.classList.toggle("active",x===i));
+},{passive:true});
+["touchstart","pointerdown"].forEach(ev=>$("slider").addEventListener(ev,()=>clearInterval(heroTimer),{passive:true}));
+["touchend","touchcancel"].forEach(ev=>$("slider").addEventListener(ev,heroAuto,{passive:true}));
+$("heroPrev").onclick=()=>{heroGo(heroIndex()-1);heroAuto()};
+$("heroNext").onclick=()=>{heroGo(heroIndex()+1);heroAuto()};
+
+/* ---------- SEO ---------- */
+const SEO0={t:document.title,d:(document.querySelector('meta[name="description"]')||{}).content||""};
+function seo(t,d){
+  document.title=t;
+  const m=document.querySelector('meta[name="description"]');
+  if(m)m.content=d;
+}
+function detachFb(){}
+
+/* ---------- V / box refs (early) ---------- */
+const V=$("video"), box=$("vbox");
+
+/* ---------- openGroup ---------- */
+function openGroup(g, startItem, noPlay) {
+  if (isMulti(g) && !g.loaded) { asLoadGroup(g, () => openGroup(g, startItem, noPlay)); return; }
+  history.pushState({ view: 'watch', groupKey: gkey(g), episodeId: startItem ? startItem.id : null, noPlay: !!noPlay }, '', location.href);
+  showWatch(g, startItem, noPlay);
+}
+
+function showWatch(g, startItem, noPlay) {
+  holdPlay=false;
+  infoMode=!!noPlay;
+  $("watch").classList.toggle("info-mode",infoMode);
+  currentGroup=g;currentEpisode=null;currentQuality="";recorded="";
+  $("watch").style.display="block";$("watch").scrollTop=0;
+  document.body.style.overflow="hidden";
+  watchOpen=true;
+  
+  $("detailTitle").textContent=g.title;$("vTitle").textContent=g.title;
+  $("detailType").textContent=kindLabel(g);
+  $("infoLabel").textContent=isMovG(g)?"Full Movie":metaText(g);
+  const p=$("detailPoster");
+  if(g.poster){
+    p.src=g.poster;p.style.display="block";
+    $("details").style.setProperty("--bg-image",'url("'+g.poster.replace(/["\\n()]/g,c=>encodeURIComponent(c))+'")');
+  }else{p.removeAttribute("src");p.style.display="none";$("details").style.removeProperty("--bg-image")}
+  closeMenu();
+  loadComments(g);try{window.trackWatch&&window.trackWatch(g)}catch(e){}
+  seo(g.title+" - Watch Online in Hindi | Move Tok","Watch "+g.title+" ("+kindLabel(g)+") online in HD on Move Tok. "+(isMovG(g)?"Full movie":g.items.length+" episodes")+" available.");
+  const movie=isMovG(g);
+  $("seasonSection").hidden=movie;$("episodeSection").hidden=movie;
+  selectEpisode(startItem||g.items[0]||null,true);
+  showUI();
+}
+
+function leaveInfo(){if(!infoMode)return;infoMode=false;$("watch").classList.remove("info-mode");$("episodeLabel").hidden=false}
+function selectEpisode(item,keepInfo){
+  if(!keepInfo)leaveInfo();
+  currentEpisode=item;recorded="";
+  if(item)currentSeason=item.season;
+  if(!isMovG(currentGroup)){renderSeasons();renderEpisodes()}
+  loadEpisode();
+}
+function renderSeasons(){
+  const seasons=[...new Set(currentGroup.items.map(x=>x.season))].sort((a,b)=>a-b);
+  const box=$("seasonButtons");box.replaceChildren();
+  seasons.forEach(s=>{
+    const b=document.createElement("button");
+    b.className="season-btn"+(s===currentSeason?" active":"");b.textContent="Season "+s;
+    b.onclick=()=>{if(s===currentSeason)return;selectEpisode(currentGroup.items.find(x=>x.season===s),infoMode)};
+    box.appendChild(b);
+  });
+}
+function renderEpisodes(){
+  const box=$("episodeButtons");box.replaceChildren();
+  currentGroup.items.filter(x=>x.season===currentSeason).forEach(item=>{
+    const b=document.createElement("button");
+    b.className="episode-btn"+(!infoMode&&currentEpisode&&currentEpisode.id===item.id?" active":"");
+    b.textContent=item.episode;
+    b.onclick=()=>{if(!infoMode&&currentEpisode&&currentEpisode.id===item.id)return;selectEpisode(item)};
+    box.appendChild(b);
+  });
+}
+function nextItem(){
+  if(!currentGroup||isMovG(currentGroup)||!currentEpisode)return null;
+  return currentGroup.items[currentGroup.items.indexOf(currentEpisode)+1]||null;
+}
+function updateLabel(){
+  $("episodeLabel").hidden=infoMode;
+  $("episodeLabel").textContent=isMovG(currentGroup)?"Movie":currentEpisode?"Season "+currentEpisode.season+" • EP:"+currentEpisode.episode:"Season "+currentSeason;
+  $("vTitle").textContent=currentGroup.title+(isMovG(currentGroup)||!currentEpisode?"":" • S"+currentEpisode.season+" E"+currentEpisode.episode);
+  $("nextBtn").hidden=!nextItem();
+}
+function blkLoad(item){
+  box.classList.add("loading");$("verr").hidden=true;
+  const fd = "?action=stream&tmdbId="+encodeURIComponent(item.blk.t)+(item.blk.u?"&uniqueId="+encodeURIComponent(item.blk.u):"");
+  fetch(fd)
+    .then(r=>r.json())
+    .then(d=>{
+      if(d&&d.ok&&d.streams)d.streams.forEach(s=>{item.qualities[s.quality]=s.url});
+      if(d&&d.error)console.warn("[blkLoad]",d.error);
+    })
+    .catch(e=>console.warn("[blkLoad] fetch fail",e))
+    .then(()=>{if(currentEpisode===item)loadEpisode(true)});
+}
+function loadEpisode(noBlk){
+  updateLabel();
+  if(infoMode){stopVideo();closeMenu();return}
+  const qBox=$("qOpts");qBox.replaceChildren();qBox.dataset.h="";closeMenu();
+  if(!currentEpisode){stopVideo();showErr("No episodes available.");return}
+  if(!noBlk)stopVideo(); /* naya episode: pehle purana video band + UI reset */
+  if(!noBlk&&currentEpisode.blk&&!Object.keys(currentEpisode.qualities).length){blkLoad(currentEpisode);return}
+  if(!noBlk&&currentEpisode.as&&!Object.keys(currentEpisode.qualities).length){asStream(currentEpisode);return}
+  if(!noBlk&&currentEpisode.hx&&!Object.keys(currentEpisode.qualities).length){hxStream(currentEpisode);return}
+  const q=getQualities(currentEpisode);
+  const names=Object.keys(q).sort((a,b)=>a==="Auto"?-1:b==="Auto"?1:(parseInt(b)||0)-(parseInt(a)||0));
+  if(!names.length){stopVideo();showErr("Video link not available.");return}
+  names.forEach(n=>{
+    const b=document.createElement("button");b.className="opt";b.textContent=n;
+    b.onclick=()=>{currentQuality=n;playVideo(q[n],V.currentTime);markQuality();closeMenu()};
+    qBox.appendChild(b);
+  });
+  if(!names.includes(currentQuality)){
+    const c=navigator.connection;
+    const slow=c&&(c.saveData||/2g|3g/.test(c.effectiveType||"")||(c.downlink&&c.downlink<1.5));
+    currentQuality=names.includes("Auto")?"Auto":(slow?names[names.length-1]:names[0]);
+  }
+  markQuality();
+  playVideo(q[currentQuality],store.get("zt:"+currentEpisode.id));
+  holdPlay=false;
+}
+function markQuality(){document.querySelectorAll("#qOpts .opt").forEach(b=>b.classList.toggle("active",b.textContent===currentQuality))}
+function hideWatch(){
+  stopVideo();infoMode=false;$("watch").classList.remove("info-mode");$("watch").style.display="none";closeMenu();
+  document.body.style.overflow="";currentGroup=null;currentEpisode=null;currentQuality="";watchOpen=false;detachFb();seo(SEO0.t,SEO0.d);
+  const fs=document.fullscreenElement||document.webkitFullscreenElement;
+  if(fs)(document.exitFullscreen||document.webkitExitFullscreen).call(document);
+}
+
+window.addEventListener("popstate", (e) => {
+    const state = e.state;
+
+    if (watchOpen) {
+        hideWatch();
+    }
+
+    if (state && state.view === 'watch') {
+        const g = groups.find(x => gkey(x) === state.groupKey);
+        if (g) {
+            const item = state.episodeId ? g.items.find(x => x.id === state.episodeId) : g.items[0];
+            showWatch(g, item, state.noPlay);
+        } else {
+            applyView('home', true);
+        }
+    } else if (state && state.view) {
+        applyView(state.view, state.view === 'home');
+    } else {
+        history.replaceState({ view: 'home' }, '', location.href);
+        applyView('home');
+    }
+    
+    if (!state || state.view !== 'search') {
+        $("searchPageInput").value = "";
+    }
+});
+
+/* ---------- video player ---------- */
+let hideT,tapT,lastTap=0,drag=false,curUrl="",hls=null,hlsRetry=0;
+
+function showUI(){
+  box.classList.remove("idle");clearTimeout(hideT);
+  if(!V.paused)hideT=setTimeout(()=>{if($("menu").classList.contains("open")||$("aMenu").classList.contains("open")){showUI();return}box.classList.add("idle")},2500);
+}
+function closeMenu(){$("menu").classList.remove("open");const a=$("aMenu");if(a)a.classList.remove("open")}
+function showErr(msg){$("verr").textContent=msg;$("verr").hidden=false;box.classList.remove("loading")}
+const isHls=u=>/\.m3u8|\.tar/i.test(u||"");
+function destroyHls(){if(hls){try{hls.destroy()}catch{}hls=null}hlsRetry=0;const a=$("audBtn");if(a)a.hidden=true;const am=$("aMenu");if(am)am.classList.remove("open")}
+function stopVideo(){
+  try{V.pause()}catch(e){}
+  destroyHls();
+  curUrl="";
+  try{V.removeAttribute("src");V.load()}catch(e){}
+  box.classList.remove("loading");
+  $("bar").style.width="0%";$("buf").style.width="0%";$("cur").textContent="0:00";$("tot").textContent="0:00"; /* purane episode ka progress/time clear */
+}
+function hlsMenu(){
+  if(!hls||!hls.levels||!hls.levels.length)return;
+  const box=$("qOpts");
+  if(box.children.length>1&&box.dataset.h!=="1")return;
+  box.replaceChildren();box.dataset.h="1";
+  const add=(label,lvl)=>{
+    const b=document.createElement("button");b.className="opt";b.textContent=label;
+    b.onclick=()=>{if(!hls)return;hls.currentLevel=lvl;currentQuality=label;markQuality();closeMenu()};
+    box.appendChild(b);
+  };
+  add("Auto",-1);
+  const seen=new Set();
+  hls.levels.map((l,i)=>({i,h:l.height||0,k:l.bitrate||0})).sort((a,b)=>b.h-a.h||b.k-a.k).forEach(x=>{
+    const label=x.h?x.h+"p":Math.round(x.k/1000)+" kbps";
+    if(seen.has(label))return;seen.add(label);add(label,x.i);
+  });
+  currentQuality="Auto";markQuality();
+}
+function playVideo(url,at){
+  const s=safeUrl(url);if(!s||curUrl===s)return;
+  curUrl=s;pendingSeek=at||0;$("verr").hidden=true;box.classList.add("loading");
+  destroyHls();
+  if(isHls(s)){
+    if(window.Hls&&Hls.isSupported()){
+      hls=new Hls({
+        enableWorker:true,
+        startPosition:pendingSeek>1?pendingSeek:-1,
+        startLevel:-1,
+        capLevelToPlayerSize:true,
+        abrEwmaDefaultEstimate:500000,
+        abrBandWidthFactor:0.70,
+        abrBandWidthUpFactor:0.60,
+        maxBufferLength:45,
+        maxMaxBufferLength:75,
+        maxBufferSize:50*1000*1000,
+        backBufferLength:20,
+        maxBufferHole:0.5,
+        manifestLoadingMaxRetry:4,
+        manifestLoadingRetryDelay:1000,
+        manifestLoadingMaxRetryTimeout:10000,
+        fragLoadingMaxRetry:6,
+        fragLoadingRetryDelay:1000,
+        fragLoadingMaxRetryTimeout:12000,
+        levelLoadingMaxRetry:4,
+        levelLoadingRetryDelay:1000
+      });
+      hls.loadSource(s);
+      hls.attachMedia(V);
+      hls.on(Hls.Events.MANIFEST_PARSED,()=>{hlsMenu();audioMenu();if(!holdPlay)V.play().catch(()=>{})});
+      hls.on(Hls.Events.AUDIO_TRACKS_UPDATED,audioMenu);
+      hls.on(Hls.Events.AUDIO_TRACK_SWITCHED,audioMenu);
+      hls.on(Hls.Events.ERROR,(ev,d)=>{
+        if(!d||!d.fatal)return;
+        if(d.type===Hls.ErrorTypes.NETWORK_ERROR){
+          if(hlsRetry<5){hlsRetry++;hls.startLoad();return}
+          showErr("Network failed. Connection check karo.");return;
+        }
+        if(d.type===Hls.ErrorTypes.MEDIA_ERROR){hls.recoverMediaError();return}
+        destroyHls();
+        showErr("Video load nahi ho paya (HLS). Net check karo.");
+      });
+      return;
+    }
+    if(V.canPlayType("application/vnd.apple.mpegurl")){
+      V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});return;
+    }
+    showErr("Is browser me HLS (m3u8) support nahi hai.");return;
+  }
+  V.src=s;V.load();if(!holdPlay)V.play().catch(()=>{});
+}
+
+/* ============ WIRE UP ALL BUTTONS ============ */
+
+// Play/Pause (small + big)
+function doPlayPause(){
+  if(V.paused)V.play().catch(()=>{});else V.pause();
+}
+$("playBtn").onclick=doPlayPause;
+$("big").onclick=doPlayPause;
+
+// Rewind / Forward 10s
+$("rew").onclick=()=>{V.currentTime=Math.max(0,V.currentTime-10);showUI()};
+$("fwd").onclick=()=>{V.currentTime=Math.min(V.duration||0,V.currentTime+10);showUI()};
+
+// Next episode
+$("nextBtn").onclick=()=>{const n=nextItem();if(n)selectEpisode(n)};
+
+// Mute
+function updateMute(){
+  setIc($("muteIc"),V.muted||V.volume===0?"i-mute":"i-vol");
+}
+$("muteBtn").onclick=()=>{
+  V.muted=!V.muted;
+  if(!V.muted&&V.volume===0)V.volume=1;
+  updateMute();
+};
+
+// Settings menu
+$("setBtn").onclick=(e)=>{
+  e.stopPropagation();$("aMenu").classList.remove("open");
+  const m=$("menu");
+  m.classList.toggle("open");
+};
+
+// Click outside closes menu
+document.addEventListener("click",e=>{
+  const m=$("menu");
+  if(!m||!m.classList.contains("open"))return;
+  if(m.contains(e.target))return;
+  if(e.target===$("setBtn")||$("setBtn").contains(e.target))return;
+  closeMenu();
+});
+
+// Speed options
+const speeds=[0.5,0.75,1,1.25,1.5,1.75,2];
+const sBox=$("sOpts");
+speeds.forEach(sp=>{
+  const b=document.createElement("button");
+  b.className="opt";b.textContent=sp+"x";b.dataset.speed=sp;
+  if(sp===1)b.classList.add("active");
+  b.onclick=()=>{
+    V.playbackRate=sp;
+    document.querySelectorAll("#sOpts .opt").forEach(x=>x.classList.toggle("active",x===b));
+  };
+  sBox.appendChild(b);
+});
+
+// Fullscreen with Landscape Orientation
+function toggleFs(){
+  const isFs=document.fullscreenElement||document.webkitFullscreenElement;
+  if(isFs){
+      (document.exitFullscreen||document.webkitExitFullscreen).call(document);
+      if (screen.orientation && screen.orientation.unlock) {
+          try { screen.orientation.unlock(); } catch(e){}
+      }
+  } else {
+    const el=box;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if(req){
+        Promise.resolve(req.call(el)).then(() => {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(()=>{});
+            }
+        }).catch(()=>{});
+    }
+  }
+}
+$("fsBtn").onclick=toggleFs;
+document.addEventListener("fullscreenchange",()=>setIc($("fsIc"),document.fullscreenElement?"i-fsx":"i-fs"));
+document.addEventListener("webkitfullscreenchange",()=>setIc($("fsIc"),document.webkitFullscreenElement?"i-fsx":"i-fs"));
+
+// Progress bar
+const prog=$("prog");
+let dragPct=0;
+function pctFromEvent(e){
+  const r=prog.getBoundingClientRect();
+  const cx=(e.clientX!==undefined?e.clientX:(e.touches&&e.touches[0]?e.touches[0].clientX:r.left));
+  return Math.max(0,Math.min(1,(cx-r.left)/r.width));
+}
+function previewSeek(p){
+  $("bar").style.width=(p*100)+"%";
+  $("cur").textContent=fmt(p*(V.duration||0));
+}
+function commitSeek(){
+  if(!drag)return;drag=false;
+  if(V.duration){try{V.currentTime=dragPct*V.duration}catch{}}
+}
+prog.addEventListener("pointerdown",e=>{
+  if(!V.duration)return;
+  drag=true;showUI();
+  try{prog.setPointerCapture(e.pointerId)}catch{}
+  dragPct=pctFromEvent(e);previewSeek(dragPct);
+});
+prog.addEventListener("pointermove",e=>{if(drag){dragPct=pctFromEvent(e);previewSeek(dragPct)}});
+prog.addEventListener("pointerup",e=>{
+  if(drag)dragPct=pctFromEvent(e);
+  try{prog.releasePointerCapture(e.pointerId)}catch{}
+  commitSeek();
+});
+prog.addEventListener("pointercancel",()=>commitSeek());
+
+// Video events
+V.addEventListener("loadedmetadata",()=>{
+  $("tot").textContent=fmt(V.duration);
+  if(pendingSeek>0){try{V.currentTime=pendingSeek}catch{};pendingSeek=0}
+  box.classList.remove("loading");
+});
+V.addEventListener("timeupdate",()=>{
+  const dur=V.duration||0;
+  if(!drag)$("cur").textContent=fmt(V.currentTime);
+  if(dur){
+    if(!drag)$("bar").style.width=(V.currentTime/dur*100)+"%";
+    if(currentEpisode&&currentGroup&&Date.now()-lastSave>5000&&V.currentTime>5){
+      lastSave=Date.now();
+      store.set("zt:"+currentEpisode.id,V.currentTime);
+      store.set("ztd:"+currentEpisode.id,dur);
+      pushRecent(currentGroup,currentEpisode);
+    }
+  }
+});
+V.addEventListener("progress",()=>{
+  const dur=V.duration||0;if(!dur)return;
+  let end=0;
+  for(let i=0;i<V.buffered.length;i++){
+    if(V.buffered.start(i)<=V.currentTime+0.5)end=Math.max(end,V.buffered.end(i));
+  }
+  $("buf").style.width=(end/dur*100)+"%";
+});
+V.addEventListener("play",()=>{
+  setIc($("playIc"),"i-pause");setIc($("bigIc"),"i-pause");showUI();
+});
+V.addEventListener("pause",()=>{
+  setIc($("playIc"),"i-play");setIc($("bigIc"),"i-play");
+  box.classList.remove("idle");clearTimeout(hideT);
+});
+V.addEventListener("waiting",()=>box.classList.add("loading"));
+V.addEventListener("playing",()=>box.classList.remove("loading"));
+V.addEventListener("canplay",()=>box.classList.remove("loading"));
+V.addEventListener("ended",()=>{const n=nextItem();if(n)selectEpisode(n)});
+V.addEventListener("error",()=>{
+  if(curUrl)showErr("Video load nahi hua. Net check karo.");
+  box.classList.remove("loading");
+});
+
+// Tap for UI on mobile
+box.addEventListener("click",e=>{
+  if(e.target.closest("button")||e.target.closest(".prog"))return;
+  const now=Date.now();
+  if(now-lastTap<300){doPlayPause();lastTap=0;return}
+  lastTap=now;
+  if(box.classList.contains("idle"))showUI();
+  else if(!V.paused)box.classList.add("idle");
+});
+
+// Info play button
+$("infoPlay").onclick=()=>{
+  leaveInfo();
+  if(currentEpisode)loadEpisode();
+  else if(currentGroup&&currentGroup.items[0])selectEpisode(currentGroup.items[0]);
+};
+
+/* ============ COMMENTS ============ */
+function timeAgo(ts){
+  if(!ts)return "";
+  const isMs = ts > 99999999999;
+  const date = isMs ? ts : ts * 1000;
+  const diff = (Date.now() - date) / 1000;
+  
+  if(diff < 60) return "abhi";
+  if(diff < 3600) return Math.floor(diff/60)+"m";
+  if(diff < 86400) return Math.floor(diff/3600)+"h";
+  if(diff < 2592000) return Math.floor(diff/86400)+"d";
+  return new Date(date).toLocaleDateString();
+}
+
+function loadComments(g){
+  const list=$("cmList");
+  list.innerHTML='<div class="cm-empty">Loading...</div>';
+  $("cmCount").textContent="0";
+  if(!g.vk)return;
+  fetch("?action=cm&k="+encodeURIComponent(g.vk))
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d||!d.ok){list.innerHTML='<div class="cm-empty">Comments load nahi hue.</div>';return}
+      const items=d.items||[];
+      list.replaceChildren();
+      $("cmCount").textContent=items.length;
+      if(!items.length){list.innerHTML='<div class="cm-empty">Abhi koi comment nahi. Pehla comment aap karo!</div>';return}
+      items.forEach(c=>{
+        const el=document.createElement("div");el.className="cm-item";
+        const top=document.createElement("div");top.className="cm-top";
+        const b=document.createElement("b");b.textContent=c.n;
+        const s=document.createElement("span");s.textContent=timeAgo(c.ts);
+        top.append(b,s);
+        const t=document.createElement("p");t.className="cm-text";t.textContent=c.t;
+        el.append(top,t);list.appendChild(el);
+      });
+    })
+    .catch(()=>{list.innerHTML='<div class="cm-empty">Comments load nahi hue.</div>'});
+}
+
+$("cmPost").onclick=()=>{
+  if(!currentGroup||!currentGroup.vk)return;
+  const n=$("cmName").value.trim();
+  const t=$("cmText").value.trim();
+  const err=$("cmErr");err.textContent="";
+  if(!n){err.textContent="Pehle apna naam likho.";return}
+  if(!t){err.textContent="Comment likho.";return}
+  const btn=$("cmPost");btn.disabled=true;
+  const fd=new FormData();
+  fd.append("k",currentGroup.vk);fd.append("n",n);fd.append("t",t);
+  fetch("?action=cm_add",{method:"POST",body:fd})
+    .then(r=>r.json())
+    .then(d=>{
+      btn.disabled=false;
+      if(d&&d.ok){$("cmText").value="";loadComments(currentGroup)}
+      else err.textContent=(d&&d.error)||"Comment post nahi hua.";
+    })
+    .catch(()=>{btn.disabled=false;err.textContent="Net error. Try again."});
+};
+
+/* ============ SEARCH + FILTER ============ */
+$("sBtn").onclick = () => {
+  $("searchPageInput").value = "";
+  setView('search');
+};
+$("search").addEventListener("focus", () => {
+  const val = $("search").value;
+  $("search").value = "";
+  if (currentView !== 'search') {
+      setView('search');
+  }
+  $("searchPageInput").value = val;
+  render();
+});
+$("searchPageInput").addEventListener("input", render);
+
+document.querySelectorAll(".filter").forEach(btn=>{
+  btn.onclick=()=>{
+    if (currentView !== 'home') {
+        setView('home');
+    }
+    document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("active",b===btn));
+    currentFilter=btn.dataset.filter;
+    if(currentFilter==="Multi")asEnsure();
+    render();
+  };
+});
+
+/* ============ MULTI LANGUAGE ANIME (animesalt engine) ============ */
+const AS={n:0,boot:3,page:0,more:true,loading:false,started:false,err:false,map:new Map()};
+function asToast(msg,ms){
+  const t=$("asToast");clearTimeout(asToast.t);
+  if(!msg){t.hidden=true;return}
+  t.textContent=msg;t.hidden=false;
+  if(ms)asToast.t=setTimeout(()=>{t.hidden=true},ms);
+}
+function asMake(it){
+  if(!it||!it.link||!it.title)return null;
+  let g=AS.map.get(it.link);if(g)return g;
+  g={title:String(it.title).trim(),type:"Multi",poster:safeUrl(it.thumb),banner:"",vk:it.vk||"",rating:0,items:[],ts:0,asLink:it.link,isMov:/\/movies\//i.test(it.link),loaded:false,loading:false};
+  g.hay=norm(g.title+" "+kindLabel(g));g.words=g.hay.split(" ");
+  AS.map.set(it.link,g);groups.splice(AS.n,0,g);AS.n++;return g;
+}
+function asMoreUI(){
+  const w=$("asMore"),b=$("asMoreBtn");if(!w)return;
+  w.hidden=!(currentView==="home"&&currentFilter==="Multi"&&(AS.more||AS.err));
+  b.disabled=AS.loading;b.textContent=AS.loading?"Loading...":AS.err?"Retry":"Load More";
+}
+function asRefresh(){
+  if(currentView==="home"||currentView==="search")render();
+  asMoreUI();
+}
+function asLoadMore(){
+  if(AS.loading||!AS.more)return;
+  AS.loading=true;AS.err=false;asMoreUI();
+  fetch("?action=as_list&page="+(AS.page+1))
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d||!d.ok)throw 0;
+      const arr=Array.isArray(d.items)?d.items:[];
+      arr.forEach(asMake);
+      AS.page++;if(!arr.length)AS.more=false;
+    })
+    .catch(()=>{AS.err=true;if(!AS.page&&(AS.tries=(AS.tries||0)+1)<=3)setTimeout(()=>{AS.err=false;asLoadMore()},2500)})
+    .then(()=>{AS.loading=false;asRefresh();if(!AS.err&&AS.more&&AS.boot-->0)asLoadMore()});
+}
+function asEnsure(){
+  if(AS.loading)return;
+  if(!AS.started||(AS.err&&!AS.page)){AS.started=true;AS.more=true;asLoadMore()}
+  else asMoreUI();
+}
+function asLoadGroup(g,cb){
+  if(g.loading)return;
+  g.loading=true;asToast("Loading...");
+  fetch("?action=as_series&url="+encodeURIComponent(g.asLink))
+    .then(r=>r.json())
+    .then(d=>{
+      g.loading=false;
+      if(!d||!d.ok||!Array.isArray(d.seasons)||!d.seasons.length){asToast("Episodes nahi mile. Dobara try karo.",2500);return}
+      if(d.thumb&&!g.poster)g.poster=safeUrl(d.thumb);
+      const slug=(g.asLink.replace(/\/+$/,"").split("/").pop()||"x");
+      const items=[];
+      d.seasons.forEach(s=>(s.eps||[]).forEach(e=>{
+        items.push({id:"as|"+slug+"|"+s.s+"|"+e.e,title:g.title,type:"Multi",poster:g.poster,season:Number(s.s)||1,episode:Number(e.e)||1,qualities:{},mp4Url:"",blk:null,as:e.link,rating:0,vk:g.vk,banner:"",ts:0});
+      }));
+      if(!items.length){asToast("Episodes nahi mile. Dobara try karo.",2500);return}
+      items.sort((a,b)=>a.season-b.season||a.episode-b.episode);
+      g.items=items;g.loaded=true;asToast("");cb();
+    })
+    .catch(()=>{g.loading=false;asToast("Net error. Try again.",2500)});
+}
+function asStream(item,n){
+  n=n||0;
+  box.classList.add("loading");$("verr").hidden=true;
+  fetch("?action=as_stream&url="+encodeURIComponent(item.as))
+    .then(r=>r.json())
+    .then(d=>{if(d&&d.ok&&d.url)item.qualities.Auto=d.url;else console.warn("[asStream]",d&&d.error)})
+    .catch(e=>console.warn("[asStream] fetch fail",e))
+    .then(()=>{
+      if(currentEpisode!==item)return;
+      if(!Object.keys(item.qualities).length&&n<2){setTimeout(()=>{if(currentEpisode===item)asStream(item,n+1)},700);return}
+      loadEpisode(true);
+    });
+}
+let asST=null;
+function asRemoteSearch(){
+  clearTimeout(asST);
+  const q=$("searchPageInput").value.trim();
+  if(q.length<3)return;
+  asST=setTimeout(()=>{
+    fetch("?action=as_list&page=1&q="+encodeURIComponent(q))
+      .then(r=>r.json())
+      .then(d=>{
+        if(!d||!d.ok||!Array.isArray(d.items))return;
+        d.items.forEach(asMake);
+        if(currentView==="search"&&$("searchPageInput").value.trim()===q)render();
+      }).catch(()=>{});
+  },600);
+}
+$("searchPageInput").addEventListener("input",asRemoteSearch);
+$("asMoreBtn").onclick=()=>{if(AS.err&&!AS.page){AS.started=false;asEnsure()}else asLoadMore()};
+
+function audioMenu(){
+  const btn=$("audBtn"),bx=$("aOpts");bx.replaceChildren();
+  const tr=hls&&hls.audioTracks?hls.audioTracks:[];
+  if(tr.length<2){btn.hidden=true;$("aMenu").classList.remove("open");return}
+  btn.hidden=false;
+  tr.forEach((t,i)=>{
+    const b=document.createElement("button");b.className="opt"+(i===hls.audioTrack?" active":"");
+    b.textContent=t.name||t.lang||("Track "+(i+1));
+    b.onclick=()=>{if(!hls)return;hls.audioTrack=i;audioMenu();closeMenu()};
+    bx.appendChild(b);
+  });
+}
+$("audBtn").onclick=e=>{e.stopPropagation();$("menu").classList.remove("open");$("aMenu").classList.toggle("open")};
+document.addEventListener("click",e=>{
+  const m=$("aMenu");if(!m||!m.classList.contains("open"))return;
+  if(m.contains(e.target)||$("audBtn").contains(e.target))return;
+  m.classList.remove("open");
+});
+
+AS.started=true;asLoadMore();
+/* ============ HENTAI PAGE (hotxv engine) ============ */
+const HX={page:0,more:true,loading:false,started:false,err:false,boot:1,last:"home",map:new Map()};
+function hxMake(it){
+  if(!it||!it.link||!it.title)return null;
+  let g=HX.map.get(it.link);if(g)return g;
+  const title=String(it.title).trim(),poster=safeUrl(it.thumb);
+  const item={id:"hx|"+it.link,title:title,type:"Hentai",poster:poster,season:1,episode:1,qualities:{},mp4Url:"",blk:null,hx:it.link,rating:0,vk:it.vk||"",banner:"",ts:0};
+  g={title:title,type:"Hentai",poster:poster,banner:"",vk:it.vk||"",rating:0,items:[item],ts:0,isMov:true,hxLink:it.link};
+  g.hay=norm(g.title+" "+kindLabel(g));g.words=g.hay.split(" ");
+  HX.map.set(it.link,g);groups.push(g);return g;
+}
+function hxMoreUI(){
+  const w=$("hxMore"),b=$("hxMoreBtn");if(!w)return;
+  if(currentView==="hentai")hxEnsure();
+  w.hidden=!(currentView==="hentai"&&(HX.more||HX.err));
+  b.disabled=HX.loading;b.textContent=HX.loading?"Loading...":HX.err?"Retry":"Load More";
+}
+function hxRefresh(){
+  if(currentView==="hentai"||currentView==="search")render();
+  hxMoreUI();
+  setTimeout(hxAuto,200);
+}
+/* auto-load: jaise hi niche ka area screen ke paas aaye, agla page khud load ho */
+function hxAuto(){
+  if(currentView!=="hentai"||watchOpen||HX.loading||!HX.more||HX.err)return;
+  const w=$("hxMore");if(!w||w.hidden)return;
+  if(w.getBoundingClientRect().top<window.innerHeight+800)hxLoadMore();
+}
+window.addEventListener("scroll",hxAuto,{passive:true});
+window.addEventListener("resize",hxAuto);
+function hxLoadMore(){
+  if(HX.loading||!HX.more)return;
+  HX.loading=true;HX.err=false;hxMoreUI();
+  fetch("?action=hx_list&page="+(HX.page+1))
+    .then(r=>r.json())
+    .then(d=>{
+      if(!d||!d.ok)throw 0;
+      const arr=Array.isArray(d.items)?d.items:[];
+      arr.forEach(hxMake);
+      HX.page++;if(!arr.length)HX.more=false;
+    })
+    .catch(()=>{HX.err=true;if(!HX.page&&(HX.tries=(HX.tries||0)+1)<=3)setTimeout(()=>{HX.err=false;hxLoadMore()},2500)})
+    .then(()=>{HX.loading=false;hxRefresh();if(!HX.err&&HX.more&&HX.boot-->0)hxLoadMore()});
+}
+function hxEnsure(){
+  if(HX.loading)return;
+  if(!HX.started||(HX.err&&!HX.page)){HX.started=true;HX.more=true;hxLoadMore()}
+}
+function hxStream(item,n){
+  n=n||0;
+  box.classList.add("loading");$("verr").hidden=true;
+  fetch("?action=hx_stream&url="+encodeURIComponent(item.hx))
+    .then(r=>r.json())
+    .then(d=>{if(d&&d.ok&&d.url)item.qualities.Auto=d.url;else console.warn("[hxStream]",d&&d.error)})
+    .catch(e=>console.warn("[hxStream] fetch fail",e))
+    .then(()=>{
+      if(currentEpisode!==item)return;
+      if(!Object.keys(item.qualities).length&&n<2){setTimeout(()=>{if(currentEpisode===item)hxStream(item,n+1)},700);return}
+      loadEpisode(true);
+    });
+}
+/* remember which page the search was opened from (hentai search -> hotxv search) */
+const hxApplyView=applyView;
+applyView=function(v,k){
+  if(v!=="search")HX.last=v;
+  else sfSet(HX.last==="hentai"?"hentai":"all",true);
+  const r=hxApplyView.apply(this,arguments);
+  document.body.classList.toggle("hxv",v==="hentai");
+  if(v==="hentai")$("filterNav").style.display="none"; /* hentai page par All/Anime/Movie/Multi filters nahi */
+  return r;
+};
+const hxMakeCard=makeCard;
+makeCard=function(g){const c=hxMakeCard(g);if(g&&g.hxLink)c.classList.add("hxc");return c};
+let hxST=null;
+function hxRemoteSearch(){
+  clearTimeout(hxST);
+  if(HX.last!=="hentai"&&SF.v!=="hentai")return;
+  const q=$("searchPageInput").value.trim();
+  if(q.length<3)return;
+  hxST=setTimeout(()=>{
+    fetch("?action=hx_list&page=1&q="+encodeURIComponent(q))
+      .then(r=>r.json())
+      .then(d=>{
+        if(!d||!d.ok||!Array.isArray(d.items))return;
+        d.items.forEach(hxMake);
+        if(currentView==="search"&&$("searchPageInput").value.trim()===q)render();
+      }).catch(()=>{});
+  },600);
+}
+$("searchPageInput").addEventListener("input",hxRemoteSearch);
+$("hxMoreBtn").onclick=()=>{if(HX.err&&!HX.page){HX.started=false;hxEnsure()}else hxLoadMore()};
+
+/* ---------- search filter chips ---------- */
+const SF={v:"all"};
+function sfOk(g){
+  switch(SF.v){
+    case "anime":return g.type==="Anime"||(isMulti(g)&&!g.isMov);
+    case "movie":return g.type==="Movie"||(isMulti(g)&&!!g.isMov);
+    case "hentai":return isHentai(g);
+    default:return true;
+  }
+}
+function sfSet(v,quiet){
+  SF.v=v;
+  document.querySelectorAll("#sFilters .sfilter").forEach(b=>b.classList.toggle("active",b.dataset.sf===v));
+  if(!quiet){render();if(v==="hentai")hxRemoteSearch()}
+}
+document.querySelectorAll("#sFilters .sfilter").forEach(b=>{b.onclick=()=>sfSet(b.dataset.sf)});
+
+/* ---------- Top Rated Movies (home) ---------- */
+function renderTopMovies(){
+  const sec=$("topMovieSection"),row=$("topMovieRow");if(!sec||!row)return;
+  const keep=row.scrollLeft;row.replaceChildren();
+  const list=currentView!=="home"||currentFilter==="Multi"||$("search").value.trim()!==""?[]:
+    groups.filter(g=>g.type==="Movie").sort(topCmp).slice(0,100);
+  list.forEach((g,i)=>{
+    const sl=document.createElement("article");sl.className="tslide";
+    const media=document.createElement("div");media.className="hero-media";addPoster(media,g.poster,g.title);addBanner(media,g);
+    media.querySelectorAll("img:not(.ban)").forEach(im=>{im.loading=i<2?"eager":"lazy"});
+    const rk=document.createElement("span");rk.className="trank";rk.textContent="#"+(i+1);
+    const body=document.createElement("div");body.className="tbody";
+    const t=document.createElement("div");t.className="hero-title";t.textContent=g.title;
+    const meta=document.createElement("div");meta.className="tmeta";
+    if(g.rating){const r=document.createElement("span");r.textContent="★ "+g.rating.toFixed(1);meta.appendChild(r)}
+    const m2=document.createElement("span");m2.textContent="Full Movie";meta.appendChild(m2);
+    const pb=document.createElement("button");pb.className="hbtn play";pb.append(icon("i-play"),document.createTextNode("Watch Now"));
+    body.append(t,meta,pb);sl.append(media,rk,body);sl.onclick=()=>openGroup(g);row.appendChild(sl);
+  });
+  row.scrollLeft=keep;
+  sec.hidden=!list.length;
+}
+const hxRenderTop=renderTop;
+renderTop=function(s){hxRenderTop(s);renderTopMovies()};
+
+/* ---------- tracking: users / live / plays / clicks (Firebase RTDB project-540142752653961937) ---------- */
+const firebaseConfig={apiKey:"AIzaSyAxYHZM-aZVh9IPz7hLnVsBvit9c_jXz5M",authDomain:"project-540142752653961937.firebaseapp.com",databaseURL:"https://project-540142752653961937-default-rtdb.firebaseio.com",projectId:"project-540142752653961937",storageBucket:"project-540142752653961937.firebasestorage.app",messagingSenderId:"353595493577",appId:"1:353595493577:web:f36bddc0d854b2f7ecd118",measurementId:"G-P7MV3W3G7X"};
+(function(){try{
+  const U=firebaseConfig.databaseURL+"/track.json",INC=n=>({".sv":{"increment":n}}),TS={".sv":"timestamp"},ls=localStorage,ua=navigator.userAgent;
+  let vid=ls.getItem("mt:vid"),isNew=0;
+  if(!vid){vid=(Math.random().toString(36).slice(2)+Date.now().toString(36)).replace(/[^a-z0-9]/g,"").slice(0,24);ls.setItem("mt:vid",vid);isNew=1}
+  const sid=Math.random().toString(36).slice(2,12),mob=/Mobi|Android|iPhone|iPad/i.test(ua),dev=mob?"m":"d";
+  const os=/Android/i.test(ua)?"Android":/iPhone|iPad|iPod/i.test(ua)?"iOS":/Windows/i.test(ua)?"Windows":/Mac/i.test(ua)?"Mac":/Linux/i.test(ua)?"Linux":"Other";
+  const br=/Edg\//i.test(ua)?"Edge":/OPR\/|Opera/i.test(ua)?"Opera":/SamsungBrowser/i.test(ua)?"Samsung":/Chrome|CriOS/i.test(ua)?"Chrome":/Firefox|FxiOS/i.test(ua)?"Firefox":/Safari/i.test(ua)?"Safari":"Other";
+  const day=()=>new Date().toISOString().slice(0,10).replace(/-/g,"");
+  const send=(b,m)=>fetch(U,{method:m||"PATCH",body:JSON.stringify(b),keepalive:true}).catch(()=>{});
+  const del=()=>fetch(firebaseConfig.databaseURL+"/track/live/"+sid+".json",{method:"DELETE",keepalive:true}).catch(()=>{});
+  const k=s=>String(s||"").replace(/[^A-Za-z0-9_-]/g,"_").slice(0,40);
+  /* event log (live 10/30 min ke liye): track/ev/<din>/<pushid> */
+  const ev=o=>{o.t=TS;o.v=vid;o.s=sid;o.d=dev;try{fetch(firebaseConfig.databaseURL+"/track/ev/"+day()+".json",{method:"POST",body:JSON.stringify(o),keepalive:true}).catch(()=>{})}catch(e){}};
+  const pg=()=>String(document.title||"home").slice(0,70);
+  let lp="";const pchk=()=>{const p=pg();if(p!==lp){lp=p;ev({e:"pv",p})}};setTimeout(pchk,1500);setInterval(pchk,3000);
+  /* click tracking: kaun sa element + screen me kahan */
+  const hsh=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return(h>>>0).toString(36)};
+  const lab=el=>{let t="";try{t=(el.getAttribute("aria-label")||el.getAttribute("title")||el.innerText||el.value||el.alt||"")}catch(e){}t=String(t).replace(/\s+/g," ").trim().slice(0,28);
+    const id=el.id?"#"+el.id:"",cl=(!id&&typeof el.className==="string"&&el.className.trim())?"."+el.className.trim().split(/\s+/)[0]:"";
+    let x=(el.tagName||"").toLowerCase()+id+cl;if(el.tagName==="IFRAME"){try{x+=" "+new URL(el.src).hostname}catch(e){}}return x+(t?" | "+t:"")};
+  let lc=0;
+  const rec=(el,e)=>{try{const n=Date.now();if(n-lc<250)return;lc=n;const l=lab(el).slice(0,60),d=day(),kk=k(l.slice(0,14))+"_"+hsh(l),b={};
+    b["clk/"+d+"/"+kk+"/c"]=INC(1);b["clk/"+d+"/"+kk+"/n"]=l;b["days/"+d+"/clk"]=INC(1);send(b);
+    const o={e:"clk",p:pg(),l};if(e&&e.clientX!=null){o.x=Math.round(e.clientX/innerWidth*100);o.y=Math.round(e.clientY/innerHeight*100)}ev(o)}catch(x){}};
+  document.addEventListener("click",e=>{const t=e.target;if(!t||!t.closest)return;rec(t.closest("a,button,[onclick],[role=button],input,select,label,img,video,[class]")||t,e)},true);
+  addEventListener("blur",()=>setTimeout(()=>{const a=document.activeElement;if(a&&a.tagName==="IFRAME")rec(a,null)},0));
+  /* visit: ek visitor din me ek baar */
+  const d0=day();
+  if(ls.getItem("mt:vd")!==d0){ls.setItem("mt:vd",d0);
+    const b={};b["days/"+d0+"/views"]=INC(1);b["days/"+d0+"/"+(mob?"mob":"desk")]=INC(1);
+    b["users/"+vid+"/ls"]=TS;b["users/"+vid+"/n"]=INC(1);b["users/"+vid+"/d"]=dev;b["users/"+vid+"/os"]=os;b["users/"+vid+"/br"]=br;
+    b["users/"+vid+"/sc"]=screen.width+"x"+screen.height;b["users/"+vid+"/lg"]=(navigator.language||"").slice(0,12);
+    try{b["users/"+vid+"/tz"]=Intl.DateTimeFormat().resolvedOptions().timeZone||""}catch(e){}
+    if(isNew){b["days/"+d0+"/new"]=INC(1);b["users/"+vid+"/fs"]=TS;b["os/"+k(os)]=INC(1);b["br/"+k(br)]=INC(1)}
+    try{const h=document.referrer?new URL(document.referrer).hostname:"";if(h&&h!==location.hostname)b["ref/"+k(h)]=INC(1);else if(!h)b["ref/direct"]=INC(1)}catch(e){}
+    send(b)}
+  /* har page load = 1 pageview */
+  const pv={};pv["days/"+d0+"/pv"]=INC(1);send(pv);
+  /* live heartbeat + time on site (har 20 sec, sirf jab page dikh raha ho) */
+  let lb=Date.now();
+  const beat=()=>{const e=Math.max(0,Math.min(30,Math.round((Date.now()-lb)/1000)));lb=Date.now();const d=day(),b={};
+    b["live/"+sid]={t:TS,v:vid,d:dev,p:String(document.title||"home").slice(0,70)};
+    if(e){b["days/"+d+"/secs"]=INC(e);b["users/"+vid+"/secs"]=INC(e)}send(b)};
+  beat();setInterval(()=>{if(!document.hidden)beat()},20000);
+  document.addEventListener("visibilitychange",()=>{if(document.hidden){beat();del()}else{lb=Date.now();beat()}});
+  addEventListener("pagehide",del);
+  /* play event: showWatch() se call hota hai */
+  window.trackWatch=function(g){try{const vk=k(g&&g.vk),d=day(),b={};if(!vk)return;
+    b["watch/"+vk+"/c"]=INC(1);b["watch/"+vk+"/t"]=String(g.title||"").slice(0,80);b["watch/"+vk+"/y"]=String(g.type||"").slice(0,12);
+    b["days/"+d+"/w"]=INC(1);b["users/"+vid+"/plays"]=INC(1);b["users/"+vid+"/lw"]=String(g.title||"").slice(0,80);send(b);
+    const tt=String(g.title||"").slice(0,80),yy=String(g.type||"").slice(0,12);ev({e:"play",k:vk,n:tt,y:yy});
+    fetch(firebaseConfig.databaseURL+"/track/uw/"+vid+".json",{method:"POST",body:JSON.stringify({t:TS,k:vk,n:tt,y:yy}),keepalive:true}).catch(()=>{});
+    setTimeout(beat,1500)}catch(e){}};
+}catch(e){}})();
+
+/* ============ INIT ============ */
+allItems=buildItems();
+buildGroups();
+
+const initState = history.state;
+if (initState && initState.view === 'watch') {
+    const g = groups.find(x => gkey(x) === initState.groupKey);
+    if (g) {
+        const item = initState.episodeId ? g.items.find(x => x.id === initState.episodeId) : g.items[0];
+        showWatch(g, item, initState.noPlay);
+    } else {
+        history.replaceState({ view: 'home' }, '', location.href);
+        applyView('home');
+    }
+} else if (initState && initState.view) {
+    applyView(initState.view);
+} else {
+    history.replaceState({ view: 'home' }, '', location.href);
+    applyView('home');
+}
+</script>
+</body>
+</html>
